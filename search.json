@@ -1,0 +1,268 @@
+[
+  {
+    "objectID": "slides/slide3.html#current-learning-objective",
+    "href": "slides/slide3.html#current-learning-objective",
+    "title": "Generalised linear models",
+    "section": " Current learning objective",
+    "text": "Current learning objective\n\n\n-Understand and apply generalized linear models (GLMs) for modeling data with non-normal distributions\n\n\n-Apply GLMs effectively to model binary outcomes (logistic regression) and count data (Poisson or negative binomial regression).\n\n\nFit, interpret, and assess the adequacy of GLMs"
+  },
+  {
+    "objectID": "slides/slide3.html#continuous-distributions",
+    "href": "slides/slide3.html#continuous-distributions",
+    "title": "Generalised linear models",
+    "section": "Continuous Distributions",
+    "text": "Continuous Distributions"
+  },
+  {
+    "objectID": "slides/slide3.html#discrete-distributions",
+    "href": "slides/slide3.html#discrete-distributions",
+    "title": "Generalised linear models",
+    "section": "Discrete Distributions",
+    "text": "Discrete Distributions"
+  },
+  {
+    "objectID": "slides/slide3.html#generalised-linear-models",
+    "href": "slides/slide3.html#generalised-linear-models",
+    "title": "Generalised linear models",
+    "section": "Generalised linear models",
+    "text": "Generalised linear models\nGenralised linear models (GLMs) has three components:\n\nAssume that Y_i is a member of an exponential family (e.g. Normal/Gaussian, Binomial, Poission, Gamma, etc).\nA linear predictor \\eta_i = \\beta_0 + \\beta_1 x_{i1} + \\ldots + \\beta_k x_{ik}.\nA (smooth and invertible) link function g(\\cdot) which transforms the expectation of the response variable \\mu_i = E(Y_i) to the linear predictor: g(\\mu_i) = \\eta_i = \\beta_0 + \\beta_1 x_{i1} + \\ldots + \\beta_k x_{ik}."
+  },
+  {
+    "objectID": "slides/slide3.html#link-functions",
+    "href": "slides/slide3.html#link-functions",
+    "title": "Generalised linear models",
+    "section": "Link functions",
+    "text": "Link functions\n\n\n\n\n\n\n\n\nLink\n\\eta_i = g(\\mu_i)\n\\mu_i = g^{-1}(\\eta_i)\n\n\n\n\nIdentity\n\\mu_i\n\\eta_i\n\n\nLog\n\\log(\\mu_i)\n\\exp(\\eta_i)\n\n\nInverse\n1/\\mu_i\n1/\\eta_i\n\n\nInverse-squared\n1/\\mu_i^2\n1/\\sqrt{\\eta_i}\n\n\nSquare-root\n\\sqrt{\\mu_i}\n\\eta_i^2\n\n\nLogit\n\\log(\\mu_i/(1-\\mu_i))\n\\exp(\\eta_i)/(1+\\exp(\\eta_i))\n\n\nProbit\n\\Phi^{-1}(\\mu_i)\n\\Phi(\\eta_i)\n\n\nComplementary log-log\n\\log(-\\log(1-\\mu_i))\n1-\\exp(-\\exp(\\eta_i))\n\n\n\nwhere \\Phi(\\cdot) is the cumulative distribution function of the standard normal distribution."
+  },
+  {
+    "objectID": "slides/slide3.html#canonical-link",
+    "href": "slides/slide3.html#canonical-link",
+    "title": "Generalised linear models",
+    "section": "Canonical link",
+    "text": "Canonical link\n\n\n\nFamily\nCanonical Link\nRange of Y_i\nV(Y_i|\\eta_i)\n\n\n\n\nNormal\nIdentity\n(-\\infty, \\infty)\n\\psi\n\n\nBinomial\nLogit\n[0, 1]\n\\mu_i(1-\\mu_i)\n\n\nPoisson\nLog\n[0, \\infty)\n\\mu_i\n\n\nGamma\nInverse\n(0, \\infty)\n\\psi\\mu_i^2\n\n\nInverse-Gaussian\nInverse-squared\n(0, \\infty)\n\\psi\\mu_i^3\n\n\n\nwhere \\psi is the dispersion parameter, \\eta_i is the linear predictor, and \\mu_i is the expectation of Y_i. In the binomial family, n_i is the number of trials.\n\n\n\n\nanu-bdsi.github.io/workshop-GLM/"
+  },
+  {
+    "objectID": "slides/slide1.html#case-study-longevity-of-fruitflies",
+    "href": "slides/slide1.html#case-study-longevity-of-fruitflies",
+    "title": "Modelling for binary or proportion responses",
+    "section": "Case study: Longevity of fruitflies",
+    "text": "Case study: Longevity of fruitflies\nAim: Study longevity of fruitflies depending on sexual activity and thorax length\n\n\n\n\nCode\nlibrary(tidyverse)\ngfly &lt;- faraway::fruitfly |&gt; \n  mutate(activity = factor(activity, levels = c(\"isolated\", \"low\", \"high\", \"one\", \"many\"))) |&gt; \n  ggplot(aes(x = thorax, y = longevity, color = activity)) + \n  geom_point(data = ~select(., -activity), color = \"lightgrey\") +\n  geom_point(size = 4) + \n  facet_wrap(~activity, labeller = label_both) +\n  guides(color = \"none\") + \n  colorspace::scale_color_discrete_qualitative()\n\ngfly\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n125 fruitflies were divided randomly into 5 groups of 25 each.\nThe response was the longevity of the fruitfly in days.\nOne group was kept solitary (“isolated”).\n\nAnother was kept individually with a virgin female each day (“low”).\nAnother group was given 8 virgin females per day (“high”).\nAs an additional control the fourth and fifth groups were kept with one (“one”) or eight (“many”) pregnant females per day.\nPregnant fruitflies will not mate.\nThe thorax length of each male was measured as this was known to affect longevity.\nOne observation in the many group has been lost."
+  },
+  {
+    "objectID": "slides/slide1.html#linear-model-1",
+    "href": "slides/slide1.html#linear-model-1",
+    "title": "Modelling for binary or proportion responses",
+    "section": "Linear model 1",
+    "text": "Linear model 1\nlm(longevity ~ thorax + activity + thorax:activity)\n\\texttt{longevity}_i = \\beta_0 + \\beta_1\\texttt{thorax}_i + \\beta_{2,T(i)} + \\beta_{3,T(i)}\\texttt{thorax}_i + \\epsilon_i\n\n\n\nwhere\n\n\\beta_0 is the overall intercept,\n\\beta_1 is the effect of thorax length on longevity,\n\\beta_{2,T(i)} is the effect of activity on longevity,\nT(i) maps to the activity type of the i-th observation,\n\\beta_{3,T(i)} is the interaction effect between thorax length and activity type, and\n\\epsilon_i is the error term.\n\n\nNote that:\n\nWe assume \\epsilon_i  \\stackrel{iid}{\\sim} N(0, \\sigma^2).\nWe use the constraints: \\beta_{2,1} = 0 and \\beta_{3,1} = 0.\n\\beta_0 + \\beta_{2,k} is the intercept for the k-th activity type.\n\\beta_1 + \\beta_{3,k} is the slope for the k-th activity type.\n\n\n\n\n\n\n\n\nCode\ngfly + geom_smooth(method = \"lm\", se = FALSE, color = \"black\", linewidth = 2)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nCode\nflyfit1 &lt;- lm(longevity ~ thorax + activity + thorax:activity, data = faraway::fruitfly) |&gt; \n  broom::augment() |&gt; \n  mutate(activity = factor(activity, levels = c(\"isolated\", \"low\", \"high\", \"one\", \"many\"))) \ngres &lt;- flyfit1 |&gt; \n  ggplot(aes(.fitted, .resid, color = activity)) + \n  geom_point(data = ~select(., -activity), color = \"lightgrey\") + \n  geom_point(size = 4) +\n  #facet_wrap(~activity, labeller = label_both) +\n  guides(color = \"none\") +\n  geom_hline(yintercept = 0, color = \"black\", linetype = 2) +\n  colorspace::scale_color_discrete_qualitative() +\n  labs(x = \"Fitted values\", y = \"Residual\", title = \"Residual vs fitted values plot\")\n\ngres"
+  },
+  {
+    "objectID": "slides/slide1.html#linear-model-2",
+    "href": "slides/slide1.html#linear-model-2",
+    "title": "Modelling for binary or proportion responses",
+    "section": "Linear model 2",
+    "text": "Linear model 2\nlm(log10(longevity) ~ thorax + activity + thorax:activity)\n\\log_{10}(\\texttt{longevity}_i) = \\beta_0 + \\beta_1\\texttt{thorax}_i + \\beta_{2,T(i)} + \\beta_{3,T(i)}\\texttt{thorax}_i + \\epsilon_i\n\n\n\n\nCode\ngfly + geom_smooth(method = \"lm\", se = FALSE, color = \"black\", linewidth = 2) +\n  scale_y_log10()\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nCode\nflyfit2 &lt;- lm(log10(longevity) ~ thorax + activity + thorax:activity, data = faraway::fruitfly) |&gt; \n  broom::augment() |&gt; \n  mutate(.fitted = 10^.fitted) |&gt; \n  mutate(activity = factor(activity, levels = c(\"isolated\", \"low\", \"high\", \"one\", \"many\"))) \n\ngres %+% flyfit2"
+  },
+  {
+    "objectID": "slides/slide1.html#linear-model-3",
+    "href": "slides/slide1.html#linear-model-3",
+    "title": "Modelling for binary or proportion responses",
+    "section": "Linear model 3",
+    "text": "Linear model 3\nlm(log10(longevity) ~ thorax + activity)\n\\log_{10}(\\texttt{longevity}_i) = \\beta_0 + \\beta_1\\texttt{thorax}_i + \\beta_{2,T(i)} + \\epsilon_i\n\n\nfit1 &lt;- lm(log10(longevity) ~ thorax + activity, data = faraway::fruitfly)\nfit2 &lt;- lm(log10(longevity) ~ thorax + activity + thorax:activity, data = faraway::fruitfly)\nanova(fit1, fit2)\n\nAnalysis of Variance Table\n\nModel 1: log10(longevity) ~ thorax + activity\nModel 2: log10(longevity) ~ thorax + activity + thorax:activity\n  Res.Df     RSS Df Sum of Sq      F Pr(&gt;F)\n1    118 0.83011                           \n2    114 0.78511  4  0.044997 1.6334 0.1706\n\n\n\n\n\n\n\nCode\nfit &lt;- lm(log10(longevity) ~ -1 + thorax + activity, data = faraway::fruitfly)\nest &lt;- tibble(slope = coef(fit)[1], \n              intercept = coef(fit)[-1],\n              activity = str_remove(names(coef(fit)[-1]), \"^activity\")) |&gt; \nmutate(activity = factor(activity, levels = c(\"isolated\", \"low\", \"high\", \"one\", \"many\"))) \ngfly + geom_abline(aes(slope = slope, intercept = intercept), color = \"black\", linewidth = 2, data = est) + scale_y_log10()\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nCode\ngres %+% (broom::augment(fit) |&gt; \n  mutate(activity = factor(activity, levels = c(\"isolated\", \"low\", \"high\", \"one\", \"many\"))))"
+  },
+  {
+    "objectID": "slides/slide1.html#multiple-linear-regression",
+    "href": "slides/slide1.html#multiple-linear-regression",
+    "title": "Modelling for binary or proportion responses",
+    "section": "Multiple linear regression",
+    "text": "Multiple linear regression\nFor i = 1, ..., n, the linear regression model is given by\ny_i = \\beta_0 + \\beta_1x_{i1} + \\beta_2x_{i2} + \\cdots + \\beta_kx_{ik} + \\epsilon_i=  \\sum_{j=0}^{k}\\beta_jx_{ij} + \\epsilon_i\nwhere\n\ny_i is the response variable,\nx_{ij} is the j-th predictor variable and x_{0j} = 1 for all j,\n\\beta_j is the coefficient for the j-th predictor variable,\n\\epsilon_i is the error term, and\nwe assume that \\epsilon_i \\stackrel{iid}{\\sim} N(0, \\sigma^2)."
+  },
+  {
+    "objectID": "slides/slide1.html#case-study-breast-cancer-diagnosis",
+    "href": "slides/slide1.html#case-study-breast-cancer-diagnosis",
+    "title": "Modelling for binary or proportion responses",
+    "section": "Case study: Breast cancer diagnosis",
+    "text": "Case study: Breast cancer diagnosis\nAim: diagnose breast cancer from features of a digitized image of breast mass sample\n\n\n\n\nCode\nlibrary(tidyverse)\ncancer &lt;- read_csv(\"https://emitanaka.org/iml/data/cancer.csv\") |&gt; \n  mutate(diagnosis_malignant = ifelse(diagnosis==\"M\", 1, 0),\n         diagnosis = factor(diagnosis, levels = c(\"B\", \"M\"))) |&gt; \n  janitor::clean_names()\n\ncancer |&gt; \n  select(diagnosis, radius_mean, concave_points_mean) |&gt; \n  GGally::ggpairs(mapping = aes(color = diagnosis)) \n\n\n\n\n\n\n\n\n\n\n\nThe Wisconsin breast cancer data set contains data of features of digitized image of a breast mass sample.\n\n\n\n\n\nThe image features include the average radius (radius_mean) and the average concave portion of the contour (concave_points_mean).\nThe breast mass sample was diagnosed as malignant (M) or benign (B).\n\n\n\n\n\nImage from Street, Wolberg, and Mangasarian (1993) Nuclear feature extraction for breast tumor diagnosis. Biomedical Image Processing and Biomedical Visualization vol 1905 pp/ 861–870. doi:10.1117/12.148698."
+  },
+  {
+    "objectID": "slides/slide1.html#binary-response",
+    "href": "slides/slide1.html#binary-response",
+    "title": "Modelling for binary or proportion responses",
+    "section": "Binary response",
+    "text": "Binary response\n\n\n\n\nCode\ncancer |&gt; \n  count(diagnosis) |&gt; \n  ggplot(aes(diagnosis, n)) +\n  geom_col(aes(fill = diagnosis)) +\n  scale_y_continuous(expand = expansion(add = c(0, 0.1))) +\n  labs(y = \"Count\") +\n  guides(fill = \"none\")\n\n\n\n\n\n\n\n\n\n\n\nThe outcome of interest is a binary response (M or B).\nWe can convert it to a numeric value such that M = 1 and B = 0.\n\n\n\nShould we model this assuming that using a linear model?\n\n\n\n\nCode\ncancer |&gt; \n  ggplot(aes(radius_mean, diagnosis_malignant)) +\n  geom_point(alpha = 0.25, size = 2, aes(color = diagnosis)) +\n  geom_smooth(method = lm,\n              formula = y ~ x,\n              se = FALSE,\n              color = \"black\",\n              linewidth = 1.2) +\n  scale_y_continuous(breaks = c(0, 1)) +\n  labs(y = \"diagnosis\") +\n  guides(color = \"none\")"
+  },
+  {
+    "objectID": "slides/slide1.html#propensity-score",
+    "href": "slides/slide1.html#propensity-score",
+    "title": "Modelling for binary or proportion responses",
+    "section": "Propensity score",
+    "text": "Propensity score\n\n\nSuppose we consider y_i as a binary category: y_i = \\begin{cases}\n     1 & \\text{ if $i$-th observation is in class 1}\\\\\n     0 & \\text{ if $i$-th observation is in class 2}\\\\\n\\end{cases}\nInstead of modelling the outcome directly, we consider the conditional probability, say P(y_i = 1|\\boldsymbol{x}_i) where \\boldsymbol{x}_i = (x_{i1}, x_{i2}, \\ldots, x_{ik}), also known as the propensity score of class 1.\nThe propensity score of class 2 is P(y_i=0|\\boldsymbol{x}_i) = 1 - P(y_i=1|\\boldsymbol{x}_i)."
+  },
+  {
+    "objectID": "slides/slide1.html#odds-of-an-event",
+    "href": "slides/slide1.html#odds-of-an-event",
+    "title": "Modelling for binary or proportion responses",
+    "section": "Odds of an event",
+    "text": "Odds of an event\n\nThe odds of an event is defined as \\text{odds} = \\color{#BE830E}{\\frac{p}{1-p}} = \\frac{\\text{probability that the event will occur}}{\\text{probability that the event will not occur}}, where p is the probability of an event occuring.\n\n\n\nThe ratio of the propensity scores of the two classes is the odds of being in class 1:\n\n\\text{odds} = \\frac{P(y_i=1|\\boldsymbol{x}_i)}{1-P(y_i=1|\\boldsymbol{x}_i)}."
+  },
+  {
+    "objectID": "slides/slide1.html#logistic-function",
+    "href": "slides/slide1.html#logistic-function",
+    "title": "Modelling for binary or proportion responses",
+    "section": "Logistic function",
+    "text": "Logistic function\n\nThe logistic function:\n\n\n\ng(z) = \\frac{e^z}{1+e^z} = \\frac{1}{1+e^{-z}}\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNotice that 0 &lt; g(z) &lt; 1 for all finite values of z."
+  },
+  {
+    "objectID": "slides/slide1.html#logit-function",
+    "href": "slides/slide1.html#logit-function",
+    "title": "Modelling for binary or proportion responses",
+    "section": "Logit function",
+    "text": "Logit function\n\nThe logit function:\n\n\n\nf(p) = \\log_e \\left(\\frac{p}{1- p}\\right)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHere -\\infty &lt; f(p) &lt; \\infty for all p \\in (0, 1).\n\n\n\nNote that logit and logistic functions are inverse functions of one another, i.e. f(g(z)) = z and g(f(p)) = p."
+  },
+  {
+    "objectID": "slides/slide1.html#binomial-distribution",
+    "href": "slides/slide1.html#binomial-distribution",
+    "title": "Modelling for binary or proportion responses",
+    "section": "Binomial distribution",
+    "text": "Binomial distribution\n\n\n\nSuppose Y is binomially distributed B(n, p).\nThis means that there were n trials, each with a probability p of success, and Y is the number of successes out of n.\nThe expected value of Y is E(Y) = np.\nIf n=1, Y can only take the values 0 or 1 and the distribution is referred to as Benoulli distribution."
+  },
+  {
+    "objectID": "slides/slide1.html#logistic-regression-for-binary-response",
+    "href": "slides/slide1.html#logistic-regression-for-binary-response",
+    "title": "Modelling for binary or proportion responses",
+    "section": "Logistic regression for binary response",
+    "text": "Logistic regression for binary response\n\nLogistic regression is a generalised linear model where it models the log odds as a linear combination of predictors: \\text{logit}(p_i) = \\log_e \\left(\\frac{p_i}{1-p_i}\\right) = \\sum_{j=0}^p\\beta_jx_{ij}, \\quad p_i = \\frac{e^{\\sum_{j=0}^p\\beta_jx_{ij}}}{1+e^{\\sum_{j=0}^p\\beta_jx_{ij}}}\nWe assume that Y_i \\sim B(1, p_i) where p_i = P(Y_i=1|\\boldsymbol{x}_i).\nNote that E(Y_i|\\boldsymbol{x}_i) = p_i."
+  },
+  {
+    "objectID": "slides/slide1.html#logistic-regression-with-a-binary-response",
+    "href": "slides/slide1.html#logistic-regression-with-a-binary-response",
+    "title": "Modelling for binary or proportion responses",
+    "section": " Logistic regression with a binary response",
+    "text": "Logistic regression with a binary response\n\nWhen response is a binary value (0 or 1):\n\n\nstr(cancer$diagnosis_malignant)\n\n num [1:568] 1 1 1 1 1 1 1 1 1 1 ...\n\ntable(cancer$diagnosis_malignant)\n\n\n  0   1 \n356 212 \n\n\n\n\nFit the logistic model in R as\n\n\ncancer_fit &lt;- glm(diagnosis_malignant ~ radius_mean + concave_points_mean, \n                  data = cancer, \n                  family = binomial(link = \"logit\"))\n\ncoef(cancer_fit)\n\n        (Intercept)         radius_mean concave_points_mean \n        -13.6987232           0.6389131          84.2228367"
+  },
+  {
+    "objectID": "slides/slide1.html#logistic-regression-with-a-factor-response",
+    "href": "slides/slide1.html#logistic-regression-with-a-factor-response",
+    "title": "Modelling for binary or proportion responses",
+    "section": " Logistic regression with a factor response",
+    "text": "Logistic regression with a factor response\n\nWhen response is a factor:\n\n\nstr(cancer$diagnosis)\n\n Factor w/ 2 levels \"B\",\"M\": 2 2 2 2 2 2 2 2 2 2 ...\n\n\n\n\n Watch out for the order of the levels!\n\n\ncancer_fit2 &lt;- glm(diagnosis ~ radius_mean + concave_points_mean, \n                   data = cancer, \n                   family = binomial(link = \"logit\"))\ncoef(cancer_fit2)\n\n        (Intercept)         radius_mean concave_points_mean \n        -13.6987232           0.6389131          84.2228367 \n\n\n\n\n\ncancer_fit3 &lt;- glm(diagnosis ~ radius_mean + concave_points_mean, \n                   data = cancer |&gt; mutate(diagnosis = factor(diagnosis, levels = c(\"M\", \"B\"))),  \n                   family = binomial(link = \"logit\"))\ncoef(cancer_fit3)\n\n        (Intercept)         radius_mean concave_points_mean \n         13.6987232          -0.6389131         -84.2228367"
+  },
+  {
+    "objectID": "slides/slide1.html#interpretation-of-logistic-regression",
+    "href": "slides/slide1.html#interpretation-of-logistic-regression",
+    "title": "Modelling for binary or proportion responses",
+    "section": "Interpretation of logistic regression",
+    "text": "Interpretation of logistic regression\n\nbroom::tidy(cancer_fit) # coefficients\n\n# A tibble: 3 × 5\n  term                estimate std.error statistic  p.value\n  &lt;chr&gt;                  &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;\n1 (Intercept)          -13.7       1.57      -8.70 3.20e-18\n2 radius_mean            0.639     0.108      5.94 2.91e- 9\n3 concave_points_mean   84.2       9.96       8.46 2.75e-17\n\n\n\nIncreasing radius_mean by one unit changes the log odds by \\hat{\\beta}_1, 0.639, or equivalently it multiplies the odds by e^{\\hat\\beta_1}, 1.894, provided concave_points_mean is held fixed."
+  },
+  {
+    "objectID": "slides/slide1.html#predicting-from-logistic-regression",
+    "href": "slides/slide1.html#predicting-from-logistic-regression",
+    "title": "Modelling for binary or proportion responses",
+    "section": "Predicting from logistic regression",
+    "text": "Predicting from logistic regression\n\ndat &lt;- data.frame(radius_mean = 15, concave_points_mean = 0.05)\nbroom::augment(cancer_fit, \n               newdata = dat,  \n               type.predict = \"response\", \n               se_fit = TRUE)\n\n# A tibble: 1 × 4\n  radius_mean concave_points_mean .fitted .se.fit\n        &lt;dbl&gt;               &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;\n1          15                0.05   0.524  0.0516\n\n\n\n\nYou can also get the prediction with:\n\n\npredict(cancer_fit, newdata = dat, type = \"response\", se.fit = TRUE)\n\n$fit\n        1 \n0.5240103 \n\n$se.fit\n         1 \n0.05158637 \n\n$residual.scale\n[1] 1\n\n\n\nBy hand\n\\hat{\\eta} = -13.699 + 0.639\\times 15 + 84.223\\times 0.05 \\approx 0.0961\n\\dfrac{\\exp(0.0961)}{1 + \\exp(0.0961)} = 0.524"
+  },
+  {
+    "objectID": "slides/slide1.html#logistic-regression-is-a-linear-classifier",
+    "href": "slides/slide1.html#logistic-regression-is-a-linear-classifier",
+    "title": "Modelling for binary or proportion responses",
+    "section": "Logistic regression is a linear classifier",
+    "text": "Logistic regression is a linear classifier\n\nWe choose the threshold q such that P(y_i=1|\\boldsymbol{x}_i) \\ge q is considered to be in class 1.\nThe separation in class is a point for one variable, line for two variables and a hyperplane for more than two variables."
+  },
+  {
+    "objectID": "slides/slide1.html#case-study-survival-on-titanic",
+    "href": "slides/slide1.html#case-study-survival-on-titanic",
+    "title": "Modelling for binary or proportion responses",
+    "section": "Case study: survival on titanic",
+    "text": "Case study: survival on titanic\n\nResponse does not have to be a binary response to fit a logistic regression.\nObservations may be count (out of fixed trials) as below.\n\n\n\n\n\nCode\ntitanic &lt;- datasets::Titanic |&gt; \n  as.data.frame() |&gt;  \n  pivot_wider(c(Class, Sex, Age), \n              names_from = Survived, \n              values_from = Freq, \n              names_prefix = \"Survived_\") |&gt; \n  filter(Survived_No &gt; 0 | Survived_Yes &gt; 0) |&gt; \n  mutate(Proportion_Survived = Survived_Yes / (Survived_Yes + Survived_No))\n\n\n\n\n\n\n\nClass\nSex\nAge\nSurvived_No\nSurvived_Yes\nProportion_Survived\n\n\n\n\n1st\nMale\nChild\n0\n5\n1.0000000\n\n\n2nd\nMale\nChild\n0\n11\n1.0000000\n\n\n3rd\nMale\nChild\n35\n13\n0.2708333\n\n\n1st\nFemale\nChild\n0\n1\n1.0000000\n\n\n2nd\nFemale\nChild\n0\n13\n1.0000000\n\n\n3rd\nFemale\nChild\n17\n14\n0.4516129\n\n\n1st\nMale\nAdult\n118\n57\n0.3257143\n\n\n2nd\nMale\nAdult\n154\n14\n0.0833333\n\n\n3rd\nMale\nAdult\n387\n75\n0.1623377\n\n\nCrew\nMale\nAdult\n670\n192\n0.2227378\n\n\n1st\nFemale\nAdult\n4\n140\n0.9722222\n\n\n2nd\nFemale\nAdult\n13\n80\n0.8602151\n\n\n3rd\nFemale\nAdult\n89\n76\n0.4606061\n\n\nCrew\nFemale\nAdult\n3\n20\n0.8695652\n\n\n\n\n\n\n\n\nCode\ndatasets::Titanic |&gt;  \n  as.data.frame() |&gt; \n  mutate(Survived = factor(Survived, levels = c(\"Yes\", \"No\"))) |&gt; \n  ggplot(aes(Sex, Freq)) +\n  geom_col(aes(fill = Survived, group = Age), position = \"fill\") +\n  facet_grid(Class ~ Age) +\n  labs(y = \"Proportion\")  +\n  theme(legend.position = \"top\")"
+  },
+  {
+    "objectID": "slides/slide1.html#logistic-regression-with-count-responses",
+    "href": "slides/slide1.html#logistic-regression-with-count-responses",
+    "title": "Modelling for binary or proportion responses",
+    "section": "Logistic regression with count responses",
+    "text": "Logistic regression with count responses\n\n\ntitanic_fit &lt;- glm(cbind(Survived_Yes, Survived_No) ~ Class + Age + Sex,\n                   data = titanic, \n                   family = binomial(link = \"logit\"))\n\nbroom::tidy(titanic_fit)\n\n# A tibble: 6 × 5\n  term        estimate std.error statistic  p.value\n  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;\n1 (Intercept)    0.685     0.273      2.51 1.21e- 2\n2 Class2nd      -1.02      0.196     -5.19 2.05e- 7\n3 Class3rd      -1.78      0.172    -10.4  3.69e-25\n4 ClassCrew     -0.858     0.157     -5.45 5.00e- 8\n5 AgeAdult      -1.06      0.244     -4.35 1.36e- 5\n6 SexFemale      2.42      0.140     17.2  1.43e-66"
+  },
+  {
+    "objectID": "slides/slide1.html#logistic-regression-with-proportion-responses",
+    "href": "slides/slide1.html#logistic-regression-with-proportion-responses",
+    "title": "Modelling for binary or proportion responses",
+    "section": "Logistic regression with proportion responses",
+    "text": "Logistic regression with proportion responses\n\nYou need the total cases for each proportion to fit the model.\nThe exception is if the total cases are the same for all observations.\n⚠️ Below model would be wrong to use!\n\n\n\ntitanic_fit &lt;- glm(Proportion_Survived ~ Class + Age + Sex,\n                   data = titanic, \n                   family = binomial(link = \"logit\"))\n\nbroom::tidy(titanic_fit)\n\n# A tibble: 6 × 5\n  term        estimate std.error statistic p.value\n  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;\n1 (Intercept)    2.23       2.04     1.09    0.276\n2 Class2nd      -0.752      2.09    -0.360   0.719\n3 Class3rd      -3.36       2.30    -1.46    0.144\n4 ClassCrew     -0.914      2.34    -0.391   0.696\n5 AgeAdult      -2.28       1.81    -1.26    0.208\n6 SexFemale      2.46       1.65     1.49    0.136"
+  },
+  {
+    "objectID": "slides/slide1.html#summary",
+    "href": "slides/slide1.html#summary",
+    "title": "Modelling for binary or proportion responses",
+    "section": "Summary",
+    "text": "Summary\n\nOdds ratio is the ratio of the odds of the event happening in one group to the odds of the event happening in another group.\nLogistic regression can be used to model binary or proportion (out of total cases) responses.\nLogistic regression is a linear classifier so it doesn’t work well where the separation between classes are non-linear.\nUse glm(y ~ x, family = binomial(link = \"logit\")) to fit a logistic regression model.\n\n\n\n\n\nanu-bdsi.github.io/workshop-GLM/"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Generalised Linear Models",
+    "section": "",
+    "text": "This is a training workshop for BIOL8001 students but extended to also staff and students affiliated with the Australian National University (ANU) offered by the ANU Biological Data Science Institute (BDSI).\nThe workshop aims to teach generalised linear models for modeling data with non-normal distributions. Participants are expected to have a basic understanding of R and linear models prior to the start of the workshop.\nThis website is brought to you by the ANU Biological Data Science Institute."
+  },
+  {
+    "objectID": "index.html#welcome",
+    "href": "index.html#welcome",
+    "title": "Generalised Linear Models",
+    "section": "",
+    "text": "This is a training workshop for BIOL8001 students but extended to also staff and students affiliated with the Australian National University (ANU) offered by the ANU Biological Data Science Institute (BDSI).\nThe workshop aims to teach generalised linear models for modeling data with non-normal distributions. Participants are expected to have a basic understanding of R and linear models prior to the start of the workshop."
+  },
+  {
+    "objectID": "index.html#learning-objectives",
+    "href": "index.html#learning-objectives",
+    "title": "Generalised Linear Models",
+    "section": "🎯 Learning objectives",
+    "text": "🎯 Learning objectives\nUpon completion of this workshop, participants should be able to:\n\nUnderstand and apply generalized linear models (GLMs) for modeling data with non-normal distributions\nApply GLMs effectively to model binary outcomes (logistic regression) and count data (Poisson or negative binomial regression).\nFit, interpret, and assess the adequacy of GLMs"
+  },
+  {
+    "objectID": "index.html#preparation",
+    "href": "index.html#preparation",
+    "title": "Generalised Linear Models",
+    "section": "🔧 Preparation",
+    "text": "🔧 Preparation\nPlease ensure that you download and install\n\nthe latest version of R,\nthe latest version of RStudio Desktop or Positron, and\nthe following packages by opening RStudio Desktop or Positron, then copy and paste the command below in the Console section, pushing Enter after pasting.\n\ninstall.packages(c(\"tidyverse\", \"broom\", \"faraway\", \"GLMsData\"))\n\nFor Window users, you may need to install Rtools to install R packages."
+  },
+  {
+    "objectID": "index.html#slides",
+    "href": "index.html#slides",
+    "title": "Generalised Linear Models",
+    "section": "📚 Slides",
+    "text": "📚 Slides\n\n  \n  \n  \n    \n      \n        image/svg+xml\n        \n      \n    \n  \n  \n    \n      \n      \n      \n        \n        \n          \n        \n      \n      \n        \n        \n          \n          \n        \n        \n      \n      \n        \n        \n      \n      \n        \n        \n      \n      \n        \n        \n      \n      \n        \n        \n          \n          \n        \n      \n      \n        \n        \n      \n    \n  \n\nClick on the heading to open the slides in a new tab, or click on details to see the slides on this page.\n\nModelling for binary or proportion responses\n\n\n\n Self test with Exercise 1\n\n\n\nModelling for count responses\n\n\n\n Self test with Exercise 2\n\n\n\nGeneralised linear models\n\n\n\n Self test with Exercise 3"
+  },
+  {
+    "objectID": "index.html#resources",
+    "href": "index.html#resources",
+    "title": "Generalised Linear Models",
+    "section": "📑 Resources",
+    "text": "📑 Resources\n\nFaraway (2009) Linear Models with R (for review of linear models)\nChapters 2, 3, and 5 from Faraway (2016) Extending the Linear Model with R. 2nd Edition."
+  },
+  {
+    "objectID": "index.html#self-paced-exercises",
+    "href": "index.html#self-paced-exercises",
+    "title": "Generalised Linear Models",
+    "section": "🏋️‍♀️ Self-paced exercises",
+    "text": "🏋️‍♀️ Self-paced exercises\nThe following self-paced exercises are designed to check your understanding of the material. After completing each exercise, review your answers and assess your grasp of the concepts.\n\n\n\n\n\n\nReflect on learning objectives\n\n\n\nYou should be able to:\n\n\n Understand and apply generalized linear models (GLMs) for modeling data with non-normal distributions\n\n\n Apply GLMs effectively to model binary outcomes (logistic regression) and count data (Poisson or negative binomial regression).\n\n\n Fit, interpret, and assess the adequacy of GLMs\n\n\n\n\n\nExercise 1Exercise 2Exercise 3\n\n\nQuestion: What might affect the chance of getting heart disease?\n\nThe data from Western Collaborative Group Study contains 3154 healthy men, aged from 39 to 59, from the San Francisco area.\nAt the start of the study, all were free of heart disease.\nEight and a half years later, the study recorded whether these men now suffered from coronary heart disease (chd).\nOther recorded variables that might be related to the chance of developing this disease are:\n\nage - age in years\nheight - height in inches\nweight - weight in pounds\nsdp - systolic blood pressure in mm Hg\ndbp - diastolic blood pressure in mm Hg\nchol - fasting serum cholesterol in mm %\nbehave - behaviour type (A1, A2, B3, B4)\ncigs - number of cigarettes smoked per day\ndibep - behaviour type (A = Agressive, P = Passive)\ntypechd - type of coronary heart disease (angina, infdeath, none, or silent)\ntimechd - time of coronary heart disease or end of follow-up\narcus - arcus senilis (absent or present)\n\n\n\nfaraway::wcgs |&gt; \n  select(where(is.numeric), chd) |&gt; \n  pivot_longer(cols = -chd) |&gt; \n  ggplot(aes(x = chd, y = value)) + geom_violin() + geom_boxplot(width = 0.1) + \n  facet_wrap(~name, scales = \"free\") +\n  labs(x = \"Coronary heart disease\", y = \"\")\n\nWarning: Removed 12 rows containing non-finite outside the scale range\n(`stat_ydensity()`).\n\n\nWarning: Removed 12 rows containing non-finite outside the scale range\n(`stat_boxplot()`).\n\n\n\n\n\n\n\n\nfaraway::wcgs |&gt; \n  select(where(is.factor), where(is.character), chd) |&gt; \n  pivot_longer(cols = -chd) |&gt; \n  count(chd, value, name)  |&gt; \n  ggplot(aes(x = value, y = n)) + \n  geom_col(aes(fill = chd), position = \"fill\") + \n  facet_wrap(~name, scales = \"free\") +\n  colorspace::scale_fill_discrete_qualitative() +\n  labs(x = \"Value\", y = \"Proportion\") +\n  theme(legend.position = \"top\") +\n  scale_y_continuous(expand = expansion(add = c(0, 0.1)))\n\n\n\n\n\n\n\n\n\nfaraway::wcgs |&gt; \n  count(chd) |&gt; \n  ggplot(aes(chd, n)) + geom_col(aes(fill = chd)) +\n  guides(fill = \"none\") +\n  colorspace::scale_fill_discrete_qualitative() +\n  scale_y_continuous(expand = expansion(add = c(0, 0.1))) +\n  labs(y = \"Count\")\n\n\n\n\n\n\n\nfaraway::wcgs |&gt; \n  mutate(chd_binary = as.numeric(chd) - 1) |&gt; \n  ggplot(aes(weight, chd_binary)) +\n  geom_point(alpha = 0.3) +\n  geom_smooth(method = lm, se = FALSE)\n\n`geom_smooth()` using formula = 'y ~ x'"
+  },
+  {
+    "objectID": "ad.html",
+    "href": "ad.html",
+    "title": "ANU BDSI",
+    "section": "",
+    "text": "The workshop aims to teach generalised linear models for modeling data with non-normal distributions. Participants are expected to have a basic understanding of R and linear models prior to the start of the workshop.\nLearning objectives:\n\nUnderstand and apply generalized linear models (GLMs) for modeling data with non-normal distributions\nApply GLMs effectively to model binary outcomes (logistic regression) and count data (Poisson or negative binomial regression).\nFit, interpret, and assess the adequacy of GLMs\n\nThe workshop is a total of 3 hours (in-person only delivery) on the dates and times specified below.\n\nTue 24 September 2024 1-2pm\nFri 27 September 2024 12-2pm\n\nThe expression of interest (EOI) is now open for ANU staff or student here. The EOI closes on Wednesday 11th September 2024. The EOI is not a guarantee of registration. We have limited space and will contact you separately to confirm registration by Friday 13th September 2024. Preference is given to those who are ANU Master or Honours students. Please only submit your EOI if you can attend the full workshop.\nhttps://forms.office.com/Pages/ResponsePage.aspx?id=XHJ941yrJEaa5fBTPkhkN5BTqudNKKdBqhKF4XvgPSVUNE5SREQ2V09HNkxNRE5LSFYySTRDSE5LMSQlQCN0PWcu\n\n\n\nThis website is brought to you by the ANU Biological Data Science Institute."
+  },
+  {
+    "objectID": "next-time.html",
+    "href": "next-time.html",
+    "title": "ANU BDSI",
+    "section": "",
+    "text": "This website is brought to you by the ANU Biological Data Science Institute."
+  },
+  {
+    "objectID": "slides/slide2.html#current-learning-objective",
+    "href": "slides/slide2.html#current-learning-objective",
+    "title": "Modelling for count responses",
+    "section": " Current learning objective",
+    "text": "Current learning objective\n\n\n-Understand and apply generalized linear models (GLMs) for modeling data with non-normal distributions\n\n\nApply GLMs effectively to model binary outcomes (logistic regression) and count data (Poisson or negative binomial regression).\n\n\n-Fit, interpret, and assess the adequacy of GLMs\n\n\n\n\n\n\nanu-bdsi.github.io/workshop-GLM/"
+  }
+]

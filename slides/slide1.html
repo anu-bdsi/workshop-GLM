@@ -1,0 +1,1743 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-html/tabby.min.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.5.31">
+
+  <meta name="author" content="Emi Tanaka">
+  <title>ANU BDSI – Modelling for binary or proportion responses</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../site_libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="../site_libs/revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../site_libs/revealjs/dist/theme/quarto.css">
+  <link rel="stylesheet" href="../assets/slides.css">
+  <link rel="stylesheet" href="../assets/table.css">
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css">
+  <link href="../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="../site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+
+  .callout {
+    margin-top: 1em;
+    margin-bottom: 1em;  
+    border-radius: .25rem;
+  }
+
+  .callout.callout-style-simple { 
+    padding: 0em 0.5em;
+    border-left: solid #acacac .3rem;
+    border-right: solid 1px silver;
+    border-top: solid 1px silver;
+    border-bottom: solid 1px silver;
+    display: flex;
+  }
+
+  .callout.callout-style-default {
+    border-left: solid #acacac .3rem;
+    border-right: solid 1px silver;
+    border-top: solid 1px silver;
+    border-bottom: solid 1px silver;
+  }
+
+  .callout .callout-body-container {
+    flex-grow: 1;
+  }
+
+  .callout.callout-style-simple .callout-body {
+    font-size: 1rem;
+    font-weight: 400;
+  }
+
+  .callout.callout-style-default .callout-body {
+    font-size: 0.9rem;
+    font-weight: 400;
+  }
+
+  .callout.callout-titled.callout-style-simple .callout-body {
+    margin-top: 0.2em;
+  }
+
+  .callout:not(.callout-titled) .callout-body {
+      display: flex;
+  }
+
+  .callout:not(.no-icon).callout-titled.callout-style-simple .callout-content {
+    padding-left: 1.6em;
+  }
+
+  .callout.callout-titled .callout-header {
+    padding-top: 0.2em;
+    margin-bottom: -0.2em;
+  }
+
+  .callout.callout-titled .callout-title  p {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+  }
+    
+  .callout.callout-titled.callout-style-simple .callout-content  p {
+    margin-top: 0;
+  }
+
+  .callout.callout-titled.callout-style-default .callout-content  p {
+    margin-top: 0.7em;
+  }
+
+  .callout.callout-style-simple div.callout-title {
+    border-bottom: none;
+    font-size: .9rem;
+    font-weight: 600;
+    opacity: 75%;
+  }
+
+  .callout.callout-style-default  div.callout-title {
+    border-bottom: none;
+    font-weight: 600;
+    opacity: 85%;
+    font-size: 0.9rem;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+  }
+
+  .callout.callout-style-default div.callout-content {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+  }
+
+  .callout.callout-style-simple .callout-icon::before {
+    height: 1rem;
+    width: 1rem;
+    display: inline-block;
+    content: "";
+    background-repeat: no-repeat;
+    background-size: 1rem 1rem;
+  }
+
+  .callout.callout-style-default .callout-icon::before {
+    height: 0.9rem;
+    width: 0.9rem;
+    display: inline-block;
+    content: "";
+    background-repeat: no-repeat;
+    background-size: 0.9rem 0.9rem;
+  }
+
+  .callout-title {
+    display: flex
+  }
+    
+  .callout-icon::before {
+    margin-top: 1rem;
+    padding-right: .5rem;
+  }
+
+  .callout.no-icon::before {
+    display: none !important;
+  }
+
+  .callout.callout-titled .callout-body > .callout-content > :last-child {
+    padding-bottom: 0.5rem;
+    margin-bottom: 0;
+  }
+
+  .callout.callout-titled .callout-icon::before {
+    margin-top: .5rem;
+    padding-right: .5rem;
+  }
+
+  .callout:not(.callout-titled) .callout-icon::before {
+    margin-top: 1rem;
+    padding-right: .5rem;
+  }
+
+  /* Callout Types */
+
+  div.callout-note {
+    border-left-color: #4582ec !important;
+  }
+
+  div.callout-note .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAAEU0lEQVRYCcVXTWhcVRQ+586kSUMMxkyaElstCto2SIhitS5Ek8xUKV2poatCcVHtUlFQk8mbaaziwpWgglJwVaquitBOfhQXFlqlzSJpFSpIYyXNjBNiTCck7x2/8/LeNDOZxDuEkgOXe++553zfefee+/OYLOXFk3+1LLrRdiO81yNqZ6K9cG0P3MeFaMIQjXssE8Z1JzLO9ls20MBZX7oG8w9GxB0goaPrW5aNMp1yOZIa7Wv6o2ykpLtmAPs/vrG14Z+6d4jpbSKuhdcSyq9wGMPXjonwmESXrriLzFGOdDBLB8Y6MNYBu0dRokSygMA/mrun8MGFN3behm6VVAwg4WR3i6FvYK1T7MHo9BK7ydH+1uurECoouk5MPRyVSBrBHMYwVobG2aOXM07sWrn5qgB60rc6mcwIDJtQrnrEr44kmy+UO9r0u9O5/YbkS9juQckLed3DyW2XV/qWBBB3ptvI8EUY3I9p/67OW+g967TNr3Sotn3IuVlfMLVnsBwH4fsnebJvyGm5GeIUA3jljERmrv49SizPYuq+z7c2H/jlGC+Ghhupn/hcapqmcudB9jwJ/3jvnvu6vu5lVzF1fXyZuZZ7U8nRmVzytvT+H3kilYvH09mLWrQdwFSsFEsxFVs5fK7A0g8gMZjbif4ACpKbjv7gNGaD8bUrlk8x+KRflttr22JEMRUbTUwwDQScyzPgedQHZT0xnx7ujw2jfVfExwYHwOsDTjLdJ2ebmeQIlJ7neo41s/DrsL3kl+W2lWvAga0tR3zueGr6GL78M3ifH0rGXrBC2aAR8uYcIA5gwV8zIE8onoh8u0Fca/ciF7j1uOzEnqcIm59sEXoGc0+z6+H45V1CvAvHcD7THztu669cnp+L0okAeIc6zjbM/24LgGM1gZk7jnRu1aQWoU9sfUOuhrmtaPIO3YY1KLLWZaEO5TKUbMY5zx8W9UJ6elpLwKXbsaZ4EFl7B4bMtDv0iRipKoDQT2sNQI9b1utXFdYisi+wzZ/ri/1m7QfDgEuvgUUEIJPq3DhX/5DWNqIXDOweC2wvIR90Oq3lDpdMIgD2r0dXvGdsEW5H6x6HLRJYU7C69VefO1x8Gde1ZFSJLfWS1jbCnhtOPxmpfv2LXOA2Xk2tvnwKKPFuZ/oRmwBwqRQDcKNeVQkYcOjtWVBuM/JuYw5b6isojIkYxyYAFn5K7ZBF10fea52y8QltAg6jnMqNHFBmGkQ1j+U43HMi2xMar1Nv0zGsf1s8nUsmUtPOOrbFIR8bHFDMB5zL13Gmr/kGlCkUzedTzzmzsaJXhYawnA3UmARpiYj5ooJZiUoxFRtK3X6pgNPv+IZVPcnwbOl6f+aBaO1CNvPW9n9LmCp01nuSaTRF2YxHqZ8DYQT6WsXT+RD6eUztwYLZ8rM+rcPxamv1VQzFUkzFXvkiVrySGQgJNvXHJAxiU3/NwiC03rSf05VBaPtu/Z7/B8Yn/w7eguloAAAAAElFTkSuQmCC');
+  }
+
+  div.callout-note.callout-style-default .callout-title {
+    background-color: #dae6fb
+  }
+
+  div.callout-important {
+    border-left-color: #d9534f !important;
+  }
+
+  div.callout-important .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAAEKklEQVRYCcVXTWhcVRS+575MJym48A+hSRFr00ySRQhURRfd2HYjk2SSTokuBCkU2o0LoSKKraKIBTcuFCoidGFD08nkBzdREbpQ1EDNIv8qSGMFUboImMSZd4/f9zJv8ibJMC8xJQfO3HPPPef7zrvvvnvviIkpC9nsw0UttFunbUhpFzFtarSd6WJkStVMw5xyVqYTvkwfzuf/5FgtkVoB0729j1rjXwThS7Vio+Mo6DNnvLfahoZ+i/o32lULuJ3NNiz7q6+pyAUkJaFF6JwaM2lUJlV0MlnQn5aTRbEu0SEqHUa0A4AdiGuB1kFXRfVyg5d87+Dg4DL6m2TLAub60ilj7A1Ec4odSAc8X95sHh7+ZRPCFo6Fnp7HfU/fBng/hi10CjCnWnJjsxvDNxWw0NfV6Rv5GgP3I3jGWXumdTD/3cbEOP2ZbOZp69yniG3FQ9z1jD7bnBu9Fc2tKGC2q+uAJOQHBDRiZX1x36o7fWBs7J9ownbtO+n0/qWkvW7UPIfc37WgT6ZGR++EOJyeQDSb9UB+DZ1G6DdLDzyS+b/kBCYGsYgJbSQHuThGKRcw5xdeQf8YdNHsc6ePXrlSYMBuSIAFTGAtQo+VuALo4BX83N190NWZWbynBjhOHsmNfFWLeL6v+ynsA58zDvvAC8j5PkbOcXCMg2PZFk3q8MjI7WAG/Dp9AwP7jdGBOOQkAvlFUB+irtm16I1Zw9YBcpGTGXYmk3kQIC/Cds55l+iMI3jqhjAuaoe+am2Jw5GT3Nbz3CkE12NavmzN5+erJW7046n/CH1RO/RVa8lBLozXk9uqykkGAyRXLWlLv5jyp4RFsG5vGVzpDLnIjTWgnRy2Rr+tDKvRc7Y8AyZq10jj8DqXdnIRNtFZb+t/ZRtXcDiVnzpqx8mPcDWxgARUqx0W1QB9MeUZiNrV4qP+Ehc+BpNgATsTX8ozYKL2NtFYAHc84fG7ndxUPr+AR/iQSns7uSUufAymwDOb2+NjK27lEFocm/EE2WpyIy/Hi66MWuMKJn8RvxIcj87IM5Vh9663ziW36kR0HNenXuxmfaD8JC7tfKbrhFr7LiZCrMjrzTeGx+PmkosrkNzW94ObzwocJ7A1HokLolY+AvkTiD/q1H0cN48c5EL8Crkttsa/AXQVDmutfyku0E7jShx49XqV3MFK8IryDhYVbj7Sj2P2eBxwcXoe8T8idsKKPRcnZw1b+slFTubwUwhktrfnAt7J++jwQtLZcm3sr9LQrjRzz6cfMv9aLvgmnAGvpoaGLxM4mAEaLV7iAzQ3oU0IvD5x9ix3yF2RAAuYAOO2f7PEFWCXZ4C9Pb2UsgDeVnFSpbFK7/IWu7TPTvBqzbGdCHOJQSxiEjt6IyZmxQyEJHv6xyQsYk//moVFsN2zP6fRImjfq7/n/wFDguUQFNEwugAAAABJRU5ErkJggg==');
+  }
+
+  div.callout-important.callout-style-default .callout-title {
+    background-color: #f7dddc
+  }
+
+  div.callout-warning {
+    border-left-color: #f0ad4e !important;
+  }
+
+  div.callout-warning .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAAETklEQVRYCeVWW2gcVRg+58yaTUnizqbipZeX4uWhBEniBaoUX1Ioze52t7sRq6APio9V9MEaoWlVsFasRq0gltaAPuxms8lu0gcviE/FFOstVbSIxgcv6SU7EZqmdc7v9+9mJtNks51NTUH84ed889/PP+cmxP+d5FIbMJmNbpREu4WUkiTtCicKny0l1pIKmBzovF2S+hIJHX8iEu3hZJ5lNZGqyRrGSIQpq15AzF28jgpeY6yk6GVdrfFqdrD6Iw+QlB8g0YS2g7dyQmXM/IDhBhT0UCiRf59lfqmmDvzRt6kByV/m4JjtzuaujMUM2c5Z2d6JdKrRb3K2q6mA+oYVz8JnDdKPmmNthzkAk/lN63sYPgevrguc72aZX/L9C6x09GYyxBgCX4NlvyGUHOKELlm5rXeR1kchuChJt4SSwyddZRXgvwMGvYo4QSlk3/zkHD8UHxwVJA6zjZZqP8v8kK8OWLnIZtLyCAJagYC4rTGW/9Pqj92N/c+LUaAj27movwbi19tk/whRCIE7Q9vyI6yvRpftAKVTdUjOW40X3h5OXsKCdmFcx0xlLJoSuQngnrJe7Kcjm4OMq9FlC7CMmScQANuNvjfP3PjGXDBaUQmbp296S5L4DrpbrHN1T87ZVEZVCzg1FF0Ft+dKrlLukI+/c9ENo+TvlTDbYFvuKPtQ9+l052rXrgKoWkDAFnvh0wTOmYn8R5f4k/jN/fZiCM1tQx9jQQ4ANhqG4hiL0qIFTGViG9DKB7GYzgubnpofgYRwO+DFjh0Zin2m4b/97EDkXkc+f6xYAPX0KK2I/7fUQuwzuwo/L3AkcjugPNixC8cHf0FyPjWlItmLxWw4Ou9YsQCr5fijMGoD/zpdRy95HRysyXA74MWOnscpO4j2y3HAVisw85hX5+AFBRSHt4ShfLFkIMXTqyKFc46xdzQM6XbAi702a7sy04J0+feReMFKp5q9esYLCqAZYw/k14E/xcLLsFElaornTuJB0svMuJINy8xkIYuL+xPAlWRceH6+HX7THJ0djLUom46zREu7tTkxwmf/FdOZ/sh6Q8qvEAiHpm4PJ4a/doJe0gH1t+aHRgCzOvBvJedEK5OFE5jpm4AGP2a8Dxe3gGJ/pAutug9Gp6he92CsSsWBaEcxGx0FHytmIpuqGkOpldqNYQK8cSoXvd+xLxXADw0kf6UkJNFtdo5MOgaLjiQOQHcn+A6h5NuL2s0qsC2LOM75PcF3yr5STuBSAcGG+meA14K/CI21HcS4LBT6tv0QAh8Dr5l93AhZzG5ZJ4VxAqdZUEl9z7WJ4aN+svMvwHHL21UKTd1mqvChH7/Za5xzXBBKrUcB0TQ+Ulgkfbi/H/YT5EptrGzsEK7tR1B7ln9BBwckYfMiuSqklSznIuoIIOM42MQO+QnduCoFCI0bpkzjCjddHPN/F+2Yu+sd9bKNpVwHhbS3LluK/0zgfwD0xYI5dXuzlQAAAABJRU5ErkJggg==');
+  }
+
+  div.callout-warning.callout-style-default .callout-title {
+    background-color: #fcefdc
+  }
+
+  div.callout-tip {
+    border-left-color: #02b875 !important;
+  }
+
+  div.callout-tip .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAADr0lEQVRYCe1XTWgTQRj9ZjZV8a9SPIkKgj8I1bMHsUWrqYLVg4Ue6v9BwZOxSYsIerFao7UiUryIqJcqgtpimhbBXoSCVxUFe9CTiogUrUp2Pt+3aUI2u5vdNh4dmMzOzHvvezuz8xNFM0mjnbXaNu1MvFWRXkXEyE6aYOYJpdW4IXuA4r0fo8qqSMDBU0v1HJUgVieAXxzCsdE/YJTdFcVIZQNMyhruOMJKXYFoLfIfIvVIMWdsrd+Rpd86ZmyzzjJmLStqRn0v8lzkb4rVIXvnpScOJuAn2ACC65FkPzEdEy4TPWRLJ2h7z4cArXzzaOdKlbOvKKX25Wl00jSnrwVxAg3o4dRxhO13RBSdNvH0xSARv3adTXbBdTf64IWO2vH0LT+cv4GR1DJt+DUItaQogeBX/chhbTBxEiZ6gftlDNXTrvT7co4ub5A6gp9HIcHvzTa46OS5fBeP87Qm0fQkr4FsYgVQ7Qg+ZayaDg9jhg1GkWj8RG6lkeSacrrHgDaxdoBiZPg+NXV/KifMuB6//JmYH4CntVEHy/keA6x4h4CU5oFy8GzrBS18cLJMXcljAKB6INjWsRcuZBWVaS3GDrqB7rdapVIeA+isQ57Eev9eCqzqOa81CY05VLd6SamW2wA2H3SiTbnbSxmzfp7WtKZkqy4mdyAlGx7ennghYf8voqp9cLSgKdqNfa6RdRsAAkPwRuJZNbpByn+RrJi1RXTwdi8RQF6ymDwGMAtZ6TVE+4uoKh+MYkcLsT0Hk8eAienbiGdjJHZTpmNjlbFJNKDVAp2fJlYju6IreQxQ08UJDNYdoLSl6AadO+fFuCQqVMB1NJwPm69T04Wv5WhfcWyfXQB+wXRs1pt+nCknRa0LVzSA/2B+a9+zQJadb7IyyV24YAxKp2Jqs3emZTuNnKxsah+uabKbMk7CbTgJx/zIgQYErIeTKRQ9yD9wxVof5YolPHqaWo7TD6tJlh7jQnK5z2n3+fGdggIOx2kaa2YI9QWarc5Ce1ipNWMKeSG4DysFF52KBmTNMmn5HqCFkwy34rDg05gDwgH3bBi+sgFhN/e8QvRn8kbamCOhgrZ9GJhFDgfcMHzFb6BAtjKpFhzTjwv1KCVuxHvCbsSiEz4CANnj84cwHdFXAbAOJ4LTSAawGWFn5tDhLMYz6nWeU2wJfIhmIJBefcd/A5FWQWGgrWzyORZ3Q6HuV+Jf0Bj+BTX69fm1zWgK7By1YTXchFDORywnfQ7GpzOo6S+qECrsx2ifVQAAAABJRU5ErkJggg==');
+  }
+
+  div.callout-tip.callout-style-default .callout-title {
+    background-color: #ccf1e3
+  }
+
+  div.callout-caution {
+    border-left-color: #fd7e14 !important;
+  }
+
+  div.callout-caution .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAACV0lEQVRYCdVWzWoUQRCuqp2ICBLJXgITZL1EfQDBW/bkzUMUD7klD+ATSHBEfAIfQO+iXsWDxJsHL96EHAwhgzlkg8nBg25XWb0zIb0zs9muYYWkoKeru+vn664fBqElyZNuyh167NXJ8Ut8McjbmEraKHkd7uAnAFku+VWdb3reSmRV8PKSLfZ0Gjn3a6Xlcq9YGb6tADjn+lUfTXtVmaZ1KwBIvFI11rRXlWlatwIAAv2asaa9mlB9wwygiDX26qaw1yYPzFXg2N1GgG0FMF8Oj+VIx7E/03lHx8UhvYyNZLN7BwSPgekXXLribw7w5/c8EF+DBK5idvDVYtEEwMeYefjjLAdEyQ3M9nfOkgnPTEkYU+sxMq0BxNR6jExrAI31H1rzvLEfRIdgcv1XEdj6QTQAS2wtstEALLG1yEZ3QhH6oDX7ExBSFEkFINXH98NTrme5IOaaA7kIfiu2L8A3qhH9zRbukdCqdsA98TdElyeMe5BI8Rs2xHRIsoTSSVFfCFCWGPn9XHb4cdobRIWABNf0add9jakDjQJpJ1bTXOJXnnRXHRf+dNL1ZV1MBRCXhMbaHqGI1JkKIL7+i8uffuP6wVQAzO7+qVEbF6NbS0LJureYcWXUUhH66nLR5rYmva+2tjRFtojkM2aD76HEGAD3tPtKM309FJg5j/K682ywcWJ3PASCcycH/22u+Bh7Aa0ehM2Fu4z0SAE81HF9RkB21c5bEn4Dzw+/qNOyXr3DCTQDMBOdhi4nAgiFDGCinIa2owCEChUwD8qzd03PG+qdW/4fDzjUMcE1ZpIAAAAASUVORK5CYII=');
+  }
+
+  div.callout-caution.callout-style-default .callout-title {
+    background-color: #ffe5d0
+  }
+
+  </style>
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" data-background-image="_extensions/anu-links/anu-light/logo/anu-title-slide.png" data-background-size="contain" class="quarto-title-block center">
+  <h1 class="title">Modelling for binary or proportion responses</h1>
+  <p class="subtitle"><span class="tag-workshop"><span class="tag-label">ANU BDSI<br>workshop</span> Generalised Linear Models</span></p>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Emi Tanaka 
+</div>
+        <p class="quarto-title-affiliation">
+            Biological Data Science Institute
+          </p>
+    </div>
+</div>
+
+  <p class="date">24th September 2024</p>
+</section>
+<section>
+<section id="workshop-materials" class="title-slide slide level1 center">
+<h1>Workshop materials</h1>
+<div class="box">
+<p>All materials will be hosted at<br> <a href="https://anu-bdsi.github.io/workshop-GLM/" class="f1" target="_blank">https://anu-bdsi.github.io/workshop-GLM/</a></p>
+</div>
+</section>
+<section id="case-study-longevity-of-fruitflies" class="slide level2" data-background-color="#F5EDDE">
+<h2>Case study: Longevity of fruitflies</h2>
+<p><strong>Aim</strong>: Study longevity of fruitflies depending on sexual activity and thorax length</p>
+<div class="columns f2">
+<div class="column" style="width:55%;">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a></a>gfly <span class="ot">&lt;-</span> faraway<span class="sc">::</span>fruitfly <span class="sc">|&gt;</span> </span>
+<span id="cb1-3"><a></a>  <span class="fu">mutate</span>(<span class="at">activity =</span> <span class="fu">factor</span>(activity, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"isolated"</span>, <span class="st">"low"</span>, <span class="st">"high"</span>, <span class="st">"one"</span>, <span class="st">"many"</span>))) <span class="sc">|&gt;</span> </span>
+<span id="cb1-4"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> thorax, <span class="at">y =</span> longevity, <span class="at">color =</span> activity)) <span class="sc">+</span> </span>
+<span id="cb1-5"><a></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> <span class="sc">~</span><span class="fu">select</span>(., <span class="sc">-</span>activity), <span class="at">color =</span> <span class="st">"lightgrey"</span>) <span class="sc">+</span></span>
+<span id="cb1-6"><a></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">4</span>) <span class="sc">+</span> </span>
+<span id="cb1-7"><a></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>activity, <span class="at">labeller =</span> label_both) <span class="sc">+</span></span>
+<span id="cb1-8"><a></a>  <span class="fu">guides</span>(<span class="at">color =</span> <span class="st">"none"</span>) <span class="sc">+</span> </span>
+<span id="cb1-9"><a></a>  colorspace<span class="sc">::</span><span class="fu">scale_color_discrete_qualitative</span>()</span>
+<span id="cb1-10"><a></a></span>
+<span id="cb1-11"><a></a>gfly</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-fruitfly" class="quarto-figure quarto-figure-center quarto-float" width="1152">
+<figure class="quarto-float quarto-float-fig">
+<div aria-describedby="fig-fruitfly-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img data-src="slide1_files/figure-revealjs/fig-fruitfly-1.png" id="fig-fruitfly" width="1152">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-fruitfly-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="f2 column" style="width:45%;">
+<ul>
+<li>125 fruitflies were divided randomly into 5 groups of 25 each.</li>
+<li>The response was the longevity of the fruitfly in days.</li>
+<li>One group was kept solitary (<span style="color:#E16A86">“isolated”</span>).<br>
+</li>
+<li>Another was kept individually with a virgin female each day (<span style="color:#AA9000">“low”</span>).</li>
+<li>Another group was given 8 virgin females per day (<span style="color:#00AA5A">“high”</span>).</li>
+<li>As an additional control the fourth and fifth groups were kept with one (<span style="color:#00A6CA">“one”</span>) or eight (<span style="color:#B675E0">“many”</span>) pregnant females per day.</li>
+<li>Pregnant fruitflies will not mate.</li>
+<li>The thorax length of each male was measured as this was known to affect longevity.</li>
+<li>One observation in the many group has been lost.</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="linear-model-1" class="slide level2">
+<h2>Linear model 1</h2>
+<p><code>lm(longevity ~ thorax + activity + thorax:activity)</code></p>
+<p><span class="math inline">\texttt{longevity}_i = \beta_0 + \beta_1\texttt{thorax}_i + \beta_{2,T(i)} + \beta_{3,T(i)}\texttt{thorax}_i + \epsilon_i</span></p>
+<details class="f2">
+<div class="columns f2">
+<div class="column" style="width:50%;">
+<p>where</p>
+<ul>
+<li><span class="math inline">\beta_0</span> is the overall intercept,</li>
+<li><span class="math inline">\beta_1</span> is the effect of thorax length on longevity,</li>
+<li><span class="math inline">\beta_{2,T(i)}</span> is the effect of activity on longevity,</li>
+<li><span class="math inline">T(i)</span> maps to the activity type of the <span class="math inline">i</span>-th observation,</li>
+<li><span class="math inline">\beta_{3,T(i)}</span> is the interaction effect between thorax length and activity type, and</li>
+<li><span class="math inline">\epsilon_i</span> is the error term.</li>
+</ul>
+</div><div class="column" style="width:50%;">
+<p>Note that:</p>
+<ul>
+<li>We assume <span class="math inline">\epsilon_i  \stackrel{iid}{\sim} N(0, \sigma^2)</span>.</li>
+<li>We use the constraints: <span class="math inline">\beta_{2,1} = 0</span> and <span class="math inline">\beta_{3,1} = 0</span>.</li>
+<li><span class="math inline">\beta_0 + \beta_{2,k}</span> is the intercept for the <span class="math inline">k</span>-th activity type.</li>
+<li><span class="math inline">\beta_1 + \beta_{3,k}</span> is the slope for the <span class="math inline">k</span>-th activity type.</li>
+</ul>
+</div>
+</div>
+</details>
+<div class="columns f2">
+<div class="column" style="width:55%;">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a>gfly <span class="sc">+</span> <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">linewidth =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-fruitfly2" class="quarto-figure quarto-figure-center quarto-float" width="1152">
+<figure class="quarto-float quarto-float-fig">
+<div aria-describedby="fig-fruitfly2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img data-src="slide1_files/figure-revealjs/fig-fruitfly2-1.png" id="fig-fruitfly2" width="1152">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-fruitfly2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:45%;">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>flyfit1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(longevity <span class="sc">~</span> thorax <span class="sc">+</span> activity <span class="sc">+</span> thorax<span class="sc">:</span>activity, <span class="at">data =</span> faraway<span class="sc">::</span>fruitfly) <span class="sc">|&gt;</span> </span>
+<span id="cb3-2"><a></a>  broom<span class="sc">::</span><span class="fu">augment</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb3-3"><a></a>  <span class="fu">mutate</span>(<span class="at">activity =</span> <span class="fu">factor</span>(activity, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"isolated"</span>, <span class="st">"low"</span>, <span class="st">"high"</span>, <span class="st">"one"</span>, <span class="st">"many"</span>))) </span>
+<span id="cb3-4"><a></a>gres <span class="ot">&lt;-</span> flyfit1 <span class="sc">|&gt;</span> </span>
+<span id="cb3-5"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(.fitted, .resid, <span class="at">color =</span> activity)) <span class="sc">+</span> </span>
+<span id="cb3-6"><a></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> <span class="sc">~</span><span class="fu">select</span>(., <span class="sc">-</span>activity), <span class="at">color =</span> <span class="st">"lightgrey"</span>) <span class="sc">+</span> </span>
+<span id="cb3-7"><a></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">4</span>) <span class="sc">+</span></span>
+<span id="cb3-8"><a></a>  <span class="co">#facet_wrap(~activity, labeller = label_both) +</span></span>
+<span id="cb3-9"><a></a>  <span class="fu">guides</span>(<span class="at">color =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
+<span id="cb3-10"><a></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb3-11"><a></a>  colorspace<span class="sc">::</span><span class="fu">scale_color_discrete_qualitative</span>() <span class="sc">+</span></span>
+<span id="cb3-12"><a></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Fitted values"</span>, <span class="at">y =</span> <span class="st">"Residual"</span>, <span class="at">title =</span> <span class="st">"Residual vs fitted values plot"</span>)</span>
+<span id="cb3-13"><a></a></span>
+<span id="cb3-14"><a></a>gres</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="slide1_files/figure-revealjs/unnamed-chunk-3-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="linear-model-2" class="slide level2">
+<h2>Linear model 2</h2>
+<p><code>lm(log10(longevity) ~ thorax + activity + thorax:activity)</code></p>
+<p><span class="math inline">\log_{10}(\texttt{longevity}_i) = \beta_0 + \beta_1\texttt{thorax}_i + \beta_{2,T(i)} + \beta_{3,T(i)}\texttt{thorax}_i + \epsilon_i</span></p>
+<div class="columns f2">
+<div class="column" style="width:55%;">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a>gfly <span class="sc">+</span> <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">linewidth =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb4-2"><a></a>  <span class="fu">scale_y_log10</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-fruitfly3" class="quarto-figure quarto-figure-center quarto-float" width="1152">
+<figure class="quarto-float quarto-float-fig">
+<div aria-describedby="fig-fruitfly3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img data-src="slide1_files/figure-revealjs/fig-fruitfly3-1.png" id="fig-fruitfly3" width="1152">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-fruitfly3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="f2 column" style="width:45%;">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a>flyfit2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log10</span>(longevity) <span class="sc">~</span> thorax <span class="sc">+</span> activity <span class="sc">+</span> thorax<span class="sc">:</span>activity, <span class="at">data =</span> faraway<span class="sc">::</span>fruitfly) <span class="sc">|&gt;</span> </span>
+<span id="cb5-2"><a></a>  broom<span class="sc">::</span><span class="fu">augment</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb5-3"><a></a>  <span class="fu">mutate</span>(<span class="at">.fitted =</span> <span class="dv">10</span><span class="sc">^</span>.fitted) <span class="sc">|&gt;</span> </span>
+<span id="cb5-4"><a></a>  <span class="fu">mutate</span>(<span class="at">activity =</span> <span class="fu">factor</span>(activity, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"isolated"</span>, <span class="st">"low"</span>, <span class="st">"high"</span>, <span class="st">"one"</span>, <span class="st">"many"</span>))) </span>
+<span id="cb5-5"><a></a></span>
+<span id="cb5-6"><a></a>gres <span class="sc">%+%</span> flyfit2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="slide1_files/figure-revealjs/unnamed-chunk-4-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="linear-model-3" class="slide level2">
+<h2>Linear model 3</h2>
+<p><code>lm(log10(longevity) ~ thorax + activity)</code></p>
+<p><span class="math inline">\log_{10}(\texttt{longevity}_i) = \beta_0 + \beta_1\texttt{thorax}_i + \beta_{2,T(i)} + \epsilon_i</span></p>
+<details class="f2">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a>fit1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log10</span>(longevity) <span class="sc">~</span> thorax <span class="sc">+</span> activity, <span class="at">data =</span> faraway<span class="sc">::</span>fruitfly)</span>
+<span id="cb6-2"><a></a>fit2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log10</span>(longevity) <span class="sc">~</span> thorax <span class="sc">+</span> activity <span class="sc">+</span> thorax<span class="sc">:</span>activity, <span class="at">data =</span> faraway<span class="sc">::</span>fruitfly)</span>
+<span id="cb6-3"><a></a><span class="fu">anova</span>(fit1, fit2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Model 1: log10(longevity) ~ thorax + activity
+Model 2: log10(longevity) ~ thorax + activity + thorax:activity
+  Res.Df     RSS Df Sum of Sq      F Pr(&gt;F)
+1    118 0.83011                           
+2    114 0.78511  4  0.044997 1.6334 0.1706</code></pre>
+</div>
+</div>
+</details>
+<div class="columns f2">
+<div class="column" style="width:55%;">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log10</span>(longevity) <span class="sc">~</span> <span class="sc">-</span><span class="dv">1</span> <span class="sc">+</span> thorax <span class="sc">+</span> activity, <span class="at">data =</span> faraway<span class="sc">::</span>fruitfly)</span>
+<span id="cb8-2"><a></a>est <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">slope =</span> <span class="fu">coef</span>(fit)[<span class="dv">1</span>], </span>
+<span id="cb8-3"><a></a>              <span class="at">intercept =</span> <span class="fu">coef</span>(fit)[<span class="sc">-</span><span class="dv">1</span>],</span>
+<span id="cb8-4"><a></a>              <span class="at">activity =</span> <span class="fu">str_remove</span>(<span class="fu">names</span>(<span class="fu">coef</span>(fit)[<span class="sc">-</span><span class="dv">1</span>]), <span class="st">"^activity"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb8-5"><a></a><span class="fu">mutate</span>(<span class="at">activity =</span> <span class="fu">factor</span>(activity, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"isolated"</span>, <span class="st">"low"</span>, <span class="st">"high"</span>, <span class="st">"one"</span>, <span class="st">"many"</span>))) </span>
+<span id="cb8-6"><a></a>gfly <span class="sc">+</span> <span class="fu">geom_abline</span>(<span class="fu">aes</span>(<span class="at">slope =</span> slope, <span class="at">intercept =</span> intercept), <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">linewidth =</span> <span class="dv">2</span>, <span class="at">data =</span> est) <span class="sc">+</span> <span class="fu">scale_y_log10</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-fruitfly4" class="quarto-figure quarto-figure-center quarto-float" width="1152">
+<figure class="quarto-float quarto-float-fig">
+<div aria-describedby="fig-fruitfly4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img data-src="slide1_files/figure-revealjs/fig-fruitfly4-1.png" id="fig-fruitfly4" width="1152">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-fruitfly4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="f2 column" style="width:45%;">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a>gres <span class="sc">%+%</span> (broom<span class="sc">::</span><span class="fu">augment</span>(fit) <span class="sc">|&gt;</span> </span>
+<span id="cb9-2"><a></a>  <span class="fu">mutate</span>(<span class="at">activity =</span> <span class="fu">factor</span>(activity, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"isolated"</span>, <span class="st">"low"</span>, <span class="st">"high"</span>, <span class="st">"one"</span>, <span class="st">"many"</span>))))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="slide1_files/figure-revealjs/unnamed-chunk-6-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="multiple-linear-regression" class="slide level2">
+<h2>Multiple linear regression</h2>
+<p>For <span class="math inline">i = 1, ..., n</span>, the linear regression model is given by</p>
+<p><span class="math display">y_i = \beta_0 + \beta_1x_{i1} + \beta_2x_{i2} + \cdots + \beta_kx_{ik} + \epsilon_i=  \sum_{j=0}^{k}\beta_jx_{ij} + \epsilon_i</span></p>
+<p>where</p>
+<ul>
+<li><span class="math inline">y_i</span> is the response variable,</li>
+<li><span class="math inline">x_{ij}</span> is the <span class="math inline">j</span>-th predictor variable and <span class="math inline">x_{0j} = 1</span> for all <span class="math inline">j</span>,</li>
+<li><span class="math inline">\beta_j</span> is the coefficient for the <span class="math inline">j</span>-th predictor variable,</li>
+<li><span class="math inline">\epsilon_i</span> is the error term, and</li>
+<li>we assume that <span class="anu-gold"><span class="math inline">\epsilon_i \stackrel{iid}{\sim} N(0, \sigma^2)</span></span>.</li>
+</ul>
+</section>
+<section id="case-study-breast-cancer-diagnosis" class="slide level2 scrollable" data-background-color="#F5EDDE">
+<h2>Case study: Breast cancer diagnosis</h2>
+<p><strong>Aim</strong>: diagnose breast cancer from features of a digitized image of breast mass sample</p>
+<div class="columns f2">
+<div class="column" style="width:50%;">
+<div class="cell skimr">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb10-2"><a></a>cancer <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"https://emitanaka.org/iml/data/cancer.csv"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb10-3"><a></a>  <span class="fu">mutate</span>(<span class="at">diagnosis_malignant =</span> <span class="fu">ifelse</span>(diagnosis<span class="sc">==</span><span class="st">"M"</span>, <span class="dv">1</span>, <span class="dv">0</span>),</span>
+<span id="cb10-4"><a></a>         <span class="at">diagnosis =</span> <span class="fu">factor</span>(diagnosis, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"B"</span>, <span class="st">"M"</span>))) <span class="sc">|&gt;</span> </span>
+<span id="cb10-5"><a></a>  janitor<span class="sc">::</span><span class="fu">clean_names</span>()</span>
+<span id="cb10-6"><a></a></span>
+<span id="cb10-7"><a></a>cancer <span class="sc">|&gt;</span> </span>
+<span id="cb10-8"><a></a>  <span class="fu">select</span>(diagnosis, radius_mean, concave_points_mean) <span class="sc">|&gt;</span> </span>
+<span id="cb10-9"><a></a>  GGally<span class="sc">::</span><span class="fu">ggpairs</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">color =</span> diagnosis)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="slide1_files/figure-revealjs/cancer-data-1.png" width="1152"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<ul>
+<li>The <a href="https://archive.ics.uci.edu/ml/datasets/Breast+Cancer+Wisconsin+%28Diagnostic%29">Wisconsin breast cancer data set</a> contains data of features of digitized image of a breast mass sample.</li>
+</ul>
+<center>
+<img data-src="../images/breast-cancer-image.png" style="width:70.0%">
+</center>
+<ul>
+<li>The image features include the average radius (<code>radius_mean</code>) and the average concave portion of the contour (<code>concave_points_mean</code>).</li>
+<li>The breast mass sample was diagnosed as <span style="color:#EE0000;"><em>malignant</em></span> (M) or <span style="color:#228B22;"><em>benign</em></span> (B).</li>
+</ul>
+</div>
+</div>
+
+<aside><div>
+<p>Image from Street, Wolberg, and Mangasarian (1993) Nuclear feature extraction for breast tumor diagnosis. <em>Biomedical Image Processing and Biomedical Visualization</em> vol 1905 pp/ 861–870. doi:10.1117/12.148698.</p>
+</div></aside></section>
+<section id="binary-response" class="slide level2">
+<h2>Binary response</h2>
+<div class="columns">
+<div class="column f2" style="width:30%;">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a>cancer <span class="sc">|&gt;</span> </span>
+<span id="cb11-2"><a></a>  <span class="fu">count</span>(diagnosis) <span class="sc">|&gt;</span> </span>
+<span id="cb11-3"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(diagnosis, n)) <span class="sc">+</span></span>
+<span id="cb11-4"><a></a>  <span class="fu">geom_col</span>(<span class="fu">aes</span>(<span class="at">fill =</span> diagnosis)) <span class="sc">+</span></span>
+<span id="cb11-5"><a></a>  <span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">expansion</span>(<span class="at">add =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.1</span>))) <span class="sc">+</span></span>
+<span id="cb11-6"><a></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Count"</span>) <span class="sc">+</span></span>
+<span id="cb11-7"><a></a>  <span class="fu">guides</span>(<span class="at">fill =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="slide1_files/figure-revealjs/cancer-plot-1.png" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:70%;">
+<ul>
+<li>The outcome of interest is a binary response (M or B).</li>
+<li>We can convert it to a numeric value such that M = 1 and B = 0.</li>
+</ul>
+<div class="fragment">
+<ul>
+<li>Should we model this assuming that using a linear model?</li>
+</ul>
+<div class="f2">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a>cancer <span class="sc">|&gt;</span> </span>
+<span id="cb12-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(radius_mean, diagnosis_malignant)) <span class="sc">+</span></span>
+<span id="cb12-3"><a></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.25</span>, <span class="at">size =</span> <span class="dv">2</span>, <span class="fu">aes</span>(<span class="at">color =</span> diagnosis)) <span class="sc">+</span></span>
+<span id="cb12-4"><a></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> lm,</span>
+<span id="cb12-5"><a></a>              <span class="at">formula =</span> y <span class="sc">~</span> x,</span>
+<span id="cb12-6"><a></a>              <span class="at">se =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb12-7"><a></a>              <span class="at">color =</span> <span class="st">"black"</span>,</span>
+<span id="cb12-8"><a></a>              <span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb12-9"><a></a>  <span class="fu">scale_y_continuous</span>(<span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb12-10"><a></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"diagnosis"</span>) <span class="sc">+</span></span>
+<span id="cb12-11"><a></a>  <span class="fu">guides</span>(<span class="at">color =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="slide1_files/figure-revealjs/unnamed-chunk-8-1.png" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="concepts" class="title-slide slide level1 center" data-background-color="#F5EDDE">
+<h1>Concepts</h1>
+
+</section>
+<section id="propensity-score" class="slide level2">
+<h2>Propensity score</h2>
+<div>
+<ul>
+<li class="fragment">Suppose we consider <span class="math inline">y_i</span> as a binary category: <span class="math display">y_i = \begin{cases}
+     1 &amp; \text{ if $i$-th observation is in class 1}\\
+     0 &amp; \text{ if $i$-th observation is in class 2}\\
+\end{cases}</span></li>
+<li class="fragment">Instead of modelling the outcome directly, we consider the conditional probability, say <span class="math inline">P(y_i = 1|\boldsymbol{x}_i)</span> where <span class="math inline">\boldsymbol{x}_i = (x_{i1}, x_{i2}, \ldots, x_{ik})</span>, also known as the <strong>propensity score</strong> of class 1.</li>
+<li class="fragment">The propensity score of class 2 is <span class="math display">P(y_i=0|\boldsymbol{x}_i) = 1 - P(y_i=1|\boldsymbol{x}_i).</span></li>
+</ul>
+</div>
+</section>
+<section id="odds-of-an-event" class="slide level2">
+<h2>Odds of an event</h2>
+<ul>
+<li>The <strong>odds of an event</strong> is defined as <span class="math display">\text{odds} = \color{#BE830E}{\frac{p}{1-p}} = \frac{\text{probability that the event will occur}}{\text{probability that the event will not occur}},</span> where <span class="math inline">p</span> is the probability of an event occuring.</li>
+</ul>
+<div class="fragment">
+<ul>
+<li>The <strong>ratio of the propensity scores of the two classes</strong> is the odds of being in class 1:</li>
+</ul>
+<p><span class="math display">\text{odds} = \frac{P(y_i=1|\boldsymbol{x}_i)}{1-P(y_i=1|\boldsymbol{x}_i)}.</span></p>
+</div>
+</section>
+<section id="logistic-function" class="slide level2">
+<h2>Logistic function</h2>
+<ul>
+<li>The <strong>logistic function</strong>:</li>
+</ul>
+<div class="flex">
+<div class="w-50">
+<p><span class="math display">g(z) = \frac{e^z}{1+e^z} = \frac{1}{1+e^{-z}}</span></p>
+</div>
+<div class="w-50 pl3">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="slide1_files/figure-revealjs/vis-logistic-1.png" width="1152"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+<ul>
+<li>Notice that <span class="math inline">0 &lt; g(z) &lt; 1</span> for all finite values of <span class="math inline">z</span>.</li>
+</ul>
+</section>
+<section id="logit-function" class="slide level2">
+<h2>Logit function</h2>
+<ul>
+<li>The <strong>logit function</strong>:</li>
+</ul>
+<div class="flex">
+<div class="w-50">
+<p><span class="math display">f(p) = \log_e \left(\frac{p}{1- p}\right)</span></p>
+</div>
+<div class="w-50 pl3">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="slide1_files/figure-revealjs/vis-logit-1.png" width="1152"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+<ul>
+<li>Here <span class="math inline">-\infty &lt; f(p) &lt; \infty</span> for all <span class="math inline">p \in (0, 1)</span>.</li>
+</ul>
+<div class="fragment">
+<ul>
+<li>Note that <strong>logit and logistic functions are inverse functions of one another</strong>, i.e.&nbsp;<span class="math inline">f(g(z)) = z</span> and <span class="math inline">g(f(p)) = p</span>.</li>
+</ul>
+</div>
+</section>
+<section id="binomial-distribution" class="slide level2">
+<h2>Binomial distribution</h2>
+<div class="columns">
+<div class="column" style="width:60%;">
+<ul>
+<li>Suppose <span class="math inline">Y</span> is binomially distributed <span class="math inline">B(n, p)</span>.</li>
+<li>This means that there were <span class="math inline">n</span> trials, each with a probability <span class="math inline">p</span> of success, and <span class="math inline">Y</span> is the number of successes out of <span class="math inline">n</span>.</li>
+<li>The expected value of <span class="math inline">Y</span> is <span class="math inline">E(Y) = np</span>.</li>
+<li>If <span class="math inline">n=1</span>, <span class="math inline">Y</span> can only take the values 0 or 1 and the distribution is referred to as <strong>Benoulli distribution</strong>.</li>
+</ul>
+</div><div class="column" style="width:40%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="slide1_files/figure-revealjs/unnamed-chunk-9-1.png" width="1152"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="logistic-regression" class="title-slide slide level1 center" data-background-color="#F5EDDE">
+<h1>Logistic regression</h1>
+
+</section>
+<section id="logistic-regression-for-binary-response" class="slide level2">
+<h2>Logistic regression for binary response</h2>
+<ul>
+<li>Logistic regression is a <strong>generalised linear model</strong> where it models the <em>log odds</em> as a linear combination of predictors: <span class="math display">\text{logit}(p_i) = \log_e \left(\frac{p_i}{1-p_i}\right) = \sum_{j=0}^p\beta_jx_{ij}, \quad p_i = \frac{e^{\sum_{j=0}^p\beta_jx_{ij}}}{1+e^{\sum_{j=0}^p\beta_jx_{ij}}}</span></li>
+<li>We assume that <span class="anu-gold"><span class="math inline">Y_i \sim B(1, p_i)</span></span> where <span class="math inline">p_i = P(Y_i=1|\boldsymbol{x}_i)</span>.</li>
+<li>Note that <span class="math inline">E(Y_i|\boldsymbol{x}_i) = p_i</span>.</li>
+</ul>
+</section>
+<section id="logistic-regression-with-a-binary-response" class="slide level2">
+<h2><i class="fab fa-r-project"></i> Logistic regression with a binary response</h2>
+<ul>
+<li>When response is a <strong>binary value</strong> (0 or 1):</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a><span class="fu">str</span>(cancer<span class="sc">$</span>diagnosis_malignant)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> num [1:568] 1 1 1 1 1 1 1 1 1 1 ...</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a><span class="fu">table</span>(cancer<span class="sc">$</span>diagnosis_malignant)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+  0   1 
+356 212 </code></pre>
+</div>
+</div>
+<div class="fragment">
+<ul>
+<li>Fit the logistic model in R as</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a>cancer_fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(diagnosis_malignant <span class="sc">~</span> radius_mean <span class="sc">+</span> concave_points_mean, </span>
+<span id="cb17-2"><a></a>                  <span class="at">data =</span> cancer, </span>
+<span id="cb17-3"><a></a>                  <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>))</span>
+<span id="cb17-4"><a></a></span>
+<span id="cb17-5"><a></a><span class="fu">coef</span>(cancer_fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        (Intercept)         radius_mean concave_points_mean 
+        -13.6987232           0.6389131          84.2228367 </code></pre>
+</div>
+</div>
+</div>
+</section>
+<section id="logistic-regression-with-a-factor-response" class="slide level2">
+<h2><i class="fab fa-r-project"></i> Logistic regression with a factor response</h2>
+<ul>
+<li>When response is a <strong>factor</strong>:</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a><span class="fu">str</span>(cancer<span class="sc">$</span>diagnosis)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> Factor w/ 2 levels "B","M": 2 2 2 2 2 2 2 2 2 2 ...</code></pre>
+</div>
+</div>
+<div class="fragment">
+<ul>
+<li><i class="fas fa-exclamation-circle"></i> Watch out for the order of the levels!</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a></a>cancer_fit2 <span class="ot">&lt;-</span> <span class="fu">glm</span>(diagnosis <span class="sc">~</span> radius_mean <span class="sc">+</span> concave_points_mean, </span>
+<span id="cb21-2"><a></a>                   <span class="at">data =</span> cancer, </span>
+<span id="cb21-3"><a></a>                   <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>))</span>
+<span id="cb21-4"><a></a><span class="fu">coef</span>(cancer_fit2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        (Intercept)         radius_mean concave_points_mean 
+        -13.6987232           0.6389131          84.2228367 </code></pre>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23" data-code-line-numbers="2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a></a>cancer_fit3 <span class="ot">&lt;-</span> <span class="fu">glm</span>(diagnosis <span class="sc">~</span> radius_mean <span class="sc">+</span> concave_points_mean, </span>
+<span id="cb23-2"><a></a>                   <span class="at">data =</span> cancer <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">diagnosis =</span> <span class="fu">factor</span>(diagnosis, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"M"</span>, <span class="st">"B"</span>))),  </span>
+<span id="cb23-3"><a></a>                   <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>))</span>
+<span id="cb23-4"><a></a><span class="fu">coef</span>(cancer_fit3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        (Intercept)         radius_mean concave_points_mean 
+         13.6987232          -0.6389131         -84.2228367 </code></pre>
+</div>
+</div>
+</div>
+</section>
+<section id="interpretation-of-logistic-regression" class="slide level2">
+<h2>Interpretation of logistic regression</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a></a>broom<span class="sc">::</span><span class="fu">tidy</span>(cancer_fit) <span class="co"># coefficients</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 5
+  term                estimate std.error statistic  p.value
+  &lt;chr&gt;                  &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+1 (Intercept)          -13.7       1.57      -8.70 3.20e-18
+2 radius_mean            0.639     0.108      5.94 2.91e- 9
+3 concave_points_mean   84.2       9.96       8.46 2.75e-17</code></pre>
+</div>
+</div>
+<ul>
+<li>Increasing <code>radius_mean</code> by one unit changes the log odds by <span class="math inline">\hat{\beta}_1</span>, 0.639, or equivalently it multiplies the odds by <span class="math inline">e^{\hat\beta_1}</span>, 1.894, provided <code>concave_points_mean</code> is held fixed.</li>
+</ul>
+</section>
+<section id="predicting-from-logistic-regression" class="slide level2">
+<h2>Predicting from logistic regression</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a></a>dat <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">radius_mean =</span> <span class="dv">15</span>, <span class="at">concave_points_mean =</span> <span class="fl">0.05</span>)</span>
+<span id="cb27-2"><a></a>broom<span class="sc">::</span><span class="fu">augment</span>(cancer_fit, </span>
+<span id="cb27-3"><a></a>               <span class="at">newdata =</span> dat,  </span>
+<span id="cb27-4"><a></a>               <span class="at">type.predict =</span> <span class="st">"response"</span>, </span>
+<span id="cb27-5"><a></a>               <span class="at">se_fit =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 4
+  radius_mean concave_points_mean .fitted .se.fit
+        &lt;dbl&gt;               &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
+1          15                0.05   0.524  0.0516</code></pre>
+</div>
+</div>
+<details>
+<ul>
+<li>You can also get the prediction with:</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a></a><span class="fu">predict</span>(cancer_fit, <span class="at">newdata =</span> dat, <span class="at">type =</span> <span class="st">"response"</span>, <span class="at">se.fit =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$fit
+        1 
+0.5240103 
+
+$se.fit
+         1 
+0.05158637 
+
+$residual.scale
+[1] 1</code></pre>
+</div>
+</div>
+</details>
+<p>By hand</p>
+<p><span class="math inline">\hat{\eta} = -13.699 + 0.639\times 15 + 84.223\times 0.05 \approx 0.0961</span><br>
+<span class="math inline">\dfrac{\exp(0.0961)}{1 + \exp(0.0961)} = 0.524</span></p>
+</section>
+<section id="logistic-regression-is-a-linear-classifier" class="slide level2">
+<h2>Logistic regression is a linear classifier</h2>
+<ul>
+<li>We choose the threshold <span class="math inline">q</span> such that <span class="math inline">P(y_i=1|\boldsymbol{x}_i) \ge q</span> is considered to be in class 1.</li>
+<li>The separation in class is a point for one variable, line for two variables and a hyperplane for more than two variables.</li>
+</ul>
+<div class="flex">
+<div class="w-40">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="slide1_files/figure-revealjs/cancer-one-variable-1.png" width="576"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div class="w-60 pl3">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="slide1_files/figure-revealjs/cancer-two-variable-1.png" width="1056"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="case-study-survival-on-titanic" class="slide level2 scrollable" data-background-color="#F5EDDE">
+<h2>Case study: survival on titanic</h2>
+<ul>
+<li>Response does not have to be a binary response to fit a logistic regression.</li>
+<li>Observations may be count (out of fixed trials) as below.</li>
+</ul>
+<div class="columns">
+<div class="column" style="width:70%;">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a></a>titanic <span class="ot">&lt;-</span> datasets<span class="sc">::</span>Titanic <span class="sc">|&gt;</span> </span>
+<span id="cb31-2"><a></a>  <span class="fu">as.data.frame</span>() <span class="sc">|&gt;</span>  </span>
+<span id="cb31-3"><a></a>  <span class="fu">pivot_wider</span>(<span class="fu">c</span>(Class, Sex, Age), </span>
+<span id="cb31-4"><a></a>              <span class="at">names_from =</span> Survived, </span>
+<span id="cb31-5"><a></a>              <span class="at">values_from =</span> Freq, </span>
+<span id="cb31-6"><a></a>              <span class="at">names_prefix =</span> <span class="st">"Survived_"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb31-7"><a></a>  <span class="fu">filter</span>(Survived_No <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">|</span> Survived_Yes <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb31-8"><a></a>  <span class="fu">mutate</span>(<span class="at">Proportion_Survived =</span> Survived_Yes <span class="sc">/</span> (Survived_Yes <span class="sc">+</span> Survived_No))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Class</th>
+<th style="text-align: left;">Sex</th>
+<th style="text-align: left;">Age</th>
+<th style="text-align: right;">Survived_No</th>
+<th style="text-align: right;">Survived_Yes</th>
+<th style="text-align: right;">Proportion_Survived</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1st</td>
+<td style="text-align: left;">Male</td>
+<td style="text-align: left;">Child</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">1.0000000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2nd</td>
+<td style="text-align: left;">Male</td>
+<td style="text-align: left;">Child</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">1.0000000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3rd</td>
+<td style="text-align: left;">Male</td>
+<td style="text-align: left;">Child</td>
+<td style="text-align: right;">35</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">0.2708333</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">1st</td>
+<td style="text-align: left;">Female</td>
+<td style="text-align: left;">Child</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1.0000000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2nd</td>
+<td style="text-align: left;">Female</td>
+<td style="text-align: left;">Child</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">1.0000000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">3rd</td>
+<td style="text-align: left;">Female</td>
+<td style="text-align: left;">Child</td>
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">0.4516129</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">1st</td>
+<td style="text-align: left;">Male</td>
+<td style="text-align: left;">Adult</td>
+<td style="text-align: right;">118</td>
+<td style="text-align: right;">57</td>
+<td style="text-align: right;">0.3257143</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2nd</td>
+<td style="text-align: left;">Male</td>
+<td style="text-align: left;">Adult</td>
+<td style="text-align: right;">154</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">0.0833333</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3rd</td>
+<td style="text-align: left;">Male</td>
+<td style="text-align: left;">Adult</td>
+<td style="text-align: right;">387</td>
+<td style="text-align: right;">75</td>
+<td style="text-align: right;">0.1623377</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Crew</td>
+<td style="text-align: left;">Male</td>
+<td style="text-align: left;">Adult</td>
+<td style="text-align: right;">670</td>
+<td style="text-align: right;">192</td>
+<td style="text-align: right;">0.2227378</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">1st</td>
+<td style="text-align: left;">Female</td>
+<td style="text-align: left;">Adult</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">140</td>
+<td style="text-align: right;">0.9722222</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2nd</td>
+<td style="text-align: left;">Female</td>
+<td style="text-align: left;">Adult</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">80</td>
+<td style="text-align: right;">0.8602151</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3rd</td>
+<td style="text-align: left;">Female</td>
+<td style="text-align: left;">Adult</td>
+<td style="text-align: right;">89</td>
+<td style="text-align: right;">76</td>
+<td style="text-align: right;">0.4606061</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Crew</td>
+<td style="text-align: left;">Female</td>
+<td style="text-align: left;">Adult</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.8695652</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div><div class="column" style="width:30%;">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a></a>datasets<span class="sc">::</span>Titanic <span class="sc">|&gt;</span>  </span>
+<span id="cb32-2"><a></a>  <span class="fu">as.data.frame</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb32-3"><a></a>  <span class="fu">mutate</span>(<span class="at">Survived =</span> <span class="fu">factor</span>(Survived, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Yes"</span>, <span class="st">"No"</span>))) <span class="sc">|&gt;</span> </span>
+<span id="cb32-4"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(Sex, Freq)) <span class="sc">+</span></span>
+<span id="cb32-5"><a></a>  <span class="fu">geom_col</span>(<span class="fu">aes</span>(<span class="at">fill =</span> Survived, <span class="at">group =</span> Age), <span class="at">position =</span> <span class="st">"fill"</span>) <span class="sc">+</span></span>
+<span id="cb32-6"><a></a>  <span class="fu">facet_grid</span>(Class <span class="sc">~</span> Age) <span class="sc">+</span></span>
+<span id="cb32-7"><a></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Proportion"</span>)  <span class="sc">+</span></span>
+<span id="cb32-8"><a></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="slide1_files/figure-revealjs/unnamed-chunk-13-1.png" width="528"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="logistic-regression-with-count-responses" class="slide level2">
+<h2>Logistic regression with count responses</h2>
+<div class="f2">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a></a>titanic_fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(<span class="fu">cbind</span>(Survived_Yes, Survived_No) <span class="sc">~</span> Class <span class="sc">+</span> Age <span class="sc">+</span> Sex,</span>
+<span id="cb33-2"><a></a>                   <span class="at">data =</span> titanic, </span>
+<span id="cb33-3"><a></a>                   <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>))</span>
+<span id="cb33-4"><a></a></span>
+<span id="cb33-5"><a></a>broom<span class="sc">::</span><span class="fu">tidy</span>(titanic_fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 5
+  term        estimate std.error statistic  p.value
+  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+1 (Intercept)    0.685     0.273      2.51 1.21e- 2
+2 Class2nd      -1.02      0.196     -5.19 2.05e- 7
+3 Class3rd      -1.78      0.172    -10.4  3.69e-25
+4 ClassCrew     -0.858     0.157     -5.45 5.00e- 8
+5 AgeAdult      -1.06      0.244     -4.35 1.36e- 5
+6 SexFemale      2.42      0.140     17.2  1.43e-66</code></pre>
+</div>
+</div>
+</div>
+</section>
+<section id="logistic-regression-with-proportion-responses" class="slide level2">
+<h2>Logistic regression with proportion responses</h2>
+<ul>
+<li>You need the total cases for each proportion to fit the model.</li>
+<li>The exception is if the total cases are the same for all observations.</li>
+<li>⚠️ Below model would be wrong to use!</li>
+</ul>
+<div class="f2">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a></a>titanic_fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(Proportion_Survived <span class="sc">~</span> Class <span class="sc">+</span> Age <span class="sc">+</span> Sex,</span>
+<span id="cb35-2"><a></a>                   <span class="at">data =</span> titanic, </span>
+<span id="cb35-3"><a></a>                   <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>))</span>
+<span id="cb35-4"><a></a></span>
+<span id="cb35-5"><a></a>broom<span class="sc">::</span><span class="fu">tidy</span>(titanic_fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 5
+  term        estimate std.error statistic p.value
+  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
+1 (Intercept)    2.23       2.04     1.09    0.276
+2 Class2nd      -0.752      2.09    -0.360   0.719
+3 Class3rd      -3.36       2.30    -1.46    0.144
+4 ClassCrew     -0.914      2.34    -0.391   0.696
+5 AgeAdult      -2.28       1.81    -1.26    0.208
+6 SexFemale      2.46       1.65     1.49    0.136</code></pre>
+</div>
+</div>
+</div>
+</section>
+<section id="summary" class="slide level2" data-background-color="#F5EDDE">
+<h2>Summary</h2>
+<ul>
+<li>Odds ratio is the ratio of the odds of the event happening in one group to the odds of the event happening in another group.</li>
+<li>Logistic regression can be used to model binary or proportion (out of total cases) responses.</li>
+<li>Logistic regression is a linear classifier so it doesn’t work well where the separation between classes are non-linear.</li>
+<li>Use <code>glm(y ~ x, family = binomial(link = "logit"))</code> to fit a logistic regression model.</li>
+</ul>
+
+<div class="quarto-auto-generated-content">
+<p><img src="_extensions/anu-links/anu-light/logo/ANU_ Crest_Gold.png" class="slide-logo"></p>
+<div class="footer footer-default">
+<p>anu-bdsi.github.io/workshop-GLM/</p>
+</div>
+</div>
+</section></section>
+    </div>
+  </div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="../site_libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="../site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="../site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="../site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="../site_libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="../site_libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="../site_libs/revealjs/plugin/search/search.js"></script>
+  <script src="../site_libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1920,
+
+        height: 1080,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, QuartoSupport,
+
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    
+    <script type="text/javascript">
+        Reveal.on('ready', event => {
+          if (event.indexh === 0) {
+            document.querySelector("div.has-logo > img.slide-logo").style.display = "none";
+          }
+        });
+        Reveal.addEventListener('slidechanged', (event) => {
+          if (event.indexh === 0) {
+            Reveal.configure({ slideNumber: null });
+            document.querySelector("div.has-logo > img.slide-logo").style.display = "none";
+          }
+          if (event.indexh === 1) {
+            Reveal.configure({ slideNumber: 'c/t' });
+            document.querySelector("div.has-logo > img.slide-logo").style.display = null;
+          }
+        });
+    </script>
+    
+    <script>
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+      // slide changes (different for each slide format).
+      (function () {
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
+          const event = window.document.createEvent("Event");
+          event.initEvent("slideenter", true, true);
+          window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
+
+          // dispatch for shiny
+          if (window.jQuery) {
+            if (previousSlide) {
+              window.jQuery(previousSlide).trigger("hidden");
+            }
+            if (currentSlide) {
+              window.jQuery(currentSlide).trigger("shown");
+            }
+          }
+        }
+
+        // hookup for slidy
+        if (window.w3c_slidy) {
+          window.w3c_slidy.add_observer(function (slide_num) {
+            // slide_num starts at position 1
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+          });
+        }
+
+      })();
+    </script>
+
+    <script id="quarto-html-after-body" type="application/javascript">
+    window.document.addEventListener("DOMContentLoaded", function (event) {
+      const toggleBodyColorMode = (bsSheetEl) => {
+        const mode = bsSheetEl.getAttribute("data-mode");
+        const bodyEl = window.document.querySelector("body");
+        if (mode === "dark") {
+          bodyEl.classList.add("quarto-dark");
+          bodyEl.classList.remove("quarto-light");
+        } else {
+          bodyEl.classList.add("quarto-light");
+          bodyEl.classList.remove("quarto-dark");
+        }
+      }
+      const toggleBodyColorPrimary = () => {
+        const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+        if (bsSheetEl) {
+          toggleBodyColorMode(bsSheetEl);
+        }
+      }
+      toggleBodyColorPrimary();  
+      const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+      tabsets.forEach(function(tabset) {
+        const tabby = new Tabby('#' + tabset.id);
+      });
+      const isCodeAnnotation = (el) => {
+        for (const clz of el.classList) {
+          if (clz.startsWith('code-annotation-')) {                     
+            return true;
+          }
+        }
+        return false;
+      }
+      const onCopySuccess = function(e) {
+        // button target
+        const button = e.trigger;
+        // don't keep focus
+        button.blur();
+        // flash "checked"
+        button.classList.add('code-copy-button-checked');
+        var currentTitle = button.getAttribute("title");
+        button.setAttribute("title", "Copied!");
+        let tooltip;
+        if (window.bootstrap) {
+          button.setAttribute("data-bs-toggle", "tooltip");
+          button.setAttribute("data-bs-placement", "left");
+          button.setAttribute("data-bs-title", "Copied!");
+          tooltip = new bootstrap.Tooltip(button, 
+            { trigger: "manual", 
+              customClass: "code-copy-button-tooltip",
+              offset: [0, -8]});
+          tooltip.show();    
+        }
+        setTimeout(function() {
+          if (tooltip) {
+            tooltip.hide();
+            button.removeAttribute("data-bs-title");
+            button.removeAttribute("data-bs-toggle");
+            button.removeAttribute("data-bs-placement");
+          }
+          button.setAttribute("title", currentTitle);
+          button.classList.remove('code-copy-button-checked');
+        }, 1000);
+        // clear code selection
+        e.clearSelection();
+      }
+      const getTextToCopy = function(trigger) {
+          const codeEl = trigger.previousElementSibling.cloneNode(true);
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+      }
+      const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+        text: getTextToCopy
+      });
+      clipboard.on('success', onCopySuccess);
+      if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+        // For code content inside modals, clipBoardJS needs to be initialized with a container option
+        // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+        const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+          text: getTextToCopy,
+          container: window.document.getElementById('quarto-embedded-source-code-modal')
+        });
+        clipboardModal.on('success', onCopySuccess);
+      }
+        var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+        var mailtoRegex = new RegExp(/^mailto:/);
+          var filterRegex = new RegExp('/' + window.location.host + '/');
+        var isInternal = (href) => {
+            return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+        }
+        // Inspect non-navigation links and adorn them if external
+     	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+        for (var i=0; i<links.length; i++) {
+          const link = links[i];
+          if (!isInternal(link.href)) {
+            // undo the damage that might have been done by quarto-nav.js in the case of
+            // links that we want to consider external
+            if (link.dataset.originalHref !== undefined) {
+              link.href = link.dataset.originalHref;
+            }
+          }
+        }
+      function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+        const config = {
+          allowHTML: true,
+          maxWidth: 500,
+          delay: 100,
+          arrow: false,
+          appendTo: function(el) {
+              return el.closest('section.slide') || el.parentElement;
+          },
+          interactive: true,
+          interactiveBorder: 10,
+          theme: 'light-border',
+          placement: 'bottom-start',
+        };
+        if (contentFn) {
+          config.content = contentFn;
+        }
+        if (onTriggerFn) {
+          config.onTrigger = onTriggerFn;
+        }
+        if (onUntriggerFn) {
+          config.onUntrigger = onUntriggerFn;
+        }
+          config['offset'] = [0,0];
+          config['maxWidth'] = 700;
+        window.tippy(el, config); 
+      }
+      const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+      for (var i=0; i<noterefs.length; i++) {
+        const ref = noterefs[i];
+        tippyHover(ref, function() {
+          // use id or data attribute instead here
+          let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+          try { href = new URL(href).hash; } catch {}
+          const id = href.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note) {
+            return note.innerHTML;
+          } else {
+            return "";
+          }
+        });
+      }
+      const findCites = (el) => {
+        const parentEl = el.parentElement;
+        if (parentEl) {
+          const cites = parentEl.dataset.cites;
+          if (cites) {
+            return {
+              el,
+              cites: cites.split(' ')
+            };
+          } else {
+            return findCites(el.parentElement)
+          }
+        } else {
+          return undefined;
+        }
+      };
+      var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+      for (var i=0; i<bibliorefs.length; i++) {
+        const ref = bibliorefs[i];
+        const citeInfo = findCites(ref);
+        if (citeInfo) {
+          tippyHover(citeInfo.el, function() {
+            var popup = window.document.createElement('div');
+            citeInfo.cites.forEach(function(cite) {
+              var citeDiv = window.document.createElement('div');
+              citeDiv.classList.add('hanging-indent');
+              citeDiv.classList.add('csl-entry');
+              var biblioDiv = window.document.getElementById('ref-' + cite);
+              if (biblioDiv) {
+                citeDiv.innerHTML = biblioDiv.innerHTML;
+              }
+              popup.appendChild(citeDiv);
+            });
+            return popup.innerHTML;
+          });
+        }
+      }
+    });
+    </script>
+    
+
+</body></html>

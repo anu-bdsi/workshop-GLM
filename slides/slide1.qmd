@@ -1,0 +1,832 @@
+---
+title: Modelling for binary or proportion responses
+subtitle: "{{< var workshop-title >}}"
+format:
+  anu-light-revealjs:
+    width: 1920
+    height: 1080
+    auto-stretch: false
+    html-math-method: katex
+    self-contained: false
+    css: 
+     - /assets/slides.css
+     - /assets/table.css
+    footer: "{{< var workshop-url >}}"
+author: Emi Tanaka
+institute: Biological Data Science Institute
+date: 2024/09/24
+date-format: "D[th] MMMM YYYY"
+filters:
+  - webr
+execute: 
+  echo: true
+  fig-width: 12
+  fig-height: 8
+  fig-align: center
+webr: 
+  show-startup-message: false  
+  packages: 
+    - tidyverse
+    - palmerpenguins
+---
+
+
+```{r}
+#| include: false
+library(tidyverse)
+library(patchwork)
+source("setup.R")
+theme_set(theme_classic(base_size = 24) + 
+            theme(plot.title.position = "plot",
+                  plot.background = element_rect(fill = "transparent", color = "transparent"),
+                  legend.background = element_rect(fill = "transparent"),
+                  panel.background = element_rect(fill = "transparent")))
+options(ggplot2.discrete.fill = list(c("forestgreen", "red2")),
+        ggplot2.discrete.colour = list(c("forestgreen", "red2")))
+```
+
+# Workshop materials
+
+::: box
+
+All materials will be hosted at<br> 
+[https://{{< var workshop-url >}}](https://{{< var workshop-url >}}){.f1 target="_blank"}
+
+:::
+
+
+## Case study: Longevity of fruitflies {background-color="#F5EDDE"}
+
+**Aim**: Study longevity of fruitflies depending on sexual activity and thorax length
+
+::: {.columns .f2}
+
+::: {.column width="55%"}
+
+```{r fig-fruitfly, dev.args=list(bg = "transparent")}
+#| code-fold: true
+library(tidyverse)
+gfly <- faraway::fruitfly |> 
+  mutate(activity = factor(activity, levels = c("isolated", "low", "high", "one", "many"))) |> 
+  ggplot(aes(x = thorax, y = longevity, color = activity)) + 
+  geom_point(data = ~select(., -activity), color = "lightgrey") +
+  geom_point(size = 4) + 
+  facet_wrap(~activity, labeller = label_both) +
+  guides(color = "none") + 
+  colorspace::scale_color_discrete_qualitative()
+
+gfly
+```
+
+```{r}
+#| echo: false
+cols <- colorspace::qualitative_hcl(n = 5)
+```
+
+
+:::
+
+::: {.f2 .column width="45%"}
+
+- 125 fruitflies were divided randomly into 5 groups of 25 each. 
+- The response was the longevity of the fruitfly in days. 
+- One group was kept solitary (["isolated"]{style='color:`r cols[1]`'}).  
+- Another was kept individually with a virgin female each day (["low"]{style='color:`r cols[2]`'}).
+- Another group was given 8 virgin females per day (["high"]{style='color:`r cols[3]`'}). 
+- As an additional control the fourth and fifth groups were kept with one (["one"]{style='color:`r cols[4]`'}) or eight (["many"]{style='color:`r cols[5]`'}) pregnant females per day. 
+- Pregnant fruitflies will not mate. 
+- The thorax length of each male was measured as this was known to affect longevity. 
+- One observation in the many group has been lost.
+
+:::
+
+:::
+
+
+## Linear model 1
+
+`lm(longevity ~ thorax + activity + thorax:activity)`
+
+$\texttt{longevity}_i = \beta_0 + \beta_1\texttt{thorax}_i + \beta_{2,T(i)} + \beta_{3,T(i)}\texttt{thorax}_i + \epsilon_i$
+
+<details class="f2">
+
+::: {.columns .f2}
+
+::: {.column width="50%"}
+
+where 
+
+- $\beta_0$ is the overall intercept, 
+- $\beta_1$ is the effect of thorax length on longevity,
+- $\beta_{2,T(i)}$ is the effect of activity on longevity,
+- $T(i)$ maps to the activity type of the $i$-th observation,
+- $\beta_{3,T(i)}$ is the interaction effect between thorax length and activity type, and
+- $\epsilon_i$ is the error term.
+
+:::
+
+::: {.column width="50%"}
+
+Note that:
+
+- We assume $\epsilon_i  \stackrel{iid}{\sim} N(0, \sigma^2)$.
+- We use the constraints: $\beta_{2,1} = 0$ and $\beta_{3,1} = 0$.
+- $\beta_0 + \beta_{2,k}$ is the intercept for the $k$-th activity type.
+- $\beta_1 + \beta_{3,k}$ is the slope for the $k$-th activity type.
+
+:::
+
+:::
+
+</details>
+
+
+::: {.columns .f2}
+
+::: {.column width="55%"}
+
+```{r fig-fruitfly2}
+#| code-fold: true
+gfly + geom_smooth(method = "lm", se = FALSE, color = "black", linewidth = 2)
+```
+
+:::
+
+::: {.column width="45%"}
+
+```{r}
+#| code-fold: true
+#| fig-width: 10
+flyfit1 <- lm(longevity ~ thorax + activity + thorax:activity, data = faraway::fruitfly) |> 
+  broom::augment() |> 
+  mutate(activity = factor(activity, levels = c("isolated", "low", "high", "one", "many"))) 
+gres <- flyfit1 |> 
+  ggplot(aes(.fitted, .resid, color = activity)) + 
+  geom_point(data = ~select(., -activity), color = "lightgrey") + 
+  geom_point(size = 4) +
+  #facet_wrap(~activity, labeller = label_both) +
+  guides(color = "none") +
+  geom_hline(yintercept = 0, color = "black", linetype = 2) +
+  colorspace::scale_color_discrete_qualitative() +
+  labs(x = "Fitted values", y = "Residual", title = "Residual vs fitted values plot")
+
+gres
+
+```
+
+
+:::
+
+:::
+
+## Linear model 2
+
+`lm(log10(longevity) ~ thorax + activity + thorax:activity)`
+
+$\log_{10}(\texttt{longevity}_i) = \beta_0 + \beta_1\texttt{thorax}_i + \beta_{2,T(i)} + \beta_{3,T(i)}\texttt{thorax}_i + \epsilon_i$
+
+
+::: {.columns .f2}
+
+::: {.column width="55%"}
+
+```{r fig-fruitfly3}
+#| code-fold: true
+gfly + geom_smooth(method = "lm", se = FALSE, color = "black", linewidth = 2) +
+  scale_y_log10()
+```
+
+:::
+
+::: {.f2 .column width="45%"}
+
+
+```{r}
+#| code-fold: true
+#| fig-width: 10
+flyfit2 <- lm(log10(longevity) ~ thorax + activity + thorax:activity, data = faraway::fruitfly) |> 
+  broom::augment() |> 
+  mutate(.fitted = 10^.fitted) |> 
+  mutate(activity = factor(activity, levels = c("isolated", "low", "high", "one", "many"))) 
+
+gres %+% flyfit2
+```
+
+:::
+
+:::
+
+
+
+
+
+## Linear model 3
+
+`lm(log10(longevity) ~ thorax + activity)`
+
+$\log_{10}(\texttt{longevity}_i) = \beta_0 + \beta_1\texttt{thorax}_i + \beta_{2,T(i)} + \epsilon_i$
+
+<details class="f2">
+```{r}
+fit1 <- lm(log10(longevity) ~ thorax + activity, data = faraway::fruitfly)
+fit2 <- lm(log10(longevity) ~ thorax + activity + thorax:activity, data = faraway::fruitfly)
+anova(fit1, fit2)
+```
+</details>
+
+::: {.columns .f2}
+
+::: {.column width="55%"}
+
+```{r fig-fruitfly4}
+#| code-fold: true
+fit <- lm(log10(longevity) ~ -1 + thorax + activity, data = faraway::fruitfly)
+est <- tibble(slope = coef(fit)[1], 
+              intercept = coef(fit)[-1],
+              activity = str_remove(names(coef(fit)[-1]), "^activity")) |> 
+mutate(activity = factor(activity, levels = c("isolated", "low", "high", "one", "many"))) 
+gfly + geom_abline(aes(slope = slope, intercept = intercept), color = "black", linewidth = 2, data = est) + scale_y_log10()
+```
+
+:::
+
+::: {.f2 .column width="45%"}
+
+```{r}
+#| code-fold: true
+#| fig-width: 10
+
+
+gres %+% (broom::augment(fit) |> 
+  mutate(activity = factor(activity, levels = c("isolated", "low", "high", "one", "many"))))
+
+```
+
+:::
+
+:::
+
+
+
+## Multiple linear regression
+
+For $i = 1, ..., n$, the linear regression model is given by 
+
+$$y_i = \beta_0 + \beta_1x_{i1} + \beta_2x_{i2} + \cdots + \beta_kx_{ik} + \epsilon_i=  \sum_{j=0}^{k}\beta_jx_{ij} + \epsilon_i$$
+
+
+
+where
+
+  - $y_i$ is the response variable,
+  - $x_{ij}$ is the $j$-th predictor variable and $x_{0j} = 1$ for all $j$,
+  - $\beta_j$ is the coefficient for the $j$-th predictor variable,
+  - $\epsilon_i$ is the error term, and
+  - we assume that [$\epsilon_i \stackrel{iid}{\sim} N(0, \sigma^2)$]{.anu-gold}.
+
+
+## Case study: Breast cancer diagnosis {background-color="#F5EDDE" .scrollable}
+
+**Aim**: diagnose breast cancer from features of a digitized image of breast mass sample
+
+::: {.columns .f2}
+
+
+::: {.column width="50%"}
+
+```{r, dev.args=list(bg = "transparent")}
+#| label: cancer-data
+#| classes: skimr
+#| code-fold: true
+#| fig-height: 10
+library(tidyverse)
+cancer <- read_csv("https://emitanaka.org/iml/data/cancer.csv") |> 
+  mutate(diagnosis_malignant = ifelse(diagnosis=="M", 1, 0),
+         diagnosis = factor(diagnosis, levels = c("B", "M"))) |> 
+  janitor::clean_names()
+
+cancer |> 
+  select(diagnosis, radius_mean, concave_points_mean) |> 
+  GGally::ggpairs(mapping = aes(color = diagnosis)) 
+```
+
+
+:::
+
+::: {.column width="50%"}
+
+- The [Wisconsin breast cancer data set](https://archive.ics.uci.edu/ml/datasets/Breast+Cancer+Wisconsin+%28Diagnostic%29) contains data of features of digitized image of a breast mass sample.
+
+<center>
+![](/images/breast-cancer-image.png){width="70%"}
+</center>
+
+- The image features include the average radius (`radius_mean`) and the average concave portion of the contour (`concave_points_mean`).
+- The breast mass sample was diagnosed as [*malignant*]{style="color:#EE0000;"} (M) or [*benign*]{style="color:#228B22;"} (B).
+
+:::
+
+:::
+
+::: {.aside .f2}
+
+Image from Street, Wolberg, and Mangasarian (1993) Nuclear feature extraction for breast tumor diagnosis. _Biomedical Image Processing and Biomedical Visualization_ vol 1905 pp/ 861–870. doi:10.1117/12.148698.
+
+:::
+
+
+## Binary response
+
+::: columns
+
+::: {.column width="30%" .f2}
+
+
+```{r cancer-plot}
+#| code-fold: true
+#| fig-width: 5
+#| fig-height: 5
+cancer |> 
+  count(diagnosis) |> 
+  ggplot(aes(diagnosis, n)) +
+  geom_col(aes(fill = diagnosis)) +
+  scale_y_continuous(expand = expansion(add = c(0, 0.1))) +
+  labs(y = "Count") +
+  guides(fill = "none")
+```
+
+
+
+:::
+
+::: {.column width="70%"}
+
+- The outcome of interest is a binary response (M or B). 
+- We can convert it to a numeric value such that M = 1 and B = 0.
+
+::: fragment
+
+- Should we model this assuming that using a linear model?
+
+::: f2
+
+```{r}
+#| code-fold: true
+#| fig-width: 9
+#| fig-height: 5
+cancer |> 
+  ggplot(aes(radius_mean, diagnosis_malignant)) +
+  geom_point(alpha = 0.25, size = 2, aes(color = diagnosis)) +
+  geom_smooth(method = lm,
+              formula = y ~ x,
+              se = FALSE,
+              color = "black",
+              linewidth = 1.2) +
+  scale_y_continuous(breaks = c(0, 1)) +
+  labs(y = "diagnosis") +
+  guides(color = "none")
+```
+
+:::
+
+:::
+
+:::
+
+:::
+
+
+
+# Concepts {background-color="#F5EDDE"}
+
+
+
+##  Propensity score
+
+
+::: incremental
+- Suppose we consider $y_i$ as a binary category:
+$$y_i = \begin{cases} 
+       1 & \text{ if $i$-th observation is in class 1}\\
+       0 & \text{ if $i$-th observation is in class 2}\\
+  \end{cases}$$
+- Instead of modelling the outcome directly, we consider the conditional probability, say $P(y_i = 1|\boldsymbol{x}_i)$ where $\boldsymbol{x}_i = (x_{i1}, x_{i2}, \ldots, x_{ik})$, also known as the **propensity score** of class 1.
+- The propensity score of class 2 is $$P(y_i=0|\boldsymbol{x}_i) = 1 - P(y_i=1|\boldsymbol{x}_i).$$
+
+
+:::
+
+## Odds of an event 
+
+
+- The **odds of an event** is defined as  $$\text{odds} = \color{#BE830E}{\frac{p}{1-p}} = \frac{\text{probability that the event will occur}}{\text{probability that the event will not occur}},$$ where $p$ is the probability of an event occuring. 
+
+. . . 
+
+- The **ratio of the propensity scores of the two classes** is the odds of being in class 1:
+
+$$\text{odds} = \frac{P(y_i=1|\boldsymbol{x}_i)}{1-P(y_i=1|\boldsymbol{x}_i)}.$$
+
+
+## Logistic function
+
+
+- The **logistic function**:
+
+
+::: flex
+
+::: {.w-50}
+
+$$g(z) = \frac{e^z}{1+e^z} = \frac{1}{1+e^{-z}}$$
+
+:::
+
+::: {.w-50 .pl3}
+
+```{r vis-logistic}
+#| echo: false
+#| fig-height: 6
+tibble(x = rep(seq(-10, 10, by=0.1), 2), 
+       y = 1 / (1 + exp(-x))) |> 
+  ggplot(aes(x, y)) +
+  geom_vline(color = "black", linetype = "dashed", xintercept = c(0)) +
+  geom_hline(color = "black", linetype = "dashed", yintercept = c(0, 0.5, 1)) +
+  geom_line(size=3, color = "#BE830E") + 
+  labs(y = "g(z)", x = "z") +
+  theme(axis.title = element_text(face = "italic"))
+```
+
+
+:::
+:::
+
+* Notice that $0 < g(z) < 1$ for all finite values of $z$.
+
+
+## Logit function
+
+
+- The **logit function**:
+
+
+::: flex
+
+::: {.w-50}
+
+$$f(p) = \log_e \left(\frac{p}{1- p}\right)$$
+
+:::
+
+::: {.w-50 .pl3}
+
+```{r vis-logit}
+#| echo: false
+#| fig-height: 6 
+tibble(p = seq(0, 1, length.out = 1000), 
+       y = log(p / (1 - p))) |> 
+  ggplot(aes(p, y)) +
+  geom_vline(color = "black", linetype = "dashed", xintercept = c(0, 0.5, 1)) +
+  geom_hline(color = "black", linetype = "dashed", yintercept = 0) +
+  geom_line(size=3, color = "#BE830E") + 
+  labs(y = "f(p)", x = "p") +
+  theme(axis.title = element_text(face = "italic"))
+```
+
+
+:::
+:::
+
+
+- Here $-\infty < f(p) < \infty$ for all $p \in (0, 1)$.
+
+. . . 
+
+- Note that **logit and logistic functions are inverse functions of one another**, i.e. $f(g(z)) = z$ and
+$g(f(p)) = p$.
+
+
+
+## Binomial distribution 
+
+::: columns
+
+::: {.column width="60%"}
+
+- Suppose $Y$ is binomially distributed $B(n, p)$.
+- This means that there were $n$ trials, each with a probability $p$ of success, and $Y$ is the number of successes out of $n$.
+- The expected value of $Y$ is $E(Y) = np$.
+- If $n=1$, $Y$ can only take the values 0 or 1 and the distribution is referred to as **Benoulli distribution**.
+
+:::
+
+::: {.column width="40%"}
+
+```{r}
+#| echo: false
+#| fig-height: 10
+gbernoulli <- tibble(y = 0:10) |> 
+  mutate(p = dbinom(y, 1, 0.3)) |> 
+  ggplot() + geom_col(aes(y, p)) +
+  labs(title = "Y ~ Bernoulli(0.3)", x = "Y", y = "Probability") +
+  scale_y_continuous(expand = c(0, 0)) + 
+  scale_x_continuous(breaks = 0:10)
+
+gbinom <- gbernoulli %+% (tibble(y = 0:10) |> 
+  mutate(p = dbinom(y, 10, 0.7))) +
+  labs(title = "Y ~ Binomial(10, 0.7)")
+
+gbinom2 <- gbernoulli %+% (tibble(y = 0:10) |> 
+  mutate(p = dbinom(y, 10, 0.3))) +
+  labs(title = "Y ~ Binomial(10, 0.3)")
+
+gbernoulli / gbinom / gbinom2
+```
+
+
+:::
+
+
+:::
+
+
+
+# Logistic regression {background-color="#F5EDDE"}
+
+
+## Logistic regression for binary response
+
+
+- Logistic regression is a **generalised linear model** where it models the *log odds* as a linear combination of predictors:
+$$\text{logit}(p_i) = \log_e \left(\frac{p_i}{1-p_i}\right) = \sum_{j=0}^p\beta_jx_{ij}, \quad p_i = \frac{e^{\sum_{j=0}^p\beta_jx_{ij}}}{1+e^{\sum_{j=0}^p\beta_jx_{ij}}}$$
+- We assume that [$Y_i \sim B(1, p_i)$]{.anu-gold} where $p_i = P(Y_i=1|\boldsymbol{x}_i)$.
+- Note that $E(Y_i|\boldsymbol{x}_i) = p_i$.
+
+
+
+## <i class="fab fa-r-project"></i> Logistic regression with a binary response 
+
+- When response is a **binary value** (0 or 1):
+
+```{r table-malignant}
+str(cancer$diagnosis_malignant)
+table(cancer$diagnosis_malignant)
+```
+
+. . . 
+
+- Fit the logistic model in R as
+
+```{r cancer-logistic-binary}
+cancer_fit <- glm(diagnosis_malignant ~ radius_mean + concave_points_mean, 
+                  data = cancer, 
+                  family = binomial(link = "logit"))
+
+coef(cancer_fit)
+```
+
+
+## <i class="fab fa-r-project"></i> Logistic regression with a factor response 
+
+
+- When response is a **factor**:
+
+```{r str-factor}
+#| cache: false
+str(cancer$diagnosis)
+```
+
+. . . 
+
+- <i class="fas fa-exclamation-circle"></i> Watch out for the order of the levels!
+
+```{r cancer-logistic-factor}
+cancer_fit2 <- glm(diagnosis ~ radius_mean + concave_points_mean, 
+                   data = cancer, 
+                   family = binomial(link = "logit"))
+coef(cancer_fit2)
+```
+
+. . . 
+
+```{r cancer-logistic-factor2}
+#| code-line-numbers: 2
+cancer_fit3 <- glm(diagnosis ~ radius_mean + concave_points_mean, 
+                   data = cancer |> mutate(diagnosis = factor(diagnosis, levels = c("M", "B"))),  
+                   family = binomial(link = "logit"))
+coef(cancer_fit3)
+```
+
+
+## Interpretation of logistic regression
+
+```{r cancer-logistic-model}
+broom::tidy(cancer_fit) # coefficients
+```
+
+
+- Increasing `radius_mean` by one unit changes the log odds by $\hat{\beta}_1$, `r round(coef(cancer_fit)[2], 3)`, or equivalently it multiplies the odds by $e^{\hat\beta_1}$, `r round(exp(coef(cancer_fit)[2]), 3)`, provided `concave_points_mean` is held fixed.
+
+## Predicting from logistic regression
+
+```{r}
+dat <- data.frame(radius_mean = 15, concave_points_mean = 0.05)
+broom::augment(cancer_fit, 
+               newdata = dat,  
+               type.predict = "response", 
+               se_fit = TRUE)
+```
+
+<details>
+
+- You can also get the prediction with:
+
+```{r}
+predict(cancer_fit, newdata = dat, type = "response", se.fit = TRUE)
+```
+
+</details>
+
+By hand 
+
+$\hat{\eta} = `r round(coef(cancer_fit)[1], 3)` + `r round(coef(cancer_fit)[2], 3)`\times 15 + `r round(coef(cancer_fit)[3], 3)`\times 0.05 \approx `r p <- coef(cancer_fit)[1] + 15 * coef(cancer_fit)[2] + 0.05 * coef(cancer_fit)[3]; round(p, 4)`$  
+$\dfrac{\exp(`r round(p, 4)`)}{1 + \exp(`r round(p, 4)`)} = `r round(exp(p)/(1 + exp(p)), 3)`$
+
+
+
+
+
+## Logistic regression is a linear classifier
+
+* We choose the threshold $q$ such that $P(y_i=1|\boldsymbol{x}_i) \ge q$ is considered to be in class 1. 
+* The separation in class is a point for one variable, line for two variables and a hyperplane for more than two variables.
+
+```{r cancer-split}
+#| echo: false
+library(rsample)
+set.seed(2023)
+qthresh <- c(0.2, 0.5, 0.8)
+cancer_split <- initial_split(cancer, prop = 3/4)
+cancer_train <- training(cancer_split)
+cancer_test <- testing(cancer_split)
+```
+
+
+::: flex
+::: {.w-40}
+
+```{r cancer-one-variable}
+#| echo: false
+#| fig-width: 6
+#| fig-height: 6
+cancer_logistic1 <- glm(diagnosis_malignant ~ radius_mean, 
+                       data = cancer, 
+                       family = binomial(link = "logit"))
+
+beta0 <- coef(cancer_logistic1)[1]
+beta1 <- coef(cancer_logistic1)[2]
+decision_point <- (log(qthresh / (1 - qthresh)) - beta0) / beta1
+
+ggplot(cancer, aes(radius_mean, diagnosis_malignant)) +
+  geom_point(aes(color = diagnosis), alpha = 0.5, size = 3) + 
+  geom_smooth(method = glm, method.args = list(family = "binomial"), se = FALSE, color = "black") +
+  geom_vline(xintercept = decision_point, linetype = "dashed") +
+  guides(color = "none") +
+  labs(title = "diagnosis ~ radius_mean",
+       x = "Average radius",
+       y = "Diagnosis (1=malignant)") +
+  theme(plot.title = element_text(family = "mono"),
+        plot.title.position = "plot") +
+  annotate("text", label = paste0("q = ", qthresh), x = decision_point + 0.25, y = 0.4, angle = -90)
+```
+
+
+:::
+::: {.w-60 .pl3}
+
+```{r cancer-two-variable}
+#| echo: false
+#| cache: false
+#| fig-width: 11
+#| fig-height: 6
+cancer_logistic2 <- glm(diagnosis_malignant ~ radius_mean + concave_points_mean, 
+                       data = cancer, 
+                       family = binomial(link = "logit"))
+
+beta0 <- coef(cancer_logistic2)[1]
+beta1 <- coef(cancer_logistic2)[2]
+beta2 <- coef(cancer_logistic2)[3]
+decision_intercept <- 1 / beta2 * (log(qthresh / (1 - qthresh)) - beta0)
+decision_slope <- -beta1 / beta2
+
+
+cancer |> 
+  ggplot(aes(radius_mean, concave_points_mean)) +
+  geom_point(aes(color = diagnosis),
+             size = 3, alpha = 0.5) +
+  labs(x = "Average radius",
+       y = "Average concave\nportions of the\ncontours",
+       color = "Diagnosis",
+       title = "diagnosis ~ radius_mean + concave_points_mean") +
+  geom_abline(slope = decision_slope, intercept = decision_intercept, linetype = "dashed") +
+  annotate("text", label = paste0("q = ", qthresh), x = 10, y = c(0.08, 0.1, 0.115), angle = -18.155) +
+  theme(plot.title = element_text(family = "mono"),
+        plot.title.position = "plot")
+```
+
+
+
+:::
+:::
+
+
+## Case study: survival on titanic {.scrollable background-color="#F5EDDE"}
+
+* Response does not have to be a binary response to fit a logistic regression. 
+* Observations may be count (out of fixed trials) as below.
+
+::: columns
+
+::: {.column width="70%"}
+
+```{r titanic-data}
+#| code-fold: true
+#| fig-height: 7
+titanic <- datasets::Titanic |> 
+  as.data.frame() |>  
+  pivot_wider(c(Class, Sex, Age), 
+              names_from = Survived, 
+              values_from = Freq, 
+              names_prefix = "Survived_") |> 
+  filter(Survived_No > 0 | Survived_Yes > 0) |> 
+  mutate(Proportion_Survived = Survived_Yes / (Survived_Yes + Survived_No))
+```
+```{r}
+#| echo: false
+knitr::kable(titanic)
+```
+
+:::
+
+::: {.column width="30%"}
+
+```{r, dev.args=list(bg="transparent")}
+#| code-fold: true
+#| fig-width: 5.5
+#| fig-height: 7
+datasets::Titanic |>  
+  as.data.frame() |> 
+  mutate(Survived = factor(Survived, levels = c("Yes", "No"))) |> 
+  ggplot(aes(Sex, Freq)) +
+  geom_col(aes(fill = Survived, group = Age), position = "fill") +
+  facet_grid(Class ~ Age) +
+  labs(y = "Proportion")  +
+  theme(legend.position = "top")
+```
+
+:::
+
+:::
+
+
+## Logistic regression with count responses 
+
+::: f2
+
+```{r titanic-fit}
+titanic_fit <- glm(cbind(Survived_Yes, Survived_No) ~ Class + Age + Sex,
+                   data = titanic, 
+                   family = binomial(link = "logit"))
+
+broom::tidy(titanic_fit)
+```
+
+:::
+
+
+## Logistic regression with proportion responses 
+
+- You need the total cases for each proportion to fit the model.
+- The exception is if the total cases are the same for all observations.
+- ⚠️ Below model would be wrong to use!
+
+::: f2
+
+```{r titanic-fit2}
+titanic_fit <- glm(Proportion_Survived ~ Class + Age + Sex,
+                   data = titanic, 
+                   family = binomial(link = "logit"))
+
+broom::tidy(titanic_fit)
+```
+
+:::
+
+
+## Summary {background-color="#F5EDDE"}
+
+- Odds ratio is the ratio of the odds of the event happening in one group to the odds of the event happening in another group.
+- Logistic regression can be used to model binary or proportion (out of total cases) responses.
+- Logistic regression is a linear classifier so it doesn't work well where the separation between classes are non-linear.
+- Use `glm(y ~ x, family = binomial(link = "logit"))` to fit a logistic regression model.

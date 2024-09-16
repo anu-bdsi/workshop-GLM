@@ -1,0 +1,145 @@
+---
+title: "Generalised Linear Models"
+date: 2024/09/24
+categories: BDSI Workshop
+engine: knitr
+---
+
+
+## 👋 Welcome 
+
+This is a training workshop for BIOL8001 students but extended to also 
+staff and students affiliated with the Australian National University (ANU) offered by the ANU Biological Data Science Institute (BDSI). 
+
+The workshop aims to teach generalised linear models for modeling data with non-normal distributions. Participants are expected to have a basic understanding of R and linear models prior to the start of the workshop. 
+
+## 🎯 Learning objectives 
+
+Upon completion of this workshop, participants should be able to:
+
+{{< include slides/_learning-objectives.qmd >}}
+
+
+## 🔧 Preparation 
+
+Please ensure that you download and install 
+
+- the latest version of [R](https://cran.csiro.au/),
+- the latest version of [RStudio Desktop](https://posit.co/download/rstudio-desktop/) or [Positron](https://github.com/posit-dev/positron/releases), and 
+- the following packages by opening RStudio Desktop or Positron, then copy and paste the command below in the Console section, pushing Enter after pasting.
+
+
+```r
+install.packages(c("tidyverse", "broom", "faraway", "GLMsData"))
+```
+
+- For Window users, you may need to [install Rtools](https://cran.r-project.org/bin/windows/Rtools/) to install R packages.
+
+```{r setup, include = FALSE}
+library(webexercises)
+library(tidyverse)
+ex_tabset <- function(id) {
+  paste0("[<i class='fas fa-pen-square'></i> Self test with Exercise ", id, "](#tabset-1-", id, "-tab){onclick=",
+         'document.getElementById(', "'tabset-1-", id, "-tab').click();",
+         '}')
+}
+slide_title <- function(id) {
+  paste0("[", 
+         rmarkdown::yaml_front_matter(paste0("slides/slide", id, ".qmd"))$title,
+         "](slides/slide", id, ".html){target='_blank'}")
+}
+
+LOs <- readLines("slides/_learning-objectives.qmd")
+LOs <- LOs[LOs!=""]
+LOs <- stringr::str_replace(LOs, "- ", "")
+
+checklist <- function(x) {
+  paste0("::: {.callout-note}\n\n", 
+         "## Reflect on learning objectives \n\n",
+         "You should be able to:\n",
+         paste0("<ul class='checkbox'>", paste(paste0("<li><input type='checkbox'> ", x, "</li>"), collapse = "\n\n"), "</ul>\n\n:::"))
+
+}
+
+```
+
+
+## 📚 Slides
+
+[![](images/by-nc-sa.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en)
+
+
+Click on the heading to open the slides in a new tab, or click on details to see the slides on this page.
+
+###  `r slide_title(1)`
+
+<details>
+
+<iframe class="slide-deck" src="slides/slide1.html"></iframe>
+
+`r ex_tabset(1)`
+
+</details>
+
+###  `r slide_title(2)`
+
+<details>
+
+<iframe class="slide-deck" src="slides/slide2.html"></iframe>
+
+`r ex_tabset(2)`
+
+</details>
+
+### `r slide_title(3)`
+
+<details>
+   
+<iframe class="slide-deck" src="slides/slide3.html"></iframe>
+
+`r ex_tabset(3)`
+
+</details>
+
+## 📑 Resources
+
+- Faraway (2009) Linear Models with R (_for review of linear models_)
+- Chapters 2, 3, and 5 from Faraway (2016) Extending the Linear Model with R. 2nd Edition.
+
+## 🏋️‍♀️ Self-paced exercises
+
+The following self-paced exercises are designed to check your understanding of the material. After completing each exercise, review your answers and assess your grasp of the concepts.
+
+
+`r checklist(LOs)`
+
+
+::: {.panel-tabset}
+
+## Exercise 1
+
+
+
+{{< include "exercises/_exercise1.qmd" >}}
+
+
+
+## Exercise 2
+
+
+
+{{< include "exercises/_exercise2.qmd" >}}
+
+
+
+## Exercise 3
+
+
+
+{{< include "exercises/_exercise3.qmd" >}}
+
+
+
+
+
+:::

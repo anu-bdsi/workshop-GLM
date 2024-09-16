@@ -1,0 +1,75 @@
+---
+format: 
+  html:
+    self-contained: true
+    css: 
+      - ../assets/webex.css
+    include-after-body: 
+      - ../assets/webex.js
+---
+
+```{r}
+#| include: false
+library(webexercises)
+
+```
+
+**Question**: What might affect the chance of getting heart disease?
+
+- The data from Western Collaborative Group Study contains 3154 healthy men, aged from 39 to 59, from the San Francisco area. 
+- At the start of the study, all were free of heart disease. 
+- Eight and a half years later, the study recorded whether these men now suffered from coronary heart disease (`chd`).
+- Other recorded variables that might be related to the chance of developing this disease are:
+  - `age` - age in years 
+  - `height` - height in inches 
+  - `weight` - weight in pounds 
+  - `sdp` - systolic blood pressure in mm Hg
+  - `dbp` - diastolic blood pressure in mm Hg
+  - `chol` - fasting serum cholesterol in mm %
+  - `behave` - behaviour type (A1, A2, B3, B4)
+  - `cigs` - number of cigarettes smoked per day 
+  - `dibep` - behaviour type (A = Agressive, P = Passive)
+  - `typechd` - type of coronary heart disease (angina, infdeath, none, or silent)
+  - `timechd` - time of coronary heart disease or end of follow-up
+  - `arcus` - arcus senilis (absent or present)
+
+
+
+
+```{r}
+faraway::wcgs |> 
+  select(where(is.numeric), chd) |> 
+  pivot_longer(cols = -chd) |> 
+  ggplot(aes(x = chd, y = value)) + geom_violin() + geom_boxplot(width = 0.1) + 
+  facet_wrap(~name, scales = "free") +
+  labs(x = "Coronary heart disease", y = "")
+  
+faraway::wcgs |> 
+  select(where(is.factor), where(is.character), chd) |> 
+  pivot_longer(cols = -chd) |> 
+  count(chd, value, name)  |> 
+  ggplot(aes(x = value, y = n)) + 
+  geom_col(aes(fill = chd), position = "fill") + 
+  facet_wrap(~name, scales = "free") +
+  colorspace::scale_fill_discrete_qualitative() +
+  labs(x = "Value", y = "Proportion") +
+  theme(legend.position = "top") +
+  scale_y_continuous(expand = expansion(add = c(0, 0.1)))
+```
+
+```{r}
+faraway::wcgs |> 
+  count(chd) |> 
+  ggplot(aes(chd, n)) + geom_col(aes(fill = chd)) +
+  guides(fill = "none") +
+  colorspace::scale_fill_discrete_qualitative() +
+  scale_y_continuous(expand = expansion(add = c(0, 0.1))) +
+  labs(y = "Count")
+
+faraway::wcgs |> 
+  mutate(chd_binary = as.numeric(chd) - 1) |> 
+  ggplot(aes(weight, chd_binary)) +
+  geom_point(alpha = 0.3) +
+  geom_smooth(method = lm, se = FALSE)
+```
+

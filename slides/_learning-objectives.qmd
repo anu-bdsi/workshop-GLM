@@ -1,0 +1,3 @@
+- Understand and apply generalized linear models (GLMs) for modeling data with non-normal distributions 
+- Apply GLMs effectively to model binary outcomes (logistic regression) and count data (Poisson or negative binomial regression).
+- Fit, interpret, and assess the adequacy of GLMs

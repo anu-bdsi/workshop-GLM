@@ -1,0 +1,49 @@
+---
+title: Modelling for count responses 
+subtitle: "{{< var workshop-title >}}"
+format:
+  anu-light-revealjs:
+    width: 1920
+    height: 1080
+    auto-stretch: false
+    html-math-method: katex
+    self-contained: false
+    css: 
+     - /assets/slides.css
+     - /assets/table.css
+    footer: "{{< var workshop-url >}}"
+author: Emi Tanaka
+institute: Biological Data Science Institute
+date: 2024/09/27
+date-format: "D[th] MMMM YYYY"
+engine: knitr
+filters:
+  - webr
+execute: 
+  echo: true
+webr: 
+  show-startup-message: false  
+  packages: 
+    - tidyverse
+    - palmerpenguins
+---
+
+
+
+
+## {{< fa crosshairs >}} Current learning objective
+
+```{r}
+#| include: false
+library(tidyverse)
+source("setup.R")
+```
+
+
+
+```{r}
+#| results: asis 
+#| echo: false
+learning_objectives(2)
+```
+

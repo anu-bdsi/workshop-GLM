@@ -792,6 +792,8 @@ datasets::Titanic |>
 
 ## Logistic regression with count responses 
 
+- The response need to be specified as a two column matrix with the counts of each class.
+
 ::: f2
 
 ```{r titanic-fit}
@@ -827,6 +829,6 @@ broom::tidy(titanic_fit)
 ## Summary {background-color="#F5EDDE"}
 
 - Odds ratio is the ratio of the odds of the event happening in one group to the odds of the event happening in another group.
-- Logistic regression can be used to model binary or proportion (out of total cases) responses.
+- Logistic regression can be used to model binary or proportion (out of total cases) responses by modelling the log odds as a linear combination of predictors.
 - Logistic regression is a linear classifier so it doesn't work well where the separation between classes are non-linear.
 - Use `glm(y ~ x, family = binomial(link = "logit"))` to fit a logistic regression model.

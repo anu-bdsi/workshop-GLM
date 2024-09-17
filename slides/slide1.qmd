@@ -805,14 +805,14 @@ broom::tidy(fit)
 
 - You need the total cases for each proportion to fit the model.
 - The exception is if the total cases are the same for all observations.
-- ⚠️ Below model would be wrong to use!
 
 ::: f2
 
 ```{r fitp}
 fitp <- glm(Proportion_Germ ~ Extract * Seeds,
-                   data = germ, 
-                   family = binomial(link = "logit"))
+            data = germ, 
+            family = binomial(link = "logit"),
+            weights = Total)
 
 broom::tidy(fitp)
 ```

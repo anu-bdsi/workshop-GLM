@@ -1,4 +1,13 @@
 ---
+filters:
+  - webr2
+webr: 
+  show-startup-message: false    
+  packages:
+    - tidyverse
+    - faraway
+    - broom
+    - GGally
 format: 
   html:
     self-contained: true
@@ -11,12 +20,16 @@ format:
 ```{r}
 #| include: false
 library(webexercises)
-
+library(tidyverse)
 ```
 
 **Question**: What might affect the chance of getting heart disease?
 
-- The data from Western Collaborative Group Study contains 3154 healthy men, aged from 39 to 59, from the San Francisco area. 
+::: callout-note
+
+## About the data
+
+- We have the data from Western Collaborative Group Study contains 3154 healthy men, aged from 39 to 59, from the San Francisco area. 
 - At the start of the study, all were free of heart disease. 
 - Eight and a half years later, the study recorded whether these men now suffered from coronary heart disease (`chd`).
 - Other recorded variables that might be related to the chance of developing this disease are:
@@ -28,48 +41,153 @@ library(webexercises)
   - `chol` - fasting serum cholesterol in mm %
   - `behave` - behaviour type (A1, A2, B3, B4)
   - `cigs` - number of cigarettes smoked per day 
-  - `dibep` - behaviour type (A = Agressive, P = Passive)
+  - `dibep` - behaviour type (A = Aggressive, P = Passive)
   - `typechd` - type of coronary heart disease (angina, infdeath, none, or silent)
   - `timechd` - time of coronary heart disease or end of follow-up
   - `arcus` - arcus senilis (absent or present)
 
 
+:::
+
+### Load the data
+
+- Is this data experimental or observational? `r mcq(sample(c(answer = "observational", "experimental")))`
+
+```{webr-r}
+#| autorun: true
+library(tidyverse)
+data(wcgs, package = "faraway")
+glimpse(wcgs)
+```
+
+### Explore the data (initial data analysis)
+
+- There are a number of ways to explore data.
+- First let's start by looking at the distribution of the outcome (coronary heart disease). What do you notice? 
+
+```{webr-r}
+wcgs |> 
+  ggplot(aes(chd)) + 
+  geom_bar() 
+```
 
 
-```{r}
-faraway::wcgs |> 
+
+- Next let's looks at the marginal distribution of numerical covariates by the outcome. Why is the median value for `timechd` clustered around 3000 for those that didn't have a coronary heart disease?
+
+
+
+```{webr-r}
+wcgs |> 
   select(where(is.numeric), chd) |> 
   pivot_longer(cols = -chd) |> 
-  ggplot(aes(x = chd, y = value)) + geom_violin() + geom_boxplot(width = 0.1) + 
+  ggplot(aes(x = chd, y = value)) + 
+  geom_violin() + 
+  geom_boxplot(width = 0.1) + 
   facet_wrap(~name, scales = "free") +
   labs(x = "Coronary heart disease", y = "")
-  
-faraway::wcgs |> 
+```
+
+<details><summary>Answer</summary>
+The study went on for 8.5 years (which is about 8.5 $\times$ 365.25 = 3105 days). The variable `timechd` for the group that didn't have a coronary heart disease is related to number of days to end of follow-up. This means that those with earlier time (e.g. 1000 days) within this group means that they dropped out of study for some reason (e.g. due to death or unable to contact participant).
+
+</details>
+
+- Let's look also at the marginal distribution of categorical variables by the outcome. Do the levels within a factor have a higher association with `chd`? What do you notice in particular about `typechd`?
+
+```{webr-r}
+wcgs |> 
   select(where(is.factor), where(is.character), chd) |> 
   pivot_longer(cols = -chd) |> 
   count(chd, value, name)  |> 
   ggplot(aes(x = value, y = n)) + 
   geom_col(aes(fill = chd), position = "fill") + 
   facet_wrap(~name, scales = "free") +
-  colorspace::scale_fill_discrete_qualitative() +
   labs(x = "Value", y = "Proportion") +
-  theme(legend.position = "top") +
   scale_y_continuous(expand = expansion(add = c(0, 0.1)))
 ```
 
-```{r}
-faraway::wcgs |> 
-  count(chd) |> 
-  ggplot(aes(chd, n)) + geom_col(aes(fill = chd)) +
-  guides(fill = "none") +
-  colorspace::scale_fill_discrete_qualitative() +
-  scale_y_continuous(expand = expansion(add = c(0, 0.1))) +
-  labs(y = "Count")
+<details><summary>Answer</summary>
+`typechd` is derived from `chd` so those that did not have a coronary heart disease is all assigned "none" as expected.
+</details>
 
-faraway::wcgs |> 
-  mutate(chd_binary = as.numeric(chd) - 1) |> 
-  ggplot(aes(weight, chd_binary)) +
-  geom_point(alpha = 0.3) +
-  geom_smooth(method = lm, se = FALSE)
+- `ggpairs()` from `GGally` package is useful for looking at the pairwise relationship between any two covariates in the data. It will be slow to compute if you have many variables (and individual graph may be too slow to see) so you may need to subset to a smaller number of variables first. 
+
+```{webr-r}
+GGally::ggpairs(wcgs)
 ```
+
+- Let's zoom in and have a look at the relationship between `sdp` and `dbp`. What do you notice about the relationship between these variables?
+
+
+```{webr-r}
+ggplot(wcgs, aes(sdp, dbp)) + geom_point() + geom_smooth(method = "lm")
+cor(wcgs$sdp, wcgs$dbp)
+```
+<details><summary>Answer</summary>
+The variables `sdp` and `dbp` are highly correlated. Systolic pressure (`sdp`) is the maximum blood pressure during contraction of the ventricles; while diastolic pressure (`dbp`) is the minimum pressure recorded just prior to the next contraction. Both measure blood pressure (in different ways) so the high correlation is perhaps expected!
+</details>
+
+
+
+- What is the relationship between `behave` and `dibep`?
+
+```{webr-r}
+wcgs |> count(dibep, behave)
+```
+
+
+<details><summary>Answer</summary>
+
+All those that are assigned with value "A" for `dibep` are either "A1" or "A2" for `behave`. Similarly all that are assigned with value "B" for `dipep` are either "B1" or "B2" for `behave`. This suggests that perhaps `behave` was a further refinement of behaviour type based on `dibep` (so `behave` is nested within `dibep`).
+</details>
+
+
+### Model the data 
+
+- Why would you not (or would you) use `typechd` and `timechd` as predictors in the model?
+
+<details><summary>Answer</summary>
+
+The variables `typechd` and `timechd` are calculated based on the outcome! You can't use predictors that were derived based on the outcome.
+
+</details>
+
+
+```{webr-r}
+#| autorun: true
+fit1 <- glm(chd ~ age + height + weight + sdp + dbp + chol + dibep + behave + cigs + arcus, data = wcgs, family = binomial(link = "logit"))
+broom::tidy(fit1)
+```
+
+
+- Do you think the behaviour type variable (`behave`) should be included in the model?
+
+```{webr-r}
+fit2 <- glm(chd ~ age + height + weight + sdp + dbp + chol + dibep + cigs + arcus, data = wcgs, family = binomial(link = "logit"))
+anova(fit2, fit1, test = "Chi")
+broom::tidy(fit2)
+```
+
+<details><summary>Answer</summary>
+`behave` does not appear to be (statistically) significantly contribute to explaining the `chd` so we omit from the model.
+</details>
+
+
+- What do you think the best model that explains `chd` is?
+
+```{webr-r}
+# below uses stepwise selection
+final <- step(fit1, trace = 0)
+broom::tidy(final)
+```
+
+<details><summary>Answer</summary>
+Variable selection is a hard problem! We can use stepwise selection (which goes through backward selection - drop the least signiciant variable - and forward selection - add the most significant variable, until it meets a certain criteria), but an "automated" selection like this doesn't account for the domain context. 
+
+For example, `sdp` is in the final model selected by stepwise selection but `sdp` is highly correlated with `dbp`. Should `dbp` been included instead of `sdp`? Also `weight` is included but not `height`. Tall people would naturally weight more than short people with the same body type. Would it have been better to feature engineer another variable that normalises weight with respect to height? Body mass index (which is weight in kg divided by square of body height in metres) is supposed to account for weight with respect to height. 
+
+Remember that all models are wrong, but some are useful. Your goal is just to find a useful model that approximates the reality well enough.
+</details>
+
 

@@ -406,13 +406,13 @@ cancer |>
 
 
 ::: incremental
-- Suppose we consider $y_i$ as a binary category:
-$$y_i = \begin{cases} 
+- Suppose we consider $Y_i$ as a binary category:
+$$Y_i = \begin{cases} 
        1 & \text{ if $i$-th observation is in class 1}\\
        0 & \text{ if $i$-th observation is in class 2}\\
   \end{cases}$$
-- Instead of modelling the outcome directly, we consider the conditional probability, say $P(y_i = 1|\boldsymbol{x}_i)$ where $\boldsymbol{x}_i = (x_{i1}, x_{i2}, \ldots, x_{ik})$, also known as the **propensity score** of class 1.
-- The propensity score of class 2 is $$P(y_i=0|\boldsymbol{x}_i) = 1 - P(y_i=1|\boldsymbol{x}_i).$$
+- Instead of modelling the outcome directly, we consider the conditional probability, say $P(Y_i = 1|\boldsymbol{x}_i)$ where $\boldsymbol{x}_i = (x_{i1}, x_{i2}, \ldots, x_{ik})$, also known as the **propensity score** of class 1.
+- The propensity score of class 2 is $$P(Y_i=0|\boldsymbol{x}_i) = 1 - P(Y_i=1|\boldsymbol{x}_i).$$
 
 
 :::
@@ -426,7 +426,7 @@ $$y_i = \begin{cases}
 
 - The **ratio of the propensity scores of the two classes** is the odds of being in class 1:
 
-$$\text{odds} = \frac{P(y_i=1|\boldsymbol{x}_i)}{1-P(y_i=1|\boldsymbol{x}_i)}.$$
+$$\text{odds} = \frac{P(Y_i=1|\boldsymbol{x}_i)}{1-P(Y_i=1|\boldsymbol{x}_i)}.$$
 
 
 ## Logistic function
@@ -659,7 +659,7 @@ $\dfrac{\exp(`r round(p, 4)`)}{1 + \exp(`r round(p, 4)`)} = `r round(exp(p)/(1 +
 
 ## Logistic regression is a linear classifier
 
-* We choose the threshold $q$ such that $P(y_i=1|\boldsymbol{x}_i) \ge q$ is considered to be in class 1. 
+* We choose the threshold $q$ such that $P(Y_i=1|\boldsymbol{x}_i) \ge q$ is considered to be in class 1. 
 * The separation in class is a point for one variable, line for two variables and a hyperplane for more than two variables.
 
 ```{r cancer-split}

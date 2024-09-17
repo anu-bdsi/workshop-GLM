@@ -235,7 +235,7 @@
     "href": "index.html#resources",
     "title": "Generalised Linear Models",
     "section": "📑 Resources",
-    "text": "📑 Resources\n\nFaraway (2009) Linear Models with R (for review of linear models)\nChapters 2, 3, and 5 from Faraway (2016) Extending the Linear Model with R. 2nd Edition."
+    "text": "📑 Resources\n\nFaraway (2009) Linear Models with R (for review of linear models)\nChapters 2, 3, and 5 from Faraway (2016) Extending the Linear Model with R. 2nd Edition.\nDunn and Smyth (2018) Generalized Linear Models With Examples in R"
   },
   {
     "objectID": "index.html#self-paced-exercises",
@@ -263,6 +263,6 @@
     "href": "slides/slide2.html#case-study",
     "title": "Modelling for count responses",
     "section": "Case study:",
-    "text": "Case study:\n\n\n\n\nanu-bdsi.github.io/workshop-GLM/"
+    "text": "Case study:\n\nglm(Count ~ Time*Length*Condition, data = rootstock, family = poisson()) |&gt; broom::tidy()\n\n\n\n\n\nanu-bdsi.github.io/workshop-GLM/"
   }
 ]

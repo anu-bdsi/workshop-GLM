@@ -8,7 +8,7 @@
 <link href="../site_libs/quarto-html/light-border.css" rel="stylesheet">
 <link href="../site_libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.5.31">
+  <meta name="generator" content="quarto-1.5.30">
 
   <meta name="author" content="Emi Tanaka">
   <title>ANU BDSI – Modelling for binary or proportion responses</title>
@@ -1295,23 +1295,23 @@ $residual.scale
 <ul>
 <li>You need the total cases for each proportion to fit the model.</li>
 <li>The exception is if the total cases are the same for all observations.</li>
-<li>⚠️ Below model would be wrong to use!</li>
 </ul>
 <div class="f2">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a></a>fitp <span class="ot">&lt;-</span> <span class="fu">glm</span>(Proportion_Germ <span class="sc">~</span> Extract <span class="sc">*</span> Seeds,</span>
-<span id="cb35-2"><a></a>                   <span class="at">data =</span> germ, </span>
-<span id="cb35-3"><a></a>                   <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>))</span>
-<span id="cb35-4"><a></a></span>
-<span id="cb35-5"><a></a>broom<span class="sc">::</span><span class="fu">tidy</span>(fitp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb35-2"><a></a>            <span class="at">data =</span> germ, </span>
+<span id="cb35-3"><a></a>            <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>),</span>
+<span id="cb35-4"><a></a>            <span class="at">weights =</span> Total)</span>
+<span id="cb35-5"><a></a></span>
+<span id="cb35-6"><a></a>broom<span class="sc">::</span><span class="fu">tidy</span>(fitp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 4 × 5
   term                      estimate std.error statistic p.value
   &lt;chr&gt;                        &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
-1 (Intercept)                 -0.726     0.954    -0.761   0.447
-2 ExtractCucumber              0.600     1.31      0.458   0.647
-3 SeedsOA75                    0.200     1.33      0.150   0.880
-4 ExtractCucumber:SeedsOA75    0.848     1.84      0.461   0.645</code></pre>
+1 (Intercept)                 -0.412     0.184    -2.24   0.0252
+2 ExtractCucumber              0.540     0.250     2.16   0.0306
+3 SeedsOA75                   -0.146     0.223    -0.654  0.513 
+4 ExtractCucumber:SeedsOA75    0.778     0.306     2.54   0.0111</code></pre>
 </div>
 </div>
 </div>

@@ -31,19 +31,12 @@ webr:
 
 
 
-## {{< fa crosshairs >}} Current learning objective
-
 ```{r}
 #| include: false
 library(tidyverse)
 source("setup.R")
 ```
 
+## Case study: {background-color="#F5EDDE"}
 
-
-```{r}
-#| results: asis 
-#| echo: false
-learning_objectives(2)
-```
 

@@ -741,48 +741,42 @@ cancer |>
 :::
 
 
-## Case study: survival on titanic {.scrollable background-color="#F5EDDE"}
+## Case study: Germination of seeds {.scrollable background-color="#F5EDDE"}
 
 * Response does not have to be a binary response to fit a logistic regression. 
-* Observations may be count (out of fixed trials) as below.
+* Observations may be count (out of fixed trials).
+* Below is an experiment where the number of seeds germination was recorded for two types of seeds and two types of root extracts.
 
 ::: columns
 
-::: {.column width="70%"}
+::: {.column width="65%"}
 
-```{r titanic-data}
+```{r germ-data}
 #| code-fold: true
-#| fig-height: 7
-titanic <- datasets::Titanic |> 
-  as.data.frame() |>  
-  pivot_wider(c(Class, Sex, Age), 
-              names_from = Survived, 
-              values_from = Freq, 
-              names_prefix = "Survived_") |> 
-  filter(Survived_No > 0 | Survived_Yes > 0) |> 
-  mutate(Proportion_Survived = Survived_Yes / (Survived_Yes + Survived_No))
+data(germ, package = "GLMsData")
+germ <- germ |> 
+  mutate(Proportion_Germ = Germ / Total)
 ```
 ```{r}
 #| echo: false
-knitr::kable(titanic)
+knitr::kable(germ)
 ```
 
 :::
 
-::: {.column width="30%"}
+::: {.column width="35%"}
 
 ```{r, dev.args=list(bg="transparent")}
 #| code-fold: true
-#| fig-width: 5.5
-#| fig-height: 7
-datasets::Titanic |>  
-  as.data.frame() |> 
-  mutate(Survived = factor(Survived, levels = c("Yes", "No"))) |> 
-  ggplot(aes(Sex, Freq)) +
-  geom_col(aes(fill = Survived, group = Age), position = "fill") +
-  facet_grid(Class ~ Age) +
-  labs(y = "Proportion")  +
-  theme(legend.position = "top")
+#| fig-width: 7
+#| fig-height: 5.8
+germ |>  
+  mutate(NotGerm = Total - Germ) |> 
+  pivot_longer(cols = c(Germ, NotGerm), names_to = "Germ", values_to = "Freq") |>
+  ggplot(aes(Germ, Freq)) +
+  geom_col() +
+  facet_grid(Extract ~ Seeds, labeller = label_both) +
+  labs(y = "Count")  
 ```
 
 :::
@@ -796,12 +790,12 @@ datasets::Titanic |>
 
 ::: f2
 
-```{r titanic-fit}
-titanic_fit <- glm(cbind(Survived_Yes, Survived_No) ~ Class + Age + Sex,
-                   data = titanic, 
+```{r fit}
+fit <- glm(cbind(Germ, Total - Germ) ~ Extract * Seeds,
+                   data = germ, 
                    family = binomial(link = "logit"))
 
-broom::tidy(titanic_fit)
+broom::tidy(fit)
 ```
 
 :::
@@ -815,12 +809,12 @@ broom::tidy(titanic_fit)
 
 ::: f2
 
-```{r titanic-fit2}
-titanic_fit <- glm(Proportion_Survived ~ Class + Age + Sex,
-                   data = titanic, 
+```{r fitp}
+fitp <- glm(Proportion_Germ ~ Extract * Seeds,
+                   data = germ, 
                    family = binomial(link = "logit"))
 
-broom::tidy(titanic_fit)
+broom::tidy(fitp)
 ```
 
 :::

@@ -790,12 +790,12 @@ Model 2: log10(longevity) ~ thorax + activity + thorax:activity
 <h2>Propensity score</h2>
 <div>
 <ul>
-<li class="fragment">Suppose we consider <span class="math inline">y_i</span> as a binary category: <span class="math display">y_i = \begin{cases}
+<li class="fragment">Suppose we consider <span class="math inline">Y_i</span> as a binary category: <span class="math display">Y_i = \begin{cases}
      1 &amp; \text{ if $i$-th observation is in class 1}\\
      0 &amp; \text{ if $i$-th observation is in class 2}\\
 \end{cases}</span></li>
-<li class="fragment">Instead of modelling the outcome directly, we consider the conditional probability, say <span class="math inline">P(y_i = 1|\boldsymbol{x}_i)</span> where <span class="math inline">\boldsymbol{x}_i = (x_{i1}, x_{i2}, \ldots, x_{ik})</span>, also known as the <strong>propensity score</strong> of class 1.</li>
-<li class="fragment">The propensity score of class 2 is <span class="math display">P(y_i=0|\boldsymbol{x}_i) = 1 - P(y_i=1|\boldsymbol{x}_i).</span></li>
+<li class="fragment">Instead of modelling the outcome directly, we consider the conditional probability, say <span class="math inline">P(Y_i = 1|\boldsymbol{x}_i)</span> where <span class="math inline">\boldsymbol{x}_i = (x_{i1}, x_{i2}, \ldots, x_{ik})</span>, also known as the <strong>propensity score</strong> of class 1.</li>
+<li class="fragment">The propensity score of class 2 is <span class="math display">P(Y_i=0|\boldsymbol{x}_i) = 1 - P(Y_i=1|\boldsymbol{x}_i).</span></li>
 </ul>
 </div>
 </section>
@@ -808,7 +808,7 @@ Model 2: log10(longevity) ~ thorax + activity + thorax:activity
 <ul>
 <li>The <strong>ratio of the propensity scores of the two classes</strong> is the odds of being in class 1:</li>
 </ul>
-<p><span class="math display">\text{odds} = \frac{P(y_i=1|\boldsymbol{x}_i)}{1-P(y_i=1|\boldsymbol{x}_i)}.</span></p>
+<p><span class="math display">\text{odds} = \frac{P(Y_i=1|\boldsymbol{x}_i)}{1-P(Y_i=1|\boldsymbol{x}_i)}.</span></p>
 </div>
 </section>
 <section id="logistic-function" class="slide level2">
@@ -1034,7 +1034,7 @@ $residual.scale
 <section id="logistic-regression-is-a-linear-classifier" class="slide level2">
 <h2>Logistic regression is a linear classifier</h2>
 <ul>
-<li>We choose the threshold <span class="math inline">q</span> such that <span class="math inline">P(y_i=1|\boldsymbol{x}_i) \ge q</span> is considered to be in class 1.</li>
+<li>We choose the threshold <span class="math inline">q</span> such that <span class="math inline">P(Y_i=1|\boldsymbol{x}_i) \ge q</span> is considered to be in class 1.</li>
 <li>The separation in class is a point for one variable, line for two variables and a hyperplane for more than two variables.</li>
 </ul>
 <div class="flex">

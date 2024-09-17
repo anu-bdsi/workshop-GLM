@@ -8,7 +8,7 @@
 <link href="../site_libs/quarto-html/light-border.css" rel="stylesheet">
 <link href="../site_libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.5.30">
+  <meta name="generator" content="quarto-1.5.31">
 
   <meta name="author" content="Emi Tanaka">
   <title>ANU BDSI – Modelling for binary or proportion responses</title>
@@ -1062,25 +1062,21 @@ $residual.scale
 </div>
 </div>
 </section>
-<section id="case-study-survival-on-titanic" class="slide level2 scrollable" data-background-color="#F5EDDE">
-<h2>Case study: survival on titanic</h2>
+<section id="case-study-germination-of-seeds" class="slide level2 scrollable" data-background-color="#F5EDDE">
+<h2>Case study: Germination of seeds</h2>
 <ul>
 <li>Response does not have to be a binary response to fit a logistic regression.</li>
-<li>Observations may be count (out of fixed trials) as below.</li>
+<li>Observations may be count (out of fixed trials).</li>
+<li>Below is an experiment where the number of seeds germination was recorded for two types of seeds and two types of root extracts.</li>
 </ul>
 <div class="columns">
-<div class="column" style="width:70%;">
+<div class="column" style="width:65%;">
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a></a>titanic <span class="ot">&lt;-</span> datasets<span class="sc">::</span>Titanic <span class="sc">|&gt;</span> </span>
-<span id="cb31-2"><a></a>  <span class="fu">as.data.frame</span>() <span class="sc">|&gt;</span>  </span>
-<span id="cb31-3"><a></a>  <span class="fu">pivot_wider</span>(<span class="fu">c</span>(Class, Sex, Age), </span>
-<span id="cb31-4"><a></a>              <span class="at">names_from =</span> Survived, </span>
-<span id="cb31-5"><a></a>              <span class="at">values_from =</span> Freq, </span>
-<span id="cb31-6"><a></a>              <span class="at">names_prefix =</span> <span class="st">"Survived_"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb31-7"><a></a>  <span class="fu">filter</span>(Survived_No <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">|</span> Survived_Yes <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb31-8"><a></a>  <span class="fu">mutate</span>(<span class="at">Proportion_Survived =</span> Survived_Yes <span class="sc">/</span> (Survived_Yes <span class="sc">+</span> Survived_No))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a></a><span class="fu">data</span>(germ, <span class="at">package =</span> <span class="st">"GLMsData"</span>)</span>
+<span id="cb31-2"><a></a>germ <span class="ot">&lt;-</span> germ <span class="sc">|&gt;</span> </span>
+<span id="cb31-3"><a></a>  <span class="fu">mutate</span>(<span class="at">Proportion_Germ =</span> Germ <span class="sc">/</span> Total)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell">
@@ -1088,148 +1084,181 @@ $residual.scale
 <table>
 <thead>
 <tr class="header">
-<th style="text-align: left;">Class</th>
-<th style="text-align: left;">Sex</th>
-<th style="text-align: left;">Age</th>
-<th style="text-align: right;">Survived_No</th>
-<th style="text-align: right;">Survived_Yes</th>
-<th style="text-align: right;">Proportion_Survived</th>
+<th style="text-align: right;">Germ</th>
+<th style="text-align: right;">Total</th>
+<th style="text-align: left;">Extract</th>
+<th style="text-align: left;">Seeds</th>
+<th style="text-align: right;">Proportion_Germ</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">1st</td>
-<td style="text-align: left;">Male</td>
-<td style="text-align: left;">Child</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">5</td>
-<td style="text-align: right;">1.0000000</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">39</td>
+<td style="text-align: left;">Bean</td>
+<td style="text-align: left;">OA75</td>
+<td style="text-align: right;">0.2564103</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">2nd</td>
-<td style="text-align: left;">Male</td>
-<td style="text-align: left;">Child</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">11</td>
-<td style="text-align: right;">1.0000000</td>
+<td style="text-align: right;">23</td>
+<td style="text-align: right;">62</td>
+<td style="text-align: left;">Bean</td>
+<td style="text-align: left;">OA75</td>
+<td style="text-align: right;">0.3709677</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">3rd</td>
-<td style="text-align: left;">Male</td>
-<td style="text-align: left;">Child</td>
-<td style="text-align: right;">35</td>
-<td style="text-align: right;">13</td>
-<td style="text-align: right;">0.2708333</td>
+<td style="text-align: right;">23</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: left;">Bean</td>
+<td style="text-align: left;">OA75</td>
+<td style="text-align: right;">0.2839506</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">1st</td>
-<td style="text-align: left;">Female</td>
-<td style="text-align: left;">Child</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1.0000000</td>
+<td style="text-align: right;">26</td>
+<td style="text-align: right;">51</td>
+<td style="text-align: left;">Bean</td>
+<td style="text-align: left;">OA75</td>
+<td style="text-align: right;">0.5098039</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">2nd</td>
-<td style="text-align: left;">Female</td>
-<td style="text-align: left;">Child</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">13</td>
-<td style="text-align: right;">1.0000000</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">3rd</td>
-<td style="text-align: left;">Female</td>
-<td style="text-align: left;">Child</td>
 <td style="text-align: right;">17</td>
-<td style="text-align: right;">14</td>
-<td style="text-align: right;">0.4516129</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">1st</td>
-<td style="text-align: left;">Male</td>
-<td style="text-align: left;">Adult</td>
-<td style="text-align: right;">118</td>
-<td style="text-align: right;">57</td>
-<td style="text-align: right;">0.3257143</td>
+<td style="text-align: right;">39</td>
+<td style="text-align: left;">Bean</td>
+<td style="text-align: left;">OA75</td>
+<td style="text-align: right;">0.4358974</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">2nd</td>
-<td style="text-align: left;">Male</td>
-<td style="text-align: left;">Adult</td>
-<td style="text-align: right;">154</td>
-<td style="text-align: right;">14</td>
-<td style="text-align: right;">0.0833333</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: left;">Cucumber</td>
+<td style="text-align: left;">OA75</td>
+<td style="text-align: right;">0.8333333</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">3rd</td>
-<td style="text-align: left;">Male</td>
-<td style="text-align: left;">Adult</td>
-<td style="text-align: right;">387</td>
-<td style="text-align: right;">75</td>
-<td style="text-align: right;">0.1623377</td>
+<td style="text-align: right;">53</td>
+<td style="text-align: right;">74</td>
+<td style="text-align: left;">Cucumber</td>
+<td style="text-align: left;">OA75</td>
+<td style="text-align: right;">0.7162162</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Crew</td>
-<td style="text-align: left;">Male</td>
-<td style="text-align: left;">Adult</td>
-<td style="text-align: right;">670</td>
-<td style="text-align: right;">192</td>
-<td style="text-align: right;">0.2227378</td>
+<td style="text-align: right;">55</td>
+<td style="text-align: right;">72</td>
+<td style="text-align: left;">Cucumber</td>
+<td style="text-align: left;">OA75</td>
+<td style="text-align: right;">0.7638889</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">1st</td>
-<td style="text-align: left;">Female</td>
-<td style="text-align: left;">Adult</td>
-<td style="text-align: right;">4</td>
-<td style="text-align: right;">140</td>
-<td style="text-align: right;">0.9722222</td>
+<td style="text-align: right;">32</td>
+<td style="text-align: right;">51</td>
+<td style="text-align: left;">Cucumber</td>
+<td style="text-align: left;">OA75</td>
+<td style="text-align: right;">0.6274510</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">2nd</td>
-<td style="text-align: left;">Female</td>
-<td style="text-align: left;">Adult</td>
+<td style="text-align: right;">46</td>
+<td style="text-align: right;">79</td>
+<td style="text-align: left;">Cucumber</td>
+<td style="text-align: left;">OA75</td>
+<td style="text-align: right;">0.5822785</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">10</td>
 <td style="text-align: right;">13</td>
-<td style="text-align: right;">80</td>
-<td style="text-align: right;">0.8602151</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">3rd</td>
-<td style="text-align: left;">Female</td>
-<td style="text-align: left;">Adult</td>
-<td style="text-align: right;">89</td>
-<td style="text-align: right;">76</td>
-<td style="text-align: right;">0.4606061</td>
+<td style="text-align: left;">Cucumber</td>
+<td style="text-align: left;">OA75</td>
+<td style="text-align: right;">0.7692308</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Crew</td>
-<td style="text-align: left;">Female</td>
-<td style="text-align: left;">Adult</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: left;">Bean</td>
+<td style="text-align: left;">OA73</td>
+<td style="text-align: right;">0.5000000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: left;">Bean</td>
+<td style="text-align: left;">OA73</td>
+<td style="text-align: right;">0.3333333</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">28</td>
+<td style="text-align: left;">Bean</td>
+<td style="text-align: left;">OA73</td>
+<td style="text-align: right;">0.2857143</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">23</td>
+<td style="text-align: right;">45</td>
+<td style="text-align: left;">Bean</td>
+<td style="text-align: left;">OA73</td>
+<td style="text-align: right;">0.5111111</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">Bean</td>
+<td style="text-align: left;">OA73</td>
+<td style="text-align: right;">0.0000000</td>
+</tr>
+<tr class="odd">
 <td style="text-align: right;">3</td>
-<td style="text-align: right;">20</td>
-<td style="text-align: right;">0.8695652</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: left;">Cucumber</td>
+<td style="text-align: left;">OA73</td>
+<td style="text-align: right;">0.2500000</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">22</td>
+<td style="text-align: right;">41</td>
+<td style="text-align: left;">Cucumber</td>
+<td style="text-align: left;">OA73</td>
+<td style="text-align: right;">0.5365854</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: left;">Cucumber</td>
+<td style="text-align: left;">OA73</td>
+<td style="text-align: right;">0.5000000</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">32</td>
+<td style="text-align: right;">51</td>
+<td style="text-align: left;">Cucumber</td>
+<td style="text-align: left;">OA73</td>
+<td style="text-align: right;">0.6274510</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: left;">Cucumber</td>
+<td style="text-align: left;">OA73</td>
+<td style="text-align: right;">0.4285714</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
-</div><div class="column" style="width:30%;">
+</div><div class="column" style="width:35%;">
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a></a>datasets<span class="sc">::</span>Titanic <span class="sc">|&gt;</span>  </span>
-<span id="cb32-2"><a></a>  <span class="fu">as.data.frame</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb32-3"><a></a>  <span class="fu">mutate</span>(<span class="at">Survived =</span> <span class="fu">factor</span>(Survived, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Yes"</span>, <span class="st">"No"</span>))) <span class="sc">|&gt;</span> </span>
-<span id="cb32-4"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(Sex, Freq)) <span class="sc">+</span></span>
-<span id="cb32-5"><a></a>  <span class="fu">geom_col</span>(<span class="fu">aes</span>(<span class="at">fill =</span> Survived, <span class="at">group =</span> Age), <span class="at">position =</span> <span class="st">"fill"</span>) <span class="sc">+</span></span>
-<span id="cb32-6"><a></a>  <span class="fu">facet_grid</span>(Class <span class="sc">~</span> Age) <span class="sc">+</span></span>
-<span id="cb32-7"><a></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Proportion"</span>)  <span class="sc">+</span></span>
-<span id="cb32-8"><a></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a></a>germ <span class="sc">|&gt;</span>  </span>
+<span id="cb32-2"><a></a>  <span class="fu">mutate</span>(<span class="at">NotGerm =</span> Total <span class="sc">-</span> Germ) <span class="sc">|&gt;</span> </span>
+<span id="cb32-3"><a></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(Germ, NotGerm), <span class="at">names_to =</span> <span class="st">"Germ"</span>, <span class="at">values_to =</span> <span class="st">"Freq"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb32-4"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(Germ, Freq)) <span class="sc">+</span></span>
+<span id="cb32-5"><a></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
+<span id="cb32-6"><a></a>  <span class="fu">facet_grid</span>(Extract <span class="sc">~</span> Seeds, <span class="at">labeller =</span> label_both) <span class="sc">+</span></span>
+<span id="cb32-7"><a></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Count"</span>)  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="slide1_files/figure-revealjs/unnamed-chunk-13-1.png" width="528"></p>
+<p><img data-src="slide1_files/figure-revealjs/unnamed-chunk-13-1.png" width="672"></p>
 </figure>
 </div>
 </div>
@@ -1244,21 +1273,19 @@ $residual.scale
 </ul>
 <div class="f2">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a></a>titanic_fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(<span class="fu">cbind</span>(Survived_Yes, Survived_No) <span class="sc">~</span> Class <span class="sc">+</span> Age <span class="sc">+</span> Sex,</span>
-<span id="cb33-2"><a></a>                   <span class="at">data =</span> titanic, </span>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a></a>fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(<span class="fu">cbind</span>(Germ, Total <span class="sc">-</span> Germ) <span class="sc">~</span> Extract <span class="sc">*</span> Seeds,</span>
+<span id="cb33-2"><a></a>                   <span class="at">data =</span> germ, </span>
 <span id="cb33-3"><a></a>                   <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>))</span>
 <span id="cb33-4"><a></a></span>
-<span id="cb33-5"><a></a>broom<span class="sc">::</span><span class="fu">tidy</span>(titanic_fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb33-5"><a></a>broom<span class="sc">::</span><span class="fu">tidy</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 6 × 5
-  term        estimate std.error statistic  p.value
-  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
-1 (Intercept)    0.685     0.273      2.51 1.21e- 2
-2 Class2nd      -1.02      0.196     -5.19 2.05e- 7
-3 Class3rd      -1.78      0.172    -10.4  3.69e-25
-4 ClassCrew     -0.858     0.157     -5.45 5.00e- 8
-5 AgeAdult      -1.06      0.244     -4.35 1.36e- 5
-6 SexFemale      2.42      0.140     17.2  1.43e-66</code></pre>
+<pre><code># A tibble: 4 × 5
+  term                      estimate std.error statistic p.value
+  &lt;chr&gt;                        &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
+1 (Intercept)                 -0.412     0.184    -2.24   0.0252
+2 ExtractCucumber              0.540     0.250     2.16   0.0306
+3 SeedsOA75                   -0.146     0.223    -0.654  0.513 
+4 ExtractCucumber:SeedsOA75    0.778     0.306     2.54   0.0111</code></pre>
 </div>
 </div>
 </div>
@@ -1272,21 +1299,19 @@ $residual.scale
 </ul>
 <div class="f2">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a></a>titanic_fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(Proportion_Survived <span class="sc">~</span> Class <span class="sc">+</span> Age <span class="sc">+</span> Sex,</span>
-<span id="cb35-2"><a></a>                   <span class="at">data =</span> titanic, </span>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a></a>fitp <span class="ot">&lt;-</span> <span class="fu">glm</span>(Proportion_Germ <span class="sc">~</span> Extract <span class="sc">*</span> Seeds,</span>
+<span id="cb35-2"><a></a>                   <span class="at">data =</span> germ, </span>
 <span id="cb35-3"><a></a>                   <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>))</span>
 <span id="cb35-4"><a></a></span>
-<span id="cb35-5"><a></a>broom<span class="sc">::</span><span class="fu">tidy</span>(titanic_fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb35-5"><a></a>broom<span class="sc">::</span><span class="fu">tidy</span>(fitp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 6 × 5
-  term        estimate std.error statistic p.value
-  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
-1 (Intercept)    2.23       2.04     1.09    0.276
-2 Class2nd      -0.752      2.09    -0.360   0.719
-3 Class3rd      -3.36       2.30    -1.46    0.144
-4 ClassCrew     -0.914      2.34    -0.391   0.696
-5 AgeAdult      -2.28       1.81    -1.26    0.208
-6 SexFemale      2.46       1.65     1.49    0.136</code></pre>
+<pre><code># A tibble: 4 × 5
+  term                      estimate std.error statistic p.value
+  &lt;chr&gt;                        &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
+1 (Intercept)                 -0.726     0.954    -0.761   0.447
+2 ExtractCucumber              0.600     1.31      0.458   0.647
+3 SeedsOA75                    0.200     1.33      0.150   0.880
+4 ExtractCucumber:SeedsOA75    0.848     1.84      0.461   0.645</code></pre>
 </div>
 </div>
 </div>

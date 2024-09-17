@@ -8,7 +8,7 @@
 <link href="../site_libs/quarto-html/light-border.css" rel="stylesheet">
 <link href="../site_libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.5.31">
+  <meta name="generator" content="quarto-1.5.30">
 
   <meta name="author" content="Emi Tanaka">
   <title>ANU BDSI – Modelling for binary or proportion responses</title>
@@ -1239,6 +1239,9 @@ $residual.scale
 </section>
 <section id="logistic-regression-with-count-responses" class="slide level2">
 <h2>Logistic regression with count responses</h2>
+<ul>
+<li>The response need to be specified as a two column matrix with the counts of each class.</li>
+</ul>
 <div class="f2">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a></a>titanic_fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(<span class="fu">cbind</span>(Survived_Yes, Survived_No) <span class="sc">~</span> Class <span class="sc">+</span> Age <span class="sc">+</span> Sex,</span>
@@ -1292,7 +1295,7 @@ $residual.scale
 <h2>Summary</h2>
 <ul>
 <li>Odds ratio is the ratio of the odds of the event happening in one group to the odds of the event happening in another group.</li>
-<li>Logistic regression can be used to model binary or proportion (out of total cases) responses.</li>
+<li>Logistic regression can be used to model binary or proportion (out of total cases) responses by modelling the log odds as a linear combination of predictors.</li>
 <li>Logistic regression is a linear classifier so it doesn’t work well where the separation between classes are non-linear.</li>
 <li>Use <code>glm(y ~ x, family = binomial(link = "logit"))</code> to fit a logistic regression model.</li>
 </ul>
@@ -1640,7 +1643,7 @@ $residual.scale
       }
         var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
         var mailtoRegex = new RegExp(/^mailto:/);
-          var filterRegex = new RegExp('/' + window.location.host + '/');
+          var filterRegex = new RegExp("https:\/\/anu-bdsi\.github\.io\/workshop-GLM\/");
         var isInternal = (href) => {
             return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
         }

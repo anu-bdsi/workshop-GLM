@@ -113,6 +113,7 @@ Click on the heading to open the slides in a new tab, or click on details to see
 
 - Faraway (2009) Linear Models with R (_for review of linear models_)
 - Chapters 2, 3, and 5 from Faraway (2016) Extending the Linear Model with R. 2nd Edition.
+- Dunn and Smyth (2018) Generalized Linear Models With Examples in R
 
 ## 🏋️‍♀️ Self-paced exercises
 

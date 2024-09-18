@@ -1,5 +1,7 @@
 project:
   type: website
+  resources:
+    - "data/cancer.csv"
 website:
   title: "ANU BDSI"
   navbar:

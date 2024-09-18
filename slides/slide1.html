@@ -547,7 +547,7 @@
   // Document level settings ----
 
   // Determine if we need to install R packages
-  globalThis.qwebrInstallRPackagesList = ['tidyverse', 'broom'];
+  globalThis.qwebrInstallRPackagesList = ['tidyverse', 'broom', 'GLMsData'];
 
   // Specify possible locations to search for the repository
   globalThis.qwebrPackageRepoURLS = ['https://repo.r-wasm.org/'];
@@ -569,7 +569,7 @@
   };
 
   // Store cell data
-  globalThis.qwebrCellDetails = [{"options":{"results":"markup","output":"true","out-height":"","out-width":"700px","fig-height":5,"classes":"","label":"unnamed-chunk-1","read-only":"false","context":"interactive","comment":"","warning":"true","code-fold":"true","fig-width":7,"autorun":"true","dpi":72,"message":"true","fig-cap":""},"id":1,"code":"library(tidyverse)\ncancer <- read_csv(\"https://emitanaka.org/iml/data/cancer.csv\") |> \n  mutate(diagnosis_malignant = ifelse(diagnosis==\"M\", 1, 0),\n         diagnosis = factor(diagnosis, levels = c(\"B\", \"M\"))) |> \n  janitor::clean_names()"},{"options":{"results":"markup","context":"interactive","output":"true","fig-cap":"","out-height":"","out-width":"700px","fig-height":5,"message":"true","warning":"true","comment":"","autorun":"false","read-only":"false","classes":"","dpi":72,"label":"unnamed-chunk-2","fig-width":7},"id":2,"code":"str(cancer$diagnosis_malignant)\ntable(cancer$diagnosis_malignant)"},{"options":{"results":"markup","context":"interactive","output":"true","fig-cap":"","out-height":"","out-width":"700px","fig-height":5,"message":"true","warning":"true","comment":"","autorun":"true","read-only":"false","classes":"","dpi":72,"label":"unnamed-chunk-3","fig-width":7},"id":3,"code":"cancer_fit <- glm(diagnosis_malignant ~ radius_mean + concave_points_mean, \n                  data = cancer, \n                  family = binomial(link = \"logit\"))\n\n# coef(cancer_fit)"},{"options":{"results":"markup","context":"interactive","output":"true","fig-cap":"","out-height":"","out-width":"700px","fig-height":5,"message":"true","warning":"true","comment":"","autorun":"false","read-only":"false","classes":"","dpi":72,"label":"unnamed-chunk-4","fig-width":7},"id":4,"code":"dat <- data.frame(radius_mean = 15, concave_points_mean = 0.05)\nbroom::augment(cancer_fit, \n               newdata = dat,  \n               type.predict = \"response\", \n               se_fit = TRUE)"},{"options":{"results":"markup","context":"interactive","output":"true","fig-cap":"","out-height":"","out-width":"700px","fig-height":5,"message":"true","warning":"true","comment":"","autorun":"false","read-only":"false","classes":"","dpi":72,"label":"unnamed-chunk-5","fig-width":7},"id":5,"code":"predict(cancer_fit, newdata = dat, type = \"response\", se.fit = TRUE)"}];
+  globalThis.qwebrCellDetails = [{"id":1,"code":"library(tidyverse)\ncancer <- read_csv(\"https://anu-bdsi.github.io/workshop-GLM/data/cancer.csv\")","options":{"output":"true","context":"interactive","fig-width":7,"read-only":"false","label":"unnamed-chunk-1","dpi":72,"code-fold":"true","warning":"true","out-height":"","autorun":"true","fig-cap":"","fig-height":5,"message":"true","out-width":"700px","comment":"","results":"markup","classes":""}},{"id":2,"code":"str(cancer$diagnosis_malignant)\ntable(cancer$diagnosis_malignant)","options":{"output":"true","classes":"","context":"interactive","read-only":"false","warning":"true","fig-width":7,"comment":"","results":"markup","label":"unnamed-chunk-2","fig-cap":"","fig-height":5,"message":"true","out-width":"700px","autorun":"false","out-height":"","dpi":72}},{"id":3,"code":"cancer_fit <- glm(diagnosis_malignant ~ radius_mean + concave_points_mean, \n                  data = cancer, \n                  family = binomial(link = \"logit\"))\n\ncoef(cancer_fit)","options":{"output":"true","classes":"","context":"interactive","read-only":"false","warning":"true","fig-width":7,"comment":"","results":"markup","label":"unnamed-chunk-3","fig-cap":"","fig-height":5,"message":"true","out-width":"700px","autorun":"true","out-height":"","dpi":72}},{"id":4,"code":"str(cancer$diagnosis)","options":{"output":"true","classes":"","context":"interactive","read-only":"false","warning":"true","fig-width":7,"comment":"","results":"markup","label":"unnamed-chunk-4","fig-cap":"","fig-height":5,"message":"true","out-width":"700px","autorun":"false","out-height":"","dpi":72}},{"id":5,"code":"cancer_fit2 <- glm(diagnosis ~ radius_mean + concave_points_mean, \n                   data = cancer, \n                   family = binomial(link = \"logit\"))\ncoef(cancer_fit2)","options":{"output":"true","classes":"","context":"interactive","read-only":"false","warning":"true","fig-width":7,"comment":"","results":"markup","label":"unnamed-chunk-5","fig-cap":"","fig-height":5,"message":"true","out-width":"700px","autorun":"false","out-height":"","dpi":72}},{"id":6,"code":"cancer_fit3 <- glm(diagnosis ~ radius_mean + concave_points_mean, \n                   data = cancer |> mutate(diagnosis = factor(diagnosis, levels = c(\"M\", \"B\"))),  \n                   family = binomial(link = \"logit\"))\ncoef(cancer_fit3)","options":{"output":"true","context":"interactive","fig-width":7,"read-only":"false","label":"unnamed-chunk-6","dpi":72,"code-line-numbers":"2","warning":"true","out-height":"","autorun":"false","fig-cap":"","fig-height":5,"message":"true","out-width":"700px","comment":"","results":"markup","classes":""}},{"id":7,"code":"broom::tidy(cancer_fit) # coefficients","options":{"output":"true","classes":"","context":"interactive","read-only":"false","warning":"true","fig-width":7,"comment":"","results":"markup","label":"unnamed-chunk-7","fig-cap":"","fig-height":5,"message":"true","out-width":"700px","autorun":"false","out-height":"","dpi":72}},{"id":8,"code":"dat <- data.frame(radius_mean = 15, concave_points_mean = 0.05)\nbroom::augment(cancer_fit, \n               newdata = dat,  \n               type.predict = \"response\", \n               se_fit = TRUE)","options":{"output":"true","classes":"","context":"interactive","read-only":"false","warning":"true","fig-width":7,"comment":"","results":"markup","label":"unnamed-chunk-8","fig-cap":"","fig-height":5,"message":"true","out-width":"700px","autorun":"false","out-height":"","dpi":72}},{"id":9,"code":"predict(cancer_fit, newdata = dat, type = \"response\", se.fit = TRUE)","options":{"output":"true","classes":"","context":"interactive","read-only":"false","warning":"true","fig-width":7,"comment":"","results":"markup","label":"unnamed-chunk-9","fig-cap":"","fig-height":5,"message":"true","out-width":"700px","autorun":"false","out-height":"","dpi":72}},{"id":10,"code":"data(germ, package = \"GLMsData\")\ngerm <- germ |> \n  mutate(Proportion_Germ = Germ / Total)","options":{"output":"true","classes":"","context":"interactive","read-only":"false","warning":"true","fig-width":7,"comment":"","results":"markup","label":"unnamed-chunk-10","fig-cap":"","fig-height":5,"message":"true","out-width":"700px","autorun":"true","out-height":"","dpi":72}},{"id":11,"code":"fit <- glm(cbind(Germ, Total - Germ) ~ Extract * Seeds,\n                   data = germ, \n                   family = binomial(link = \"logit\"))\n\nbroom::tidy(fit)","options":{"output":"true","classes":"","context":"interactive","read-only":"false","warning":"true","fig-width":7,"comment":"","results":"markup","label":"unnamed-chunk-11","fig-cap":"","fig-height":5,"message":"true","out-width":"700px","autorun":"true","out-height":"","dpi":72}},{"id":12,"code":"fitp <- glm(Proportion_Germ ~ Extract * Seeds,\n            data = germ, \n            family = binomial(link = \"logit\"),\n            weights = Total)\n\nbroom::tidy(fitp)","options":{"output":"true","classes":"","context":"interactive","read-only":"false","warning":"true","fig-width":7,"comment":"","results":"markup","label":"unnamed-chunk-12","fig-cap":"","fig-height":5,"message":"true","out-width":"700px","autorun":"true","out-height":"","dpi":72}}];
 
   </script>
   <script type="module">
@@ -1742,7 +1742,7 @@ Model 2: log10(longevity) ~ thorax + activity + thorax:activity
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb10-2"><a></a>cancer <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"../data/cancer.csv"</span>) </span>
+<span id="cb10-2"><a></a>cancer <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"https://anu-bdsi.github.io/workshop-GLM/data/cancer.csv"</span>) </span>
 <span id="cb10-3"><a></a></span>
 <span id="cb10-4"><a></a>cancer <span class="sc">|&gt;</span> </span>
 <span id="cb10-5"><a></a>  <span class="fu">select</span>(diagnosis, radius_mean, concave_points_mean) <span class="sc">|&gt;</span> </span>
@@ -1955,8 +1955,8 @@ Model 2: log10(longevity) ~ thorax + activity + thorax:activity
 <li>Note that <span class="math inline">E(Y_i|\boldsymbol{x}_i) = p_i</span>.</li>
 </ul>
 </section>
-<section id="logistic-regression-for-a-binary-response-with-r" class="slide level2">
-<h2>Logistic regression for a binary response with R</h2>
+<section id="logistic-regression-for-a-binary-response-1" class="slide level2">
+<h2><i class="fab fa-r-project"></i> Logistic regression for a binary response</h2>
 <ul>
 <li>When response is a <strong>binary value</strong> (0 or 1):</li>
 </ul>
@@ -1977,45 +1977,45 @@ Code for loading data
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </div>
 </section>
-<section id="logistic-regression-with-a-factor-response" class="slide level2">
-<h2><i class="fab fa-r-project"></i> Logistic regression with a factor response</h2>
+<section id="logistic-regression-for-a-factor-response" class="slide level2">
+<h2><i class="fab fa-r-project"></i> Logistic regression for a factor response</h2>
 <ul>
-<li>When response is a <strong>factor</strong>:</li>
+<li>When response is a <strong>factor</strong>, the first level considered failure, every other level considered success.</li>
 </ul>
-<div class="sourceCode" id="cb13"><pre class="sourceCode numberSource {webr-r str-factor} number-lines code-with-copy"><code class="sourceCode"><span id="cb13-1"><a></a>str(cancer$diagnosis)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="qwebr-insertion-location-4"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <div class="fragment">
 <ul>
 <li><i class="fas fa-exclamation-circle"></i> Watch out for the order of the levels!</li>
 </ul>
-<div class="sourceCode" id="cb14"><pre class="sourceCode numberSource {webr-r cancer-logistic-factor} number-lines code-with-copy"><code class="sourceCode"><span id="cb14-1"><a></a>cancer_fit2 &lt;- glm(diagnosis ~ radius_mean + concave_points_mean, </span>
-<span id="cb14-2"><a></a>                   data = cancer, </span>
-<span id="cb14-3"><a></a>                   family = binomial(link = "logit"))</span>
-<span id="cb14-4"><a></a>coef(cancer_fit2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="qwebr-insertion-location-5"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </div>
 <div class="fragment">
-<div class="sourceCode" id="cb15"><pre class="sourceCode numberSource {webr-r cancer-logistic-factor2} number-lines code-with-copy"><code class="sourceCode"><span id="cb15-1"><a></a>#| code-line-numbers: 2</span>
-<span id="cb15-2"><a></a>cancer_fit3 &lt;- glm(diagnosis ~ radius_mean + concave_points_mean, </span>
-<span id="cb15-3"><a></a>                   data = cancer |&gt; mutate(diagnosis = factor(diagnosis, levels = c("M", "B"))),  </span>
-<span id="cb15-4"><a></a>                   family = binomial(link = "logit"))</span>
-<span id="cb15-5"><a></a>coef(cancer_fit3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="qwebr-insertion-location-6"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </div>
 </section>
 <section id="interpretation-of-logistic-regression" class="slide level2">
 <h2>Interpretation of logistic regression</h2>
-<div class="sourceCode" id="cb16"><pre class="sourceCode numberSource {webr-r cancer-logistic-model} number-lines code-with-copy"><code class="sourceCode"><span id="cb16-1"><a></a>broom::tidy(cancer_fit) # coefficients</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="qwebr-insertion-location-7"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <ul>
 <li>Increasing <code>radius_mean</code> by one unit changes the log odds by <span class="math inline">\hat{\beta}_1</span>, 0.639, or equivalently it multiplies the odds by <span class="math inline">e^{\hat\beta_1}</span>, 1.894, provided <code>concave_points_mean</code> is held fixed.</li>
 </ul>
 </section>
 <section id="predicting-from-logistic-regression" class="slide level2">
-<h2>Predicting from logistic regression</h2>
-<div id="qwebr-insertion-location-4"></div>
+<h2><i class="fab fa-r-project"></i> Predicting from logistic regression</h2>
+<div id="qwebr-insertion-location-8"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <details>
+<summary>
+Alternative method
+</summary>
 <ul>
 <li>You can also get the prediction with:</li>
 </ul>
-<div id="qwebr-insertion-location-5"></div>
+<div id="qwebr-insertion-location-9"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </details>
 <p>By hand</p>
@@ -2065,9 +2065,9 @@ Code for loading data
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a><span class="fu">data</span>(germ, <span class="at">package =</span> <span class="st">"GLMsData"</span>)</span>
-<span id="cb17-2"><a></a>germ <span class="ot">&lt;-</span> germ <span class="sc">|&gt;</span> </span>
-<span id="cb17-3"><a></a>  <span class="fu">mutate</span>(<span class="at">Proportion_Germ =</span> Germ <span class="sc">/</span> Total)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a><span class="fu">data</span>(germ, <span class="at">package =</span> <span class="st">"GLMsData"</span>)</span>
+<span id="cb13-2"><a></a>germ <span class="ot">&lt;-</span> germ <span class="sc">|&gt;</span> </span>
+<span id="cb13-3"><a></a>  <span class="fu">mutate</span>(<span class="at">Proportion_Germ =</span> Germ <span class="sc">/</span> Total)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell">
@@ -2238,13 +2238,13 @@ Code for loading data
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a></a>germ <span class="sc">|&gt;</span>  </span>
-<span id="cb18-2"><a></a>  <span class="fu">mutate</span>(<span class="at">NotGerm =</span> Total <span class="sc">-</span> Germ) <span class="sc">|&gt;</span> </span>
-<span id="cb18-3"><a></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(Germ, NotGerm), <span class="at">names_to =</span> <span class="st">"Germ"</span>, <span class="at">values_to =</span> <span class="st">"Freq"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb18-4"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(Germ, Freq)) <span class="sc">+</span></span>
-<span id="cb18-5"><a></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
-<span id="cb18-6"><a></a>  <span class="fu">facet_grid</span>(Extract <span class="sc">~</span> Seeds, <span class="at">labeller =</span> label_both) <span class="sc">+</span></span>
-<span id="cb18-7"><a></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Count"</span>)  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a>germ <span class="sc">|&gt;</span>  </span>
+<span id="cb14-2"><a></a>  <span class="fu">mutate</span>(<span class="at">NotGerm =</span> Total <span class="sc">-</span> Germ) <span class="sc">|&gt;</span> </span>
+<span id="cb14-3"><a></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(Germ, NotGerm), <span class="at">names_to =</span> <span class="st">"Germ"</span>, <span class="at">values_to =</span> <span class="st">"Freq"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb14-4"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(Germ, Freq)) <span class="sc">+</span></span>
+<span id="cb14-5"><a></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
+<span id="cb14-6"><a></a>  <span class="fu">facet_grid</span>(Extract <span class="sc">~</span> Seeds, <span class="at">labeller =</span> label_both) <span class="sc">+</span></span>
+<span id="cb14-7"><a></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Count"</span>)  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -2258,53 +2258,31 @@ Code for loading data
 </div>
 </section>
 <section id="logistic-regression-with-count-responses" class="slide level2">
-<h2>Logistic regression with count responses</h2>
+<h2><i class="fab fa-r-project"></i> Logistic regression with count responses</h2>
 <ul>
 <li>The response need to be specified as a two column matrix with the counts of each class.</li>
 </ul>
+<details>
+<summary>
+Code to load data
+</summary>
+<div id="qwebr-insertion-location-10"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+</details>
 <div class="f2">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a>fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(<span class="fu">cbind</span>(Germ, Total <span class="sc">-</span> Germ) <span class="sc">~</span> Extract <span class="sc">*</span> Seeds,</span>
-<span id="cb19-2"><a></a>                   <span class="at">data =</span> germ, </span>
-<span id="cb19-3"><a></a>                   <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>))</span>
-<span id="cb19-4"><a></a></span>
-<span id="cb19-5"><a></a>broom<span class="sc">::</span><span class="fu">tidy</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 4 × 5
-  term                      estimate std.error statistic p.value
-  &lt;chr&gt;                        &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
-1 (Intercept)                 -0.412     0.184    -2.24   0.0252
-2 ExtractCucumber              0.540     0.250     2.16   0.0306
-3 SeedsOA75                   -0.146     0.223    -0.654  0.513 
-4 ExtractCucumber:SeedsOA75    0.778     0.306     2.54   0.0111</code></pre>
-</div>
-</div>
+<div id="qwebr-insertion-location-11"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </div>
 </section>
 <section id="logistic-regression-with-proportion-responses" class="slide level2">
-<h2>Logistic regression with proportion responses</h2>
+<h2><i class="fab fa-r-project"></i> Logistic regression with proportion responses</h2>
 <ul>
 <li>You need the total cases for each proportion to fit the model.</li>
 <li>The exception is if the total cases are the same for all observations.</li>
 </ul>
 <div class="f2">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a></a>fitp <span class="ot">&lt;-</span> <span class="fu">glm</span>(Proportion_Germ <span class="sc">~</span> Extract <span class="sc">*</span> Seeds,</span>
-<span id="cb21-2"><a></a>            <span class="at">data =</span> germ, </span>
-<span id="cb21-3"><a></a>            <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>),</span>
-<span id="cb21-4"><a></a>            <span class="at">weights =</span> Total)</span>
-<span id="cb21-5"><a></a></span>
-<span id="cb21-6"><a></a>broom<span class="sc">::</span><span class="fu">tidy</span>(fitp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 4 × 5
-  term                      estimate std.error statistic p.value
-  &lt;chr&gt;                        &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
-1 (Intercept)                 -0.412     0.184    -2.24   0.0252
-2 ExtractCucumber              0.540     0.250     2.16   0.0306
-3 SeedsOA75                   -0.146     0.223    -0.654  0.513 
-4 ExtractCucumber:SeedsOA75    0.778     0.306     2.54   0.0111</code></pre>
-</div>
-</div>
+<div id="qwebr-insertion-location-12"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </div>
 </section>
 <section id="summary" class="slide level2" data-background-color="#F5EDDE">

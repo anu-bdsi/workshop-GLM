@@ -27,7 +27,9 @@ webr:
   show-startup-message: false  
   packages: 
     - tidyverse
-    - palmerpenguins
+    #- janitor # this takes too long to load
+    - broom
+    - GLMsData
 ---
 
 
@@ -301,10 +303,7 @@ where
 #| code-fold: true
 #| fig-height: 10
 library(tidyverse)
-cancer <- read_csv("https://emitanaka.org/iml/data/cancer.csv") |> 
-  mutate(diagnosis_malignant = ifelse(diagnosis=="M", 1, 0),
-         diagnosis = factor(diagnosis, levels = c("B", "M"))) |> 
-  janitor::clean_names()
+cancer <- read_csv("https://anu-bdsi.github.io/workshop-GLM/data/cancer.csv") 
 
 cancer |> 
   select(diagnosis, radius_mean, concave_points_mean) |> 
@@ -555,7 +554,7 @@ gbernoulli / gbinom / gbinom2
 # Logistic regression {background-color="#F5EDDE"}
 
 
-## Logistic regression for binary response
+## Logistic regression for a binary response
 
 
 - Logistic regression is a **generalised linear model** where it models the *log odds* as a linear combination of predictors:
@@ -565,11 +564,20 @@ $$\text{logit}(p_i) = \log_e \left(\frac{p_i}{1-p_i}\right) = \sum_{j=0}^p\beta_
 
 
 
-## <i class="fab fa-r-project"></i> Logistic regression with a binary response 
+## <i class="fab fa-r-project"></i> Logistic regression for a binary response
 
 - When response is a **binary value** (0 or 1):
 
-```{r table-malignant}
+<details><summary>Code for loading data</summary>
+```{webr-r}
+#| autorun: true
+#| code-fold: true
+library(tidyverse)
+cancer <- read_csv("https://anu-bdsi.github.io/workshop-GLM/data/cancer.csv")
+```
+</details>
+
+```{webr-r}
 str(cancer$diagnosis_malignant)
 table(cancer$diagnosis_malignant)
 ```
@@ -578,7 +586,8 @@ table(cancer$diagnosis_malignant)
 
 - Fit the logistic model in R as
 
-```{r cancer-logistic-binary}
+```{webr-r}
+#| autorun: true
 cancer_fit <- glm(diagnosis_malignant ~ radius_mean + concave_points_mean, 
                   data = cancer, 
                   family = binomial(link = "logit"))
@@ -586,14 +595,20 @@ cancer_fit <- glm(diagnosis_malignant ~ radius_mean + concave_points_mean,
 coef(cancer_fit)
 ```
 
+```{r}
+#| include: false
+cancer_fit <- glm(diagnosis_malignant ~ radius_mean + concave_points_mean, 
+                  data = cancer, 
+                  family = binomial(link = "logit"))
+```
 
-## <i class="fab fa-r-project"></i> Logistic regression with a factor response 
+
+## <i class="fab fa-r-project"></i> Logistic regression for a factor response 
 
 
-- When response is a **factor**:
+- When response is a **factor**, the first level considered failure, every other level considered success.
 
-```{r str-factor}
-#| cache: false
+```{webr-r}
 str(cancer$diagnosis)
 ```
 
@@ -601,7 +616,7 @@ str(cancer$diagnosis)
 
 - <i class="fas fa-exclamation-circle"></i> Watch out for the order of the levels!
 
-```{r cancer-logistic-factor}
+```{webr-r}
 cancer_fit2 <- glm(diagnosis ~ radius_mean + concave_points_mean, 
                    data = cancer, 
                    family = binomial(link = "logit"))
@@ -610,7 +625,7 @@ coef(cancer_fit2)
 
 . . . 
 
-```{r cancer-logistic-factor2}
+```{webr-r}
 #| code-line-numbers: 2
 cancer_fit3 <- glm(diagnosis ~ radius_mean + concave_points_mean, 
                    data = cancer |> mutate(diagnosis = factor(diagnosis, levels = c("M", "B"))),  
@@ -621,16 +636,16 @@ coef(cancer_fit3)
 
 ## Interpretation of logistic regression
 
-```{r cancer-logistic-model}
+```{webr-r}
 broom::tidy(cancer_fit) # coefficients
 ```
 
 
 - Increasing `radius_mean` by one unit changes the log odds by $\hat{\beta}_1$, `r round(coef(cancer_fit)[2], 3)`, or equivalently it multiplies the odds by $e^{\hat\beta_1}$, `r round(exp(coef(cancer_fit)[2]), 3)`, provided `concave_points_mean` is held fixed.
 
-## Predicting from logistic regression
+## <i class="fab fa-r-project"></i> Predicting from logistic regression
 
-```{r}
+```{webr-r}
 dat <- data.frame(radius_mean = 15, concave_points_mean = 0.05)
 broom::augment(cancer_fit, 
                newdata = dat,  
@@ -638,11 +653,11 @@ broom::augment(cancer_fit,
                se_fit = TRUE)
 ```
 
-<details>
+<details><summary>Alternative method</summary>
 
 - You can also get the prediction with:
 
-```{r}
+```{webr-r}
 predict(cancer_fit, newdata = dat, type = "response", se.fit = TRUE)
 ```
 
@@ -662,15 +677,6 @@ $\dfrac{\exp(`r round(p, 4)`)}{1 + \exp(`r round(p, 4)`)} = `r round(exp(p)/(1 +
 * We choose the threshold $q$ such that $P(Y_i=1|\boldsymbol{x}_i) \ge q$ is considered to be in class 1. 
 * The separation in class is a point for one variable, line for two variables and a hyperplane for more than two variables.
 
-```{r cancer-split}
-#| echo: false
-library(rsample)
-set.seed(2023)
-qthresh <- c(0.2, 0.5, 0.8)
-cancer_split <- initial_split(cancer, prop = 3/4)
-cancer_train <- training(cancer_split)
-cancer_test <- testing(cancer_split)
-```
 
 
 ::: flex
@@ -681,11 +687,12 @@ cancer_test <- testing(cancer_split)
 #| fig-width: 6
 #| fig-height: 6
 cancer_logistic1 <- glm(diagnosis_malignant ~ radius_mean, 
-                       data = cancer, 
-                       family = binomial(link = "logit"))
+                        data = cancer, 
+                        family = binomial(link = "logit"))
 
 beta0 <- coef(cancer_logistic1)[1]
 beta1 <- coef(cancer_logistic1)[2]
+qthresh <- c(0.2, 0.5, 0.8)
 decision_point <- (log(qthresh / (1 - qthresh)) - beta0) / beta1
 
 ggplot(cancer, aes(radius_mean, diagnosis_malignant)) +
@@ -784,13 +791,25 @@ germ |>
 :::
 
 
-## Logistic regression with count responses 
+## <i class="fab fa-r-project"></i> Logistic regression with count responses 
+
 
 - The response need to be specified as a two column matrix with the counts of each class.
 
+<details><summary>Code to load data</summary>
+```{webr-r}
+#| autorun: true
+data(germ, package = "GLMsData")
+germ <- germ |> 
+  mutate(Proportion_Germ = Germ / Total)
+```
+</details>
+
+
 ::: f2
 
-```{r fit}
+```{webr-r}
+#| autorun: true
 fit <- glm(cbind(Germ, Total - Germ) ~ Extract * Seeds,
                    data = germ, 
                    family = binomial(link = "logit"))
@@ -801,14 +820,15 @@ broom::tidy(fit)
 :::
 
 
-## Logistic regression with proportion responses 
+## <i class="fab fa-r-project"></i> Logistic regression with proportion responses 
 
 - You need the total cases for each proportion to fit the model.
 - The exception is if the total cases are the same for all observations.
 
 ::: f2
 
-```{r fitp}
+```{webr-r}
+#| autorun: true
 fitp <- glm(Proportion_Germ ~ Extract * Seeds,
             data = germ, 
             family = binomial(link = "logit"),

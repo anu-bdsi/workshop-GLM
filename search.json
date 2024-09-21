@@ -1,43 +1,36 @@
 [
   {
-    "objectID": "slides/slide3.html#current-learning-objective",
-    "href": "slides/slide3.html#current-learning-objective",
-    "title": "Generalised linear models",
-    "section": " Current learning objective",
-    "text": "Current learning objective\n\n\n-Understand and apply generalized linear models (GLMs) for modeling data with non-normal distributions\n\n\n-Apply GLMs effectively to model binary outcomes (logistic regression) and count data (Poisson or negative binomial regression).\n\n\nFit, interpret, and assess the adequacy of GLMs"
-  },
-  {
     "objectID": "slides/slide3.html#continuous-distributions",
     "href": "slides/slide3.html#continuous-distributions",
-    "title": "Generalised linear models",
+    "title": "Framework and diagnostics",
     "section": "Continuous Distributions",
     "text": "Continuous Distributions"
   },
   {
     "objectID": "slides/slide3.html#discrete-distributions",
     "href": "slides/slide3.html#discrete-distributions",
-    "title": "Generalised linear models",
+    "title": "Framework and diagnostics",
     "section": "Discrete Distributions",
     "text": "Discrete Distributions"
   },
   {
     "objectID": "slides/slide3.html#generalised-linear-models",
     "href": "slides/slide3.html#generalised-linear-models",
-    "title": "Generalised linear models",
+    "title": "Framework and diagnostics",
     "section": "Generalised linear models",
     "text": "Generalised linear models\nGenralised linear models (GLMs) has three components:\n\nAssume that Y_i is a member of an exponential family (e.g. Normal/Gaussian, Binomial, Poission, Gamma, etc).\nA linear predictor \\eta_i = \\beta_0 + \\beta_1 x_{i1} + \\ldots + \\beta_k x_{ik}.\nA (smooth and invertible) link function g(\\cdot) which transforms the expectation of the response variable \\mu_i = E(Y_i) to the linear predictor: g(\\mu_i) = \\eta_i = \\beta_0 + \\beta_1 x_{i1} + \\ldots + \\beta_k x_{ik}."
   },
   {
     "objectID": "slides/slide3.html#link-functions",
     "href": "slides/slide3.html#link-functions",
-    "title": "Generalised linear models",
+    "title": "Framework and diagnostics",
     "section": "Link functions",
     "text": "Link functions\n\n\n\n\n\n\n\n\nLink\n\\eta_i = g(\\mu_i)\n\\mu_i = g^{-1}(\\eta_i)\n\n\n\n\nIdentity\n\\mu_i\n\\eta_i\n\n\nLog\n\\log(\\mu_i)\n\\exp(\\eta_i)\n\n\nInverse\n1/\\mu_i\n1/\\eta_i\n\n\nInverse-squared\n1/\\mu_i^2\n1/\\sqrt{\\eta_i}\n\n\nSquare-root\n\\sqrt{\\mu_i}\n\\eta_i^2\n\n\nLogit\n\\log(\\mu_i/(1-\\mu_i))\n\\exp(\\eta_i)/(1+\\exp(\\eta_i))\n\n\nProbit\n\\Phi^{-1}(\\mu_i)\n\\Phi(\\eta_i)\n\n\nComplementary log-log\n\\log(-\\log(1-\\mu_i))\n1-\\exp(-\\exp(\\eta_i))\n\n\n\nwhere \\Phi(\\cdot) is the cumulative distribution function of the standard normal distribution."
   },
   {
     "objectID": "slides/slide3.html#canonical-link",
     "href": "slides/slide3.html#canonical-link",
-    "title": "Generalised linear models",
+    "title": "Framework and diagnostics",
     "section": "Canonical link",
     "text": "Canonical link\n\n\n\nFamily\nCanonical Link\nRange of Y_i\nV(Y_i|\\eta_i)\n\n\n\n\nNormal\nIdentity\n(-\\infty, \\infty)\n\\psi\n\n\nBinomial\nLogit\n[0, 1]\n\\mu_i(1-\\mu_i)\n\n\nPoisson\nLog\n[0, \\infty)\n\\mu_i\n\n\nGamma\nInverse\n(0, \\infty)\n\\psi\\mu_i^2\n\n\nInverse-Gaussian\nInverse-squared\n(0, \\infty)\n\\psi\\mu_i^3\n\n\n\nwhere \\psi is the dispersion parameter, \\eta_i is the linear predictor, and \\mu_i is the expectation of Y_i. In the binomial family, n_i is the number of trials.\n\n\n\n\nanu-bdsi.github.io/workshop-GLM/"
   },
@@ -259,11 +252,46 @@
     "text": "This website is brought to you by the ANU Biological Data Science Institute."
   },
   {
+    "objectID": "slides/slide2.html#case-study-number-of-alcohols",
+    "href": "slides/slide2.html#case-study-number-of-alcohols",
+    "title": "Modelling for count responses",
+    "section": "Case study: Number of alcohols",
+    "text": "Case study: Number of alcohols\n\n\n\n\nCode\nalcohol &lt;- read_csv(here::here(\"data/alcohol.csv\"))\n\nggplot(alcohol, aes(sensation, drinks)) +\n  geom_point(aes(color = gender), size = 3) +\n  facet_wrap(~gender) +\n  guides(color = \"none\")\n\n\n\n\n\n\n\n\n\n\n\nobserved outcome is the report of the number of alcoholic drinks that an individual consumes on one particular Saturday night during the study\n\n\n\n\n\nThank you to Alice Richardson for supplying this example!\nOriginal example from Coxe et al. (2009) The Analysis of Count Data: A Gentle Introduction to Poisson Regression and Its Alternatives. Journal of Personality Assessment"
+  },
+  {
     "objectID": "slides/slide2.html#case-study-abundance-of-noisy-miners",
     "href": "slides/slide2.html#case-study-abundance-of-noisy-miners",
     "title": "Modelling for count responses",
     "section": "Case study: Abundance of Noisy Miners",
-    "text": "Case study: Abundance of Noisy Miners\n\ndata(nminer, package = \"GLMsData\")\nglimpse(nminer)\n\nRows: 31\nColumns: 8\n$ Miners  &lt;int&gt; 0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0,…\n$ Eucs    &lt;int&gt; 2, 10, 16, 20, 19, 18, 12, 16, 3, 12, 32, 2, 16, 7, 10, 15, 30…\n$ Area    &lt;int&gt; 22, 11, 51, 22, 4, 61, 16, 14, 5, 6, 3, 13, 24, 32, 22, 27, 18…\n$ Grazed  &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1,…\n$ Shrubs  &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0,…\n$ Bulokes &lt;int&gt; 120, 67, 85, 45, 160, 75, 100, 321, 275, 227, 23, 277, 243, 11…\n$ Timber  &lt;int&gt; 16, 25, 13, 12, 14, 6, 12, 15, 8, 10, 61, 22, 25, 9, 35, 25, 1…\n$ Minerab &lt;int&gt; 0, 0, 3, 2, 8, 1, 8, 5, 0, 4, 19, 0, 2, 0, 3, 1, 7, 1, 0, 7, 0…"
+    "text": "Case study: Abundance of Noisy Miners\n\n\n\nThe noisy miner is a small but aggressive native Australian bird.\nA study of the habitats of the noisy miner recorded the abundance of noise miners in two hectare transects located in buloke woodland patches along its characteristics,\n\nEucs = number of eucalypt trees,\nGrazed = whether it was grazed (0) or not (1),\nShrubs = whether shrubs were present (1) or not (0).\nMinerab = abundance of noisy miners.\n\n\n\n\n\nCode\ndata(nminer, package = \"GLMsData\")\nnminer |&gt; \n  #count(Grazed, Shrubs, Eucs, Minerab) |&gt; \n  mutate(across(c(Grazed, Shrubs), factor)) |&gt;\n  ggplot(aes(Eucs, Minerab)) +\n  #geom_point(aes(size = factor(n)), color = \"grey\",\n  #           data = ~select(., -Grazed, -Shrubs)) + \n  #geom_point(aes(size = factor(n), color = Grazed))  +\n  geom_hex() +\n  geom_smooth(method = \"lm\", se = FALSE) +\n  labs(x = \"Miner abundance\", y = \"\") #+\n\n\n\n\n\n\n\n\n\nCode\n  #facet_grid(. ~ Shrubs, labeller = label_both)"
+  },
+  {
+    "objectID": "slides/slide2.html#linear-model",
+    "href": "slides/slide2.html#linear-model",
+    "title": "Modelling for count responses",
+    "section": "Linear model",
+    "text": "Linear model\n\nfit_glm &lt;- glm(Minerab ~ Eucs, data = nminer, family = poisson(link = \"log\"))\n\n\n\nCode\nbroom::augment(fit_glm, type.predict = \"response\") |&gt; \n  ggplot(aes(Eucs, Minerab)) + \n  geom_point(size = 3) + \n  geom_line(aes(y = .fitted)) +\n  labs(x = \"Fitted values\", y = \"Residuals\")"
+  },
+  {
+    "objectID": "slides/slide2.html#linear-model-1",
+    "href": "slides/slide2.html#linear-model-1",
+    "title": "Modelling for count responses",
+    "section": "Linear model",
+    "text": "Linear model\n\nfit_lm &lt;- lm(Minerab ~ Eucs + Shrubs + Grazed, data = nminer)\n\n\n\nCode\nbroom::augment(fit_lm) |&gt; \n  ggplot(aes(.fitted, .resid)) + \n  geom_point(size = 3) + \n  geom_hline(yintercept = 0, linetype = 2) + \n  labs(x = \"Fitted values\", y = \"Residuals\")"
+  },
+  {
+    "objectID": "slides/slide2.html#poisson-distribution",
+    "href": "slides/slide2.html#poisson-distribution",
+    "title": "Modelling for count responses",
+    "section": "Poisson distribution",
+    "text": "Poisson distribution\n\n\n\n\n\n\n\n\n\n\n\n\n\nIf Y \\sim \\text{Pois}(\\lambda), then P(Y = y) = \\frac{e^{-\\lambda} \\lambda^y}{y!} for y = 0, 1, 2, \\ldots and \\lambda &gt; 0.\nThe mean and variance of Y are both \\lambda.\nThe Poisson distribution is often used to model count data."
+  },
+  {
+    "objectID": "slides/slide2.html#poisson-regression",
+    "href": "slides/slide2.html#poisson-regression",
+    "title": "Modelling for count responses",
+    "section": "Poisson regression",
+    "text": "Poisson regression\n\nPlease enable JavaScript to experience the dynamic code cell content on this page."
   },
   {
     "objectID": "slides/slide2.html#section",

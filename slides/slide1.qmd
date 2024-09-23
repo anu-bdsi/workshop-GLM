@@ -405,11 +405,11 @@ cancer |>
 ::: incremental
 - Suppose we consider $Y_i$ as a binary category:
 $$Y_i = \begin{cases} 
-       1 & \text{ if $i$-th observation is in class 1}\\
-       0 & \text{ if $i$-th observation is in class 2}\\
+       0 & \text{ if $i$-th observation is in class 1}\\
+       1 & \text{ if $i$-th observation is in class 2}\\
   \end{cases}$$
-- Instead of modelling the outcome directly, we consider the conditional probability, say $P(Y_i = 1|\boldsymbol{x}_i)$ where $\boldsymbol{x}_i = (x_{i1}, x_{i2}, \ldots, x_{ik})$, also known as the **propensity score** of class 1.
-- The propensity score of class 2 is $$P(Y_i=0|\boldsymbol{x}_i) = 1 - P(Y_i=1|\boldsymbol{x}_i).$$
+- We consider the conditional probability, say $P(Y_i = 1|\boldsymbol{x}_i)$ where $\boldsymbol{x}_i = (x_{i1}, x_{i2}, \ldots, x_{ik})$, also known as the **propensity score** of class 2.
+- The propensity score of class 1 is $$P(Y_i=0|\boldsymbol{x}_i) = 1 - P(Y_i=1|\boldsymbol{x}_i).$$
 
 
 :::
@@ -421,30 +421,30 @@ $$Y_i = \begin{cases}
 
 . . . 
 
-- The **ratio of the propensity scores of the two classes** is the odds of being in class 1:
+- The **ratio of the propensity scores of the two classes** is the odds of being in class 2:
 
-$$\text{odds} = \frac{P(Y_i=1|\boldsymbol{x}_i)}{1-P(Y_i=1|\boldsymbol{x}_i)}.$$
+$$\text{odds}_i = \frac{P(Y_i=1|\boldsymbol{x}_i)}{1-P(Y_i=1|\boldsymbol{x}_i)}.$$
 
+
+## {}
+
+
+
+::: {.flex .f2}
+
+::: {.w-50}
+
+
+:::: callout-note
 
 ## Logistic function
 
 
-- The **logistic function**:
-
-
-::: flex
-
-::: {.w-50}
-
-$$g(z) = \frac{e^z}{1+e^z} = \frac{1}{1+e^{-z}}$$
-
-:::
-
-::: {.w-50 .pl3}
+$$f(z) = \frac{e^z}{1+e^z} = \frac{1}{1+e^{-z}}$$
 
 ```{r vis-logistic}
 #| echo: false
-#| fig-height: 6
+#| fig-height: 5
 tibble(x = rep(seq(-10, 10, by=0.1), 2), 
        y = 1 / (1 + exp(-x))) |> 
   ggplot(aes(x, y)) +
@@ -455,32 +455,22 @@ tibble(x = rep(seq(-10, 10, by=0.1), 2),
   theme(axis.title = element_text(face = "italic"))
 ```
 
+$0 < f(z) < 1$ for all finite values of $z$.
 
-:::
-:::
-
-* Notice that $0 < g(z) < 1$ for all finite values of $z$.
-
-
-## Logit function
-
-
-- The **logit function**:
-
-
-::: flex
-
-::: {.w-50}
-
-$$f(p) = \log_e \left(\frac{p}{1- p}\right)$$
+::::
 
 :::
 
 ::: {.w-50 .pl3}
 
+:::: callout-note
+
+## Logit function
+
+$$g(p) = \log_e \left(\frac{p}{1- p}\right)$$
 ```{r vis-logit}
 #| echo: false
-#| fig-height: 6 
+#| fig-height: 5
 tibble(p = seq(0, 1, length.out = 1000), 
        y = log(p / (1 - p))) |> 
   ggplot(aes(p, y)) +
@@ -491,12 +481,15 @@ tibble(p = seq(0, 1, length.out = 1000),
   theme(axis.title = element_text(face = "italic"))
 ```
 
+$-\infty < g(p) < \infty$ for all $p \in (0, 1)$
+
+:::: 
+
 
 :::
 :::
 
 
-- Here $-\infty < f(p) < \infty$ for all $p \in (0, 1)$.
 
 . . . 
 
@@ -513,8 +506,9 @@ $g(f(p)) = p$.
 
 - Suppose $Y$ is binomially distributed $B(n, p)$.
 - This means that there were $n$ trials, each with a probability $p$ of success, and $Y$ is the number of successes out of $n$.
-- The expected value of $Y$ is $E(Y) = np$.
+- The expected value of $Y$ is $E(Y) = np$ and $Var(Y) = np(1-p)$.
 - If $n=1$, $Y$ can only take the values 0 or 1 and the distribution is referred to as **Benoulli distribution**.
+- If $Y\sim Bernoulli(p)$ then $E(Y) = p$ and $Var(Y) = p(1-p)$.
 
 :::
 
@@ -522,7 +516,7 @@ $g(f(p)) = p$.
 
 ```{r}
 #| echo: false
-#| fig-height: 10
+#| fig-height: 14
 gbernoulli <- tibble(y = 0:10) |> 
   mutate(p = dbinom(y, 1, 0.3)) |> 
   ggplot() + geom_col(aes(y, p)) +
@@ -554,11 +548,13 @@ gbernoulli / gbinom / gbinom2
 
 ## Logistic regression for a binary response
 
-
-- Logistic regression models the *log odds* as a linear combination of predictors:
-$$\text{logit}(p_i) = \log_e \left(\frac{p_i}{1-p_i}\right) = \sum_{j=0}^p\beta_jx_{ij}, \quad p_i = \frac{e^{\sum_{j=0}^p\beta_jx_{ij}}}{1+e^{\sum_{j=0}^p\beta_jx_{ij}}}$$
 - We assume that [$Y_i \sim B(1, p_i)$]{.anu-gold} where $p_i = P(Y_i=1|\boldsymbol{x}_i)$.
 - Note that $E(Y_i|\boldsymbol{x}_i) = p_i$.
+- We model the the log odds (or logit of $p_i$) as a linear combination of predictors:
+$$\text{logit}(p_i) = \log_e \left(\frac{p_i}{1-p_i}\right) = \sum_{j=0}^k\beta_jx_{ij}$$
+- The $\hat{\beta}_j$s are found through _maximum likelihood estimate_.
+- Then  $\hat{p}_i = \text{logistic}\left(\displaystyle\sum_{j=0}^k\hat{\beta}_jx_{ij}\right) =  \dfrac{e^{\sum_{j=0}^k\hat{\beta}_jx_{ij}}}{1+e^{\sum_{j=0}^k\hat{\beta}_jx_{ij}}}$.
+
 
 
 
@@ -797,8 +793,7 @@ germ |>
 ```{webr-r}
 #| autorun: true
 data(germ, package = "GLMsData")
-germ <- germ |> 
-  mutate(Proportion_Germ = Germ / Total)
+germ$Proportion_Germ <- germ$Germ / germ$Total
 ```
 </details>
 

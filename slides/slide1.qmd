@@ -834,7 +834,9 @@ broom::tidy(fitp)
 
 ## Summary {background-color="#F5EDDE"}
 
-- Odds ratio is the ratio of the odds of the event happening in one group to the odds of the event happening in another group.
-- Logistic regression can be used to model binary or proportion (out of total cases) responses by modelling the log odds as a linear combination of predictors.
+- Logistic regression can be used to model binary, proportion or count (out of total cases) responses by modelling the log odds as a linear combination of predictors.
 - Logistic regression is a linear classifier so it doesn't work well where the separation between classes are non-linear.
-- Use `glm(y ~ x, family = binomial(link = "logit"))` to fit a logistic regression model.
+- To fit a logistic regression in R, it depends on how the response is encoded:
+  - if `y` is binary or factor then use `glm(y ~ x, family = binomial(link = "logit"))`,
+  - if `y` is count and `total` is total cases then use `glm(cbind(y, total - y) ~ x, family = binomial(link = "logit"))`, and
+  - if `y` is proportion and `total` is total cases then use `glm(y ~ x, family = binomial(link = "logit"), weights = total)`.

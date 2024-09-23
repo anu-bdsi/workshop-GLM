@@ -569,7 +569,7 @@
   };
 
   // Store cell data
-  globalThis.qwebrCellDetails = [{"options":{"fig-cap":"","output":"true","message":"true","autorun":"true","label":"unnamed-chunk-1","read-only":"false","results":"markup","warning":"true","comment":"","dpi":72,"classes":"","code-fold":"true","out-height":"","out-width":"700px","context":"interactive","fig-width":7,"fig-height":5},"id":1,"code":"cancer <- read.csv(\"https://anu-bdsi.github.io/workshop-GLM/data/cancer.csv\")"},{"options":{"warning":"true","fig-height":5,"output":"true","comment":"","dpi":72,"message":"true","fig-width":7,"autorun":"false","classes":"","fig-cap":"","out-height":"","label":"unnamed-chunk-2","read-only":"false","context":"interactive","results":"markup","out-width":"700px"},"id":2,"code":"str(cancer$diagnosis_malignant)\ntable(cancer$diagnosis_malignant)"},{"options":{"warning":"true","fig-height":5,"output":"true","comment":"","dpi":72,"message":"true","fig-width":7,"autorun":"true","classes":"","fig-cap":"","out-height":"","label":"unnamed-chunk-3","read-only":"false","context":"interactive","results":"markup","out-width":"700px"},"id":3,"code":"cancer_fit <- glm(diagnosis_malignant ~ radius_mean + concave_points_mean, \n                  data = cancer, \n                  family = binomial(link = \"logit\"))\n\ncoef(cancer_fit)"},{"options":{"warning":"true","fig-height":5,"output":"true","comment":"","dpi":72,"message":"true","fig-width":7,"autorun":"false","classes":"","fig-cap":"","out-height":"","label":"unnamed-chunk-4","read-only":"false","context":"interactive","results":"markup","out-width":"700px"},"id":4,"code":"str(cancer$diagnosis)"},{"options":{"warning":"true","fig-height":5,"output":"true","comment":"","dpi":72,"message":"true","fig-width":7,"autorun":"false","classes":"","fig-cap":"","out-height":"","label":"unnamed-chunk-5","read-only":"false","context":"interactive","results":"markup","out-width":"700px"},"id":5,"code":"cancer_fit2 <- glm(diagnosis ~ radius_mean + concave_points_mean, \n                   data = cancer, \n                   family = binomial(link = \"logit\"))\ncoef(cancer_fit2)"},{"options":{"fig-cap":"","output":"true","message":"true","autorun":"false","code-line-numbers":"2","label":"unnamed-chunk-6","read-only":"false","results":"markup","warning":"true","comment":"","dpi":72,"classes":"","out-height":"","out-width":"700px","context":"interactive","fig-width":7,"fig-height":5},"id":6,"code":"cancer_fit3 <- glm(diagnosis ~ radius_mean + concave_points_mean, \n                   data = cancer |> mutate(diagnosis = factor(diagnosis, levels = c(\"M\", \"B\"))),  \n                   family = binomial(link = \"logit\"))\ncoef(cancer_fit3)"},{"options":{"warning":"true","fig-height":5,"output":"true","comment":"","dpi":72,"message":"true","fig-width":7,"autorun":"false","classes":"","fig-cap":"","out-height":"","label":"unnamed-chunk-7","read-only":"false","context":"interactive","results":"markup","out-width":"700px"},"id":7,"code":"broom::tidy(cancer_fit) # coefficients"},{"options":{"warning":"true","fig-height":5,"output":"true","comment":"","dpi":72,"message":"true","fig-width":7,"autorun":"false","classes":"","fig-cap":"","out-height":"","label":"unnamed-chunk-8","read-only":"false","context":"interactive","results":"markup","out-width":"700px"},"id":8,"code":"dat <- data.frame(radius_mean = 15, concave_points_mean = 0.05)\nbroom::augment(cancer_fit, \n               newdata = dat,  \n               type.predict = \"response\", \n               se_fit = TRUE)"},{"options":{"warning":"true","fig-height":5,"output":"true","comment":"","dpi":72,"message":"true","fig-width":7,"autorun":"false","classes":"","fig-cap":"","out-height":"","label":"unnamed-chunk-9","read-only":"false","context":"interactive","results":"markup","out-width":"700px"},"id":9,"code":"predict(cancer_fit, newdata = dat, type = \"response\", se.fit = TRUE)"},{"options":{"warning":"true","fig-height":5,"output":"true","comment":"","dpi":72,"message":"true","fig-width":7,"autorun":"true","classes":"","fig-cap":"","out-height":"","label":"unnamed-chunk-10","read-only":"false","context":"interactive","results":"markup","out-width":"700px"},"id":10,"code":"data(germ, package = \"GLMsData\")\ngerm <- germ |> \n  mutate(Proportion_Germ = Germ / Total)"},{"options":{"warning":"true","fig-height":5,"output":"true","comment":"","dpi":72,"message":"true","fig-width":7,"autorun":"true","classes":"","fig-cap":"","out-height":"","label":"unnamed-chunk-11","read-only":"false","context":"interactive","results":"markup","out-width":"700px"},"id":11,"code":"fit <- glm(cbind(Germ, Total - Germ) ~ Extract * Seeds,\n                   data = germ, \n                   family = binomial(link = \"logit\"))\n\nbroom::tidy(fit)"},{"options":{"warning":"true","fig-height":5,"output":"true","comment":"","dpi":72,"message":"true","fig-width":7,"autorun":"true","classes":"","fig-cap":"","out-height":"","label":"unnamed-chunk-12","read-only":"false","context":"interactive","results":"markup","out-width":"700px"},"id":12,"code":"fitp <- glm(Proportion_Germ ~ Extract * Seeds,\n            data = germ, \n            family = binomial(link = \"logit\"),\n            weights = Total)\n\nbroom::tidy(fitp)"}];
+  globalThis.qwebrCellDetails = [{"options":{"results":"markup","label":"unnamed-chunk-1","message":"true","out-height":"","dpi":72,"read-only":"false","warning":"true","context":"interactive","fig-width":7,"code-fold":"true","fig-height":5,"fig-cap":"","classes":"","out-width":"700px","comment":"","output":"true","autorun":"true"},"id":1,"code":"cancer <- read.csv(\"https://anu-bdsi.github.io/workshop-GLM/data/cancer.csv\")"},{"options":{"context":"interactive","results":"markup","dpi":72,"fig-width":7,"comment":"","autorun":"false","message":"true","label":"unnamed-chunk-2","fig-cap":"","output":"true","out-width":"700px","classes":"","out-height":"","fig-height":5,"read-only":"false","warning":"true"},"id":2,"code":"str(cancer$diagnosis_malignant)\ntable(cancer$diagnosis_malignant)"},{"options":{"context":"interactive","results":"markup","dpi":72,"fig-width":7,"comment":"","autorun":"true","message":"true","label":"unnamed-chunk-3","fig-cap":"","output":"true","out-width":"700px","classes":"","out-height":"","fig-height":5,"read-only":"false","warning":"true"},"id":3,"code":"cancer_fit <- glm(diagnosis_malignant ~ radius_mean + concave_points_mean, \n                  data = cancer, \n                  family = binomial(link = \"logit\"))\n\ncoef(cancer_fit)"},{"options":{"context":"interactive","results":"markup","dpi":72,"fig-width":7,"comment":"","autorun":"false","message":"true","label":"unnamed-chunk-4","fig-cap":"","output":"true","out-width":"700px","classes":"","out-height":"","fig-height":5,"read-only":"false","warning":"true"},"id":4,"code":"str(cancer$diagnosis)"},{"options":{"context":"interactive","results":"markup","dpi":72,"fig-width":7,"comment":"","autorun":"false","message":"true","label":"unnamed-chunk-5","fig-cap":"","output":"true","out-width":"700px","classes":"","out-height":"","fig-height":5,"read-only":"false","warning":"true"},"id":5,"code":"cancer_fit2 <- glm(diagnosis ~ radius_mean + concave_points_mean, \n                   data = cancer, \n                   family = binomial(link = \"logit\"))\ncoef(cancer_fit2)"},{"options":{"code-line-numbers":"2","results":"markup","label":"unnamed-chunk-6","message":"true","out-height":"","dpi":72,"read-only":"false","warning":"true","context":"interactive","fig-width":7,"fig-height":5,"fig-cap":"","classes":"","out-width":"700px","comment":"","output":"true","autorun":"false"},"id":6,"code":"cancer_fit3 <- glm(diagnosis ~ radius_mean + concave_points_mean, \n                   data = cancer |> mutate(diagnosis = factor(diagnosis, levels = c(\"M\", \"B\"))),  \n                   family = binomial(link = \"logit\"))\ncoef(cancer_fit3)"},{"options":{"context":"interactive","results":"markup","dpi":72,"fig-width":7,"comment":"","autorun":"false","message":"true","label":"unnamed-chunk-7","fig-cap":"","output":"true","out-width":"700px","classes":"","out-height":"","fig-height":5,"read-only":"false","warning":"true"},"id":7,"code":"broom::tidy(cancer_fit) # coefficients"},{"options":{"context":"interactive","results":"markup","dpi":72,"fig-width":7,"comment":"","autorun":"false","message":"true","label":"unnamed-chunk-8","fig-cap":"","output":"true","out-width":"700px","classes":"","out-height":"","fig-height":5,"read-only":"false","warning":"true"},"id":8,"code":"dat <- data.frame(radius_mean = 15, concave_points_mean = 0.05)\nbroom::augment(cancer_fit, \n               newdata = dat,  \n               type.predict = \"response\", \n               se_fit = TRUE)"},{"options":{"context":"interactive","results":"markup","dpi":72,"fig-width":7,"comment":"","autorun":"false","message":"true","label":"unnamed-chunk-9","fig-cap":"","output":"true","out-width":"700px","classes":"","out-height":"","fig-height":5,"read-only":"false","warning":"true"},"id":9,"code":"predict(cancer_fit, newdata = dat, type = \"response\", se.fit = TRUE)"},{"options":{"context":"interactive","results":"markup","dpi":72,"fig-width":7,"comment":"","autorun":"true","message":"true","label":"unnamed-chunk-10","fig-cap":"","output":"true","out-width":"700px","classes":"","out-height":"","fig-height":5,"read-only":"false","warning":"true"},"id":10,"code":"data(germ, package = \"GLMsData\")\ngerm$Proportion_Germ <- germ$Germ / germ$Total"},{"options":{"context":"interactive","results":"markup","dpi":72,"fig-width":7,"comment":"","autorun":"true","message":"true","label":"unnamed-chunk-11","fig-cap":"","output":"true","out-width":"700px","classes":"","out-height":"","fig-height":5,"read-only":"false","warning":"true"},"id":11,"code":"fit <- glm(cbind(Germ, Total - Germ) ~ Extract * Seeds,\n                   data = germ, \n                   family = binomial(link = \"logit\"))\n\nbroom::tidy(fit)"},{"options":{"context":"interactive","results":"markup","dpi":72,"fig-width":7,"comment":"","autorun":"true","message":"true","label":"unnamed-chunk-12","fig-cap":"","output":"true","out-width":"700px","classes":"","out-height":"","fig-height":5,"read-only":"false","warning":"true"},"id":12,"code":"fitp <- glm(Proportion_Germ ~ Extract * Seeds,\n            data = germ, \n            family = binomial(link = \"logit\"),\n            weights = Total)\n\nbroom::tidy(fitp)"}];
 
   </script>
   <script type="module">
@@ -1844,11 +1844,11 @@ Model 2: log10(longevity) ~ thorax + activity + thorax:activity
 <div>
 <ul>
 <li class="fragment">Suppose we consider <span class="math inline">Y_i</span> as a binary category: <span class="math display">Y_i = \begin{cases}
-     1 &amp; \text{ if $i$-th observation is in class 1}\\
-     0 &amp; \text{ if $i$-th observation is in class 2}\\
+     0 &amp; \text{ if $i$-th observation is in class 1}\\
+     1 &amp; \text{ if $i$-th observation is in class 2}\\
 \end{cases}</span></li>
-<li class="fragment">Instead of modelling the outcome directly, we consider the conditional probability, say <span class="math inline">P(Y_i = 1|\boldsymbol{x}_i)</span> where <span class="math inline">\boldsymbol{x}_i = (x_{i1}, x_{i2}, \ldots, x_{ik})</span>, also known as the <strong>propensity score</strong> of class 1.</li>
-<li class="fragment">The propensity score of class 2 is <span class="math display">P(Y_i=0|\boldsymbol{x}_i) = 1 - P(Y_i=1|\boldsymbol{x}_i).</span></li>
+<li class="fragment">We consider the conditional probability, say <span class="math inline">P(Y_i = 1|\boldsymbol{x}_i)</span> where <span class="math inline">\boldsymbol{x}_i = (x_{i1}, x_{i2}, \ldots, x_{ik})</span>, also known as the <strong>propensity score</strong> of class 2.</li>
+<li class="fragment">The propensity score of class 1 is <span class="math display">P(Y_i=0|\boldsymbol{x}_i) = 1 - P(Y_i=1|\boldsymbol{x}_i).</span></li>
 </ul>
 </div>
 </section>
@@ -1859,21 +1859,25 @@ Model 2: log10(longevity) ~ thorax + activity + thorax:activity
 </ul>
 <div class="fragment">
 <ul>
-<li>The <strong>ratio of the propensity scores of the two classes</strong> is the odds of being in class 1:</li>
+<li>The <strong>ratio of the propensity scores of the two classes</strong> is the odds of being in class 2:</li>
 </ul>
-<p><span class="math display">\text{odds} = \frac{P(Y_i=1|\boldsymbol{x}_i)}{1-P(Y_i=1|\boldsymbol{x}_i)}.</span></p>
+<p><span class="math display">\text{odds}_i = \frac{P(Y_i=1|\boldsymbol{x}_i)}{1-P(Y_i=1|\boldsymbol{x}_i)}.</span></p>
 </div>
 </section>
-<section id="logistic-function" class="slide level2">
-<h2>Logistic function</h2>
-<ul>
-<li>The <strong>logistic function</strong>:</li>
-</ul>
-<div class="flex">
+<section id="section" class="slide level2">
+<h2></h2>
+<div class="flex f2">
 <div class="w-50">
-<p><span class="math display">g(z) = \frac{e^z}{1+e^z} = \frac{1}{1+e^{-z}}</span></p>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
 </div>
-<div class="w-50 pl3">
+<p><strong>Logistic function</strong></p>
+</div>
+<div class="callout-content">
+<p><span class="math display">f(z) = \frac{e^z}{1+e^z} = \frac{1}{1+e^{-z}}</span></p>
 <div class="cell">
 <div class="cell-output-display">
 <div>
@@ -1883,22 +1887,22 @@ Model 2: log10(longevity) ~ thorax + activity + thorax:activity
 </div>
 </div>
 </div>
+<p><span class="math inline">0 &lt; f(z) &lt; 1</span> for all finite values of <span class="math inline">z</span>.</p>
 </div>
 </div>
-<ul>
-<li>Notice that <span class="math inline">0 &lt; g(z) &lt; 1</span> for all finite values of <span class="math inline">z</span>.</li>
-</ul>
-</section>
-<section id="logit-function" class="slide level2">
-<h2>Logit function</h2>
-<ul>
-<li>The <strong>logit function</strong>:</li>
-</ul>
-<div class="flex">
-<div class="w-50">
-<p><span class="math display">f(p) = \log_e \left(\frac{p}{1- p}\right)</span></p>
+</div>
 </div>
 <div class="w-50 pl3">
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Logit function</strong></p>
+</div>
+<div class="callout-content">
+<p><span class="math display">g(p) = \log_e \left(\frac{p}{1- p}\right)</span></p>
 <div class="cell">
 <div class="cell-output-display">
 <div>
@@ -1908,11 +1912,12 @@ Model 2: log10(longevity) ~ thorax + activity + thorax:activity
 </div>
 </div>
 </div>
+<p><span class="math inline">-\infty &lt; g(p) &lt; \infty</span> for all <span class="math inline">p \in (0, 1)</span></p>
 </div>
 </div>
-<ul>
-<li>Here <span class="math inline">-\infty &lt; f(p) &lt; \infty</span> for all <span class="math inline">p \in (0, 1)</span>.</li>
-</ul>
+</div>
+</div>
+</div>
 <div class="fragment">
 <ul>
 <li>Note that <strong>logit and logistic functions are inverse functions of one another</strong>, i.e.&nbsp;<span class="math inline">f(g(z)) = z</span> and <span class="math inline">g(f(p)) = p</span>.</li>
@@ -1926,8 +1931,9 @@ Model 2: log10(longevity) ~ thorax + activity + thorax:activity
 <ul>
 <li>Suppose <span class="math inline">Y</span> is binomially distributed <span class="math inline">B(n, p)</span>.</li>
 <li>This means that there were <span class="math inline">n</span> trials, each with a probability <span class="math inline">p</span> of success, and <span class="math inline">Y</span> is the number of successes out of <span class="math inline">n</span>.</li>
-<li>The expected value of <span class="math inline">Y</span> is <span class="math inline">E(Y) = np</span>.</li>
+<li>The expected value of <span class="math inline">Y</span> is <span class="math inline">E(Y) = np</span> and <span class="math inline">Var(Y) = np(1-p)</span>.</li>
 <li>If <span class="math inline">n=1</span>, <span class="math inline">Y</span> can only take the values 0 or 1 and the distribution is referred to as <strong>Benoulli distribution</strong>.</li>
+<li>If <span class="math inline">Y\sim Bernoulli(p)</span> then <span class="math inline">E(Y) = p</span> and <span class="math inline">Var(Y) = p(1-p)</span>.</li>
 </ul>
 </div><div class="column" style="width:40%;">
 <div class="cell">
@@ -1950,9 +1956,11 @@ Model 2: log10(longevity) ~ thorax + activity + thorax:activity
 <section id="logistic-regression-for-a-binary-response" class="slide level2">
 <h2>Logistic regression for a binary response</h2>
 <ul>
-<li>Logistic regression models the <em>log odds</em> as a linear combination of predictors: <span class="math display">\text{logit}(p_i) = \log_e \left(\frac{p_i}{1-p_i}\right) = \sum_{j=0}^p\beta_jx_{ij}, \quad p_i = \frac{e^{\sum_{j=0}^p\beta_jx_{ij}}}{1+e^{\sum_{j=0}^p\beta_jx_{ij}}}</span></li>
 <li>We assume that <span class="anu-gold"><span class="math inline">Y_i \sim B(1, p_i)</span></span> where <span class="math inline">p_i = P(Y_i=1|\boldsymbol{x}_i)</span>.</li>
 <li>Note that <span class="math inline">E(Y_i|\boldsymbol{x}_i) = p_i</span>.</li>
+<li>We model the the log odds (or logit of <span class="math inline">p_i</span>) as a linear combination of predictors: <span class="math display">\text{logit}(p_i) = \log_e \left(\frac{p_i}{1-p_i}\right) = \sum_{j=0}^k\beta_jx_{ij}</span></li>
+<li>The <span class="math inline">\hat{\beta}_j</span>s are found through <em>maximum likelihood estimate</em>.</li>
+<li>Then <span class="math inline">\hat{p}_i = \text{logistic}\left(\displaystyle\sum_{j=0}^k\hat{\beta}_jx_{ij}\right) =  \dfrac{e^{\sum_{j=0}^k\hat{\beta}_jx_{ij}}}{1+e^{\sum_{j=0}^k\hat{\beta}_jx_{ij}}}</span>.</li>
 </ul>
 </section>
 <section id="logistic-regression-for-a-binary-response-1" class="slide level2">

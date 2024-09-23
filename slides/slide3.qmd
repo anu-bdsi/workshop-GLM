@@ -24,9 +24,6 @@ webr:
   show-startup-message: false  
   packages: 
     - tidyverse
-    - agridat
-    - palmerpenguins
-    - maps
 ---
 
 

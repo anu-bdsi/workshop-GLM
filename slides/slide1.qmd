@@ -557,7 +557,7 @@ gbernoulli / gbinom / gbinom2
 ## Logistic regression for a binary response
 
 
-- Logistic regression is a **generalised linear model** where it models the *log odds* as a linear combination of predictors:
+- Logistic regression models the *log odds* as a linear combination of predictors:
 $$\text{logit}(p_i) = \log_e \left(\frac{p_i}{1-p_i}\right) = \sum_{j=0}^p\beta_jx_{ij}, \quad p_i = \frac{e^{\sum_{j=0}^p\beta_jx_{ij}}}{1+e^{\sum_{j=0}^p\beta_jx_{ij}}}$$
 - We assume that [$Y_i \sim B(1, p_i)$]{.anu-gold} where $p_i = P(Y_i=1|\boldsymbol{x}_i)$.
 - Note that $E(Y_i|\boldsymbol{x}_i) = p_i$.
@@ -606,7 +606,7 @@ cancer_fit <- glm(diagnosis_malignant ~ radius_mean + concave_points_mean,
 ## <i class="fab fa-r-project"></i> Logistic regression for a factor response 
 
 
-- When response is a **factor**, the first level considered failure, every other level considered success.
+- When response is a **factor**, the first level is considered failure, every other level is  considered success.
 
 ```{webr-r}
 str(cancer$diagnosis)

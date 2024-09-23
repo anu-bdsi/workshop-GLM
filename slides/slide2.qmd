@@ -25,7 +25,8 @@ webr:
   show-startup-message: false  
   packages: 
     - tidyverse
-    - palmerpenguins
+    - GLMsData
+    - broom
 ---
 
 
@@ -34,9 +35,625 @@ webr:
 ```{r}
 #| include: false
 library(tidyverse)
+library(patchwork)
 source("setup.R")
+theme_set(theme_classic(base_size = 24) + 
+            theme(plot.title.position = "plot",
+                  plot.title = element_text(family = "mono"),
+                  plot.background = element_rect(fill = "transparent", color = "transparent"),
+                  legend.background = element_rect(fill = "transparent"),
+                  panel.background = element_rect(fill = "transparent")))
+options(ggplot2.discrete.fill = list(c("#E16A86", "#00AD9A"),
+                                     c("#E16A86", "#909800", "#00AD9A", "#9183E6")),
+        ggplot2.discrete.colour = list(c("#E16A86", "#00AD9A"),
+                                       c("#E16A86", "#909800", "#00AD9A", "#9183E6")))
 ```
 
-## Case study: {background-color="#F5EDDE"}
+ 
+
+
+
+
+
+
+## Case study: Abundance of Noisy Miners {background-color="#F5EDDE"}
+
+::: {.columns}
+
+::: {.column width="50%"}
+
+- The noisy miner is a small but aggressive native Australian bird.
+- A study of the habitats of the noisy miner recorded the abundance of noise miners in two hectare transects located in buloke woodland patches along its characteristics,
+  - `Eucs` = number of eucalypt trees, and
+  - `Minerab` = abundance of noisy miners.
+
+:::
+
+::: {.column width="50%" .f3}
+
+```{r, dev.args = list(bg = "transparent")}
+#| code-fold: true
+#| fig-height: 8
+data(nminer, package = "GLMsData")
+base <- nminer |> 
+  ggplot(aes(Eucs, Minerab)) +
+  geom_hex() +
+  colorspace::scale_fill_continuous_sequential(breaks = 1:3, palette = "ag_GrnYl", begin = 0.3) +
+  geom_hline(yintercept = 0, linetype = 2) +
+  theme(legend.position = "bottom")
+
+base
+```
+
+
+:::
+
+
+:::
+
+## Linear regression
+
+
+
+```{r}
+fit_lm_asis <- lm(Minerab ~ Eucs, data = nminer)
+fit_lm_sqrt <- lm(sqrt(Minerab) ~ Eucs, data = nminer)
+```
+
+::: {.columns .f3}
+
+
+::: {.column width="33%" .fragment}
+
+```{r}
+#| code-fold: true
+#| fig-width: 6
+base + 
+  geom_smooth(method = lm, se = FALSE, linewidth = 2) +
+  labs(title = "lm(Minerab ~ Eucs)") +
+  guides(fill = "none")
+```
+
+
+:::
+
+::: {.column width="33%" .fragment}
+
+
+```{r}
+#| code-fold: true
+#| fig-width: 6
+base +
+  geom_smooth(method = lm, se = FALSE, linewidth = 2, 
+              formula = sqrt(y) ~ x, 
+              aes(y = stage(Minerab, after_stat = y^2))) +
+  labs(title = "lm(sqrt(Minerab) ~ Eucs)") +
+  guides(fill = "none")
+```
+
+
+:::
+
+
+::: {.column width="33%" .fragment}
+
+```{r}
+#| code-fold: true
+#| fig-width: 6
+base +
+  geom_smooth(method = lm, se = FALSE, linewidth = 2) +
+  scale_y_sqrt() +
+  labs(title = "lm(sqrt(Minerab) ~ Eucs)") +
+  guides(fill = "none")
+```
+
+:::
+
+
+:::
+
+
+::: fragment
+
+- Negative values for abundance are not possible.
+- The count of noisy miners does not have a known restrictive count for using Binomial distribution.
+
+:::
+
+
+## Poisson distribution 
+
+::: {.columns}
+
+::: {.column width="50%"}
+
+
+```{r}
+#| echo: false
+#| fig-height: 10
+gbernoulli <- tibble(y = 0:10) |> 
+  mutate(p = dbinom(y, 1, 0.3)) |> 
+  ggplot() + geom_col(aes(y, p)) +
+  labs(title = "Y ~ Bernoulli(0.3)", x = "Y", y = "Probability") +
+  scale_y_continuous(expand = c(0, 0)) + 
+  scale_x_continuous(breaks = 0:10)
+  
+gpois <- gbernoulli %+% (tibble(y = 0:15) |> 
+  mutate(p = dpois(y, 5))) +
+  labs(title = "Y ~ Poisson(5)") +
+  scale_x_continuous()
+
+gpois2 <- gbernoulli %+% (tibble(y = 0:15) |> 
+  mutate(p = dpois(y, 1))) +
+  labs(title = "Y ~ Poisson(1)") +
+  scale_x_continuous()
+
+gpois3 <- gbernoulli %+% (tibble(y = 0:15) |> 
+  mutate(p = dpois(y, 0.5))) +
+  labs(title = "Y ~ Poisson(0.5)") +
+  scale_x_continuous()
+  
+gpois / gpois2 / gpois3
+```
+
+:::
+
+::: {.column width="50%"}
+
+
+- If $Y \sim \text{Poisson}(\lambda)$, then $$P(Y = y) = \frac{e^{-\lambda} \lambda^y}{y!}$$ for $y = 0, 1, 2, \ldots$ and $\lambda > 0$.
+
+- The mean and variance of $Y$ are both $\lambda$.
+- The Poisson distribution is often used to model (unrestricted) count data.
+
+
+:::
+
+:::
+
+
+
+## Poisson regression model
+
+- We assume $Y_i \sim \text{Poisson}(\mu_i)$ and model the mean $\mu_i$ as:
+
+$$\log_e(\mu_i) = \beta_0 + \beta_1x_{i1} + \beta_1x_{i2} + \ldots  + \beta_kx_{ik}.$$
+
+- $\hat{\mu}_i = \text{exp}(\hat{\beta}_0 + \hat{\beta}_1x_{i1} + \hat{\beta}_1x_{i2} + \ldots  + \hat{\beta}_kx_{ik})$
+
+## Modelling (unrestricted) counts with Poisson regression 
+
+
+
+```{r}
+fit_glm <- glm(Minerab ~ Eucs, data = nminer,
+               family = poisson(link = "log"))
+```
+
+::: columns
+
+::: {.column width="40%"}
+
+```{r fig-pois}
+#| code-fold: true
+#| fig-width: 9
+#| fig-height: 8
+base + 
+  geom_smooth(method = "glm", se = FALSE, linewidth = 2,
+              method.args = list(family = poisson(link = "log"))) +
+  geom_point(aes(y = .fitted), color = "red", size = 5,
+             data = broom::augment(fit_glm, 
+                 type.predict = "response",
+                 newdata = tibble(Eucs = seq(0, 30, by = 10)))) +
+  guides(fill = "none") +
+  labs(title = "glm(Minerab ~ Eucs, \n    family = poisson(link = 'log'))") 
+```
+
+:::
+
+::: {.column width="60%"}
+
+- Predicting the response:
+
+```{r}
+broom::augment(fit_glm, 
+ type.predict = "response",
+ newdata = tibble(Eucs = seq(0, 30, by = 10)))
+```
+
+
+:::
+
+:::
+
+
+## Case study: attitude to genetically modified foods {background-color="#F5EDDE" visibility="hidden"}
+```{r}
+#| code-fold: true
+gmfood <- read_csv(here::here("data/gmfood.csv"))
+```
+
+::: {.columns}
+
+::: {.column width="50%"}
+
+```{r}
+#| echo: false
+xtabs(Counts ~ Income + Attitude, data = gmfood) 
+```
+
+:::
+
+::: {.column width="50%"}
+
+- The data, collected between December 1996 and January 1997, shows the counts of the attitude of Australians to genetically modified (gm) foods according to their income.
+
+:::
+
+:::
+
+
+
+
+
+## Contingency tables  {visibility="hidden"}
+
+
+
+
+## Poisson regression for contingency tables  {visibility="hidden"}
+
+
+## Case study: cancer diagnosis {background-color="#F5EDDE"}
+
+- types of cancer diagnosed in Western Australia in 1996 were recorded for males and females
+- females cannot have prostate cancer, and males cannot have cervical cancer
+- Breast cancer is a possible, but very rare, disease among men
+
+```{r}
+data(wacancer, package = "GLMsData")
+xtabs(Counts ~ Gender + Cancer, data = wacancer)
+```
+
+- Note that a woman cannot get prostate cancer and a man cannot get cervix cancer. 
+- A man can get breast cancer, but it is extremely rare. 
+
+## Structural zeroes 
+
+- Structural zeros need to be removed from the data.
+
+::: f2
+
+```{r}
+coef(glm(Counts ~ Gender * Cancer, family = poisson, data = wacancer))
+```
+
+```{r}
+coef(glm(Counts ~ Gender * Cancer, family = poisson,
+         data = filter(wacancer, Counts > 0)))
+```
+
+:::
+
+
+
+## Case study: Lung cancer in Danish cities {background-color="#F5EDDE"}
+
+- Number of incidents (out of the population) of lung cancer from 1968 to 1971 in four Danish cities recorded by age group.
+
+::: columns
+
+::: {.column width="100%"}
+
+```{r fig-lung, dev.args = list(bg = "transparent")}
+#| code-fold: true
+#| fig-width: 14
+data(danishlc, package = "GLMsData")
+
+danishlc |> 
+  mutate(Age = fct_reorder(Age, parse_number(as.character(Age)), min)) |> 
+  ggplot(aes(Age, Cases/Pop * 1000, color = City)) + 
+  geom_point(size = 3) +
+  geom_line(aes(group = City), linewidth = 1.2) +
+  geom_text(aes(label = City), 
+            hjust = 0, nudge_x = 0.1,
+            data = ~filter(., Age == ">74"), size = 9) +
+  guides(color = "none") +
+  labs(y = "Cases per 1000 people", x = "Age group") +
+  scale_x_discrete(expand = expansion(mult = c(0.1, 0.3)))
+```
+
+
+:::
+
+::: {.column width="50%"}
+
+
+
+:::
+
+:::
+
+
+
+## Modelling rates with Poisson regression 
+
+$$\log\left(\frac{\mu_i}{\texttt{Pop}_i}\right) =  \beta_0 + \beta_{1\texttt{Age}_i} + \beta_{2\texttt{City}_i} + \beta_{3\texttt{AgeCity}_i}$$
+
+```{r}
+fit_glm1 <- glm(Cases/Pop ~ Age*City, data = danishlc,
+                  family = poisson(link = "log"))
+```
+
+$$\log(\mu_i) = \log(\texttt{Pop}_i) + \beta_0 + \beta_{1\texttt{Age}_i} + \beta_{2\texttt{City}_i} + \beta_{3\texttt{AgeCity}_i}$$
+
+```{r}
+fit_glm2 <- glm(Cases ~ offset(log(Pop)) + Age*City, data = danishlc,
+                  family = poisson(link = "log"))
+```
+
+
+
+
+
+
+
+## Chi-square test
+
+```{r}
+anova(fit_glm2, test = "Chisq")
+```
+
+- We retain only `Age` in the model. 
+
+## Predicting rate response with Poisson regression 
+
+```{r}
+fit_glm3 <- glm(Cases ~ offset(log(Pop)) + Age, data = danishlc,
+                family = poisson(link = "log"))
+```
+
+
+::: columns
+
+::: {.column width="50%"}
+
+
+```{r}
+#| code-fold: true
+broom::augment(fit_glm3, type.predict = "response") |> 
+  mutate(Pop = exp(`offset(log(Pop))`)) |> 
+  mutate(Age = fct_reorder(Age, parse_number(as.character(Age)), min)) |> 
+  ggplot(aes(Age, Cases/Pop * 1000)) +
+  geom_point(size = 3) +
+  geom_point(aes(y = .fitted/Pop * 1000), color = "blue", size = 4) +
+  geom_line(aes(y = .fitted/Pop * 1000), color = "blue", group = 1, linewidth = 1.2) +
+  labs(y = "Cases per 1000 people", x = "Age group") 
+```
+
+:::
+
+::: {.column width="50%"}
+
+
+```{r}
+broom::augment(fit_glm3, 
+   type.predict = "response", 
+   newdata = danishlc |> 
+        distinct(Age) |> 
+        mutate(Pop = 1000)) 
+```
+
+:::
+
+:::
+
+
+## Case study: pock {background-color="#F5EDDE"}
+
+
+::: columns
+
+::: {.column width="50%"}
+
+```{r, dev.args=list(bg = "transparent")}
+#| code-fold: true
+data(pock, package = "GLMsData")
+ggplot(pock, aes(Dilution, Count)) +
+  ggbeeswarm::geom_quasirandom(width = 0.2) +
+  scale_x_continuous(transform = "log2")
+```
+
+:::
+
+::: {.column width="50%"}
+
+- In an experiment to assess viral activity, pock marks were counted at various dilutions of the viral medium. 
+
+:::
+
+:::
+
+## Overdispersion
+
+::: columns
+
+::: {.column width="50%"}
+
+```{r}
+pock_group <- pock |> 
+  summarise(mean = mean(Count), 
+            var = var(Count),
+            .by = Dilution) 
+
+coef(lm(log(var) ~ log(mean), 
+        data = pock_group))
+```
+
+
+- For a Poisson distribution, the variance should be equal to the mean.
+
+:::
+
+::: {.column width="50%"}
+
+
+```{r, dev.args=list(bg = "transparent")}
+#| code-fold: true
+#| fig-width: 6
+#| fig-height: 6
+pock_group |>
+  ggplot(aes(mean, var)) + 
+  geom_point(size =3) +
+  geom_smooth(method = lm, se = FALSE) + 
+  geom_abline(intercept = 0, slope = 1, linetype = 2) + 
+  scale_y_log10() +
+  scale_x_log10() +
+  labs(x = "Group mean", y = "Group variance")
+```
+
+
+:::
+
+:::
+
+
+## Gamma distrbution
+
+::: columns
+
+::: {.column width="50%"}
+
+```{r}
+#| echo: false
+#| fig-height: 10
+gnormal <- tibble(y = seq(-4, 4, length.out = 1000)) |> 
+  mutate(p = dnorm(y, 0, 1)) |> 
+  ggplot() + geom_col(aes(y, p)) +
+  labs(title = "Y ~ N(0, 1)", x = "Y", y = "Density") +
+  scale_y_continuous(expand = c(0, 0))
+
+ggamma <- gnormal %+% (
+  tibble(y = seq(0, 15, length.out = 1000)) |> 
+    mutate(p = dgamma(y, 1, scale = 1))) +
+  labs(title = "Y ~ Gamma(1, scale = 1)")
+
+ggamma2 <- gnormal %+% (
+  tibble(y = seq(0, 15, length.out = 1000)) |> 
+    mutate(p = dgamma(y, 5, scale = 1))) +
+  labs(title = "Y ~ Gamma(5, scale = 1)")
+
+ggamma3 <- gnormal %+% (
+  tibble(y = seq(0, 15, length.out = 1000)) |> 
+    mutate(p = dgamma(y, 1, scale = 1/3))) +
+  labs(title = "Y ~ Gamma(1, scale = 1/3)")
+
+ggamma / ggamma2 / ggamma3
+```
+
+
+:::
+
+::: {.column width="50%"}
+
+Suppose $Y \sim \text{Gamma}(k, \theta)$
+
+
+$$f(y) = \frac{1}{\Gamma(k)\theta^k}y^{k-1}e^{-y/\theta}$$
+
+
+$E(Y) = k\theta$ and $var(Y) = k\theta^2$
+
+:::
+
+:::
+
+
+
+## Negative binomial distribution
+
+::: columns
+
+::: {.column width="40%"}
+
+```{r}
+#| echo: false
+#| fig-height: 10
+#| fig-width: 7.5
+gpois <- gbernoulli %+% (tibble(y = 0:30) |> 
+  mutate(p = dnbinom(y, mu = 1, size = 4))) +
+  labs(title = "Y ~ Negative Binomial(1, 4)") +
+  scale_x_continuous()
+
+gpois2 <- gbernoulli %+% (tibble(y = 0:30) |> 
+  mutate(p = dnbinom(y, mu = 5, size = 0.5))) +
+  labs(title = "Y ~ Negative Binomial(5, 0.5)") +
+  scale_x_continuous()
+
+gpois3 <- gbernoulli %+% (tibble(y = 0:30) |> 
+  mutate(p = dnbinom(y, mu = 5, size = 2))) +
+  labs(title = "Y ~ Negative Binomial(5, 2)") +
+  scale_x_continuous()
+  
+gpois / gpois2 / gpois3
+```
+
+
+
+:::
+
+::: {.column width="60%"}
+
+
+$Y \sim \text{Negative Binomial}(m, k)$
+
+::: f2
+
+$$P(Y = y) = \frac{\Gamma(y + k)}{\Gamma(y + 1) \Gamma(k)} \left(\frac{m}{m + k}\right)^{y} \left(\frac{k}{m + k}\right)^{k}$$
+
+:::
+
+where $m$ is the mean and $k$ is the inverse of the dispersion parameter.
+
+$E(Y) = m$ and $\text{Var}(Y) = m + \frac{1}{r}m^2$
+
+
+:::
+
+:::
+
+
+## Negative binomial regression
+
+- Suppose we consider a hierarchical model.
+- Instead of assuming $Y_i \sim \text{Poisson}(\mu_i)$, we assume that:
+  1. $\lambda_i \sim \text{Gamma}(\mu_i, \psi)$.
+  2. $Y_i \sim \text{Poisson}(\lambda_i)$ 
+- This hierarchical model in facts results in $$Y_i \sim \text{Negative Binomial}(\mu_i, k)$$ where $k = \frac{1}{\psi}$.
+- $E(Y_i) = \mu_i$ and $\text{Var}(Y_i) = \mu_i + \psi \mu_i^2$
+- If $\psi = 0$ then Negative Binomial reduces to Poisson.
+
+
+## Negative binomial regression in R 
+
+- Negative binomial regression can be fitted using `MASS::glm.nb()` function:
+
+```{r}
+fit_nb <- MASS::glm.nb(Count ~ log2(Dilution), data = pock)
+coef(fit_nb)
+```
+- The estimate of $k$ is stored as `theta` in the model object:
+
+```{r}
+fit_nb$theta 
+```
+
+
+## Summary
+
+- You can model (unrestricted) count or rate data with Poisson regression using <br>`glm(y ~ x, family = poisson())`
+- For rate data with the total size, <br>`glm(y ~ offset(log(size)) + x, family = poisson())`
+- If the data is overdispersed (variance > mean), you can use Negative Binomial regression.<br> `MASS::glm.nb(y ~ x)`.
+
 
 

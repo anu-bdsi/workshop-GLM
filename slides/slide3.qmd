@@ -1,8 +1,9 @@
 ---
-title: Generalised linear models
+title: General structure and diagnostics
 subtitle: "{{< var workshop-title >}}"
 format:
   anu-light-revealjs:
+    #navigation-mode: vertical
     width: 1920
     height: 1080
     auto-stretch: false
@@ -29,7 +30,6 @@ webr:
 ---
 
 
-## {{< fa crosshairs >}} Current learning objective
 
 ```{r, include = FALSE}
 library(tidyverse)
@@ -43,19 +43,122 @@ theme_set(theme_classic(base_size = 24) +
 ```
 
 
+
+
+## Probability Distributions 
+
+![](/images/dist-binomial.png) ![](/images/dist-poisson.png) ![](/images/dist-neg-binomial.png) ![](/images/dist-geom.png) ![](/images/dist-betabinom.png) ![](/images/dist-hyper.png) ![](/images/dist-unif.png) ![](/images/dist-normal.png) ![](/images/dist-gamma.png)  ![](/images/dist-beta.png) ![](/images/dist-exp.png)  ![](/images/dist-cauchy.png)    ![](/images/dist-t.png)
+![](/images/dist-f.png) ![](/images/dist-chi.png) ![](/images/dist-lnormal.png) ![](/images/dist-invg.png) ![](/images/dist-skewnormal.png) 
+
+## Generalised linear models 
+
+Generalised linear models (GLMs) has two components:
+
+::: callout-note 
+
+## A random component
+
+$Y_i$ has a distribution from the exponential family with mean $\mu_i = E(Y_i)$.
+
+:::
+
+::: callout-note 
+
+## A systematic component
+
+A **linear predictor**: $$g(\mu_i) = \eta_i = o_i + \beta_0 + \beta_1 x_{i1} + \ldots + \beta_k x_{ik}$$ 
+
+where 
+
+- $g(\cdot)$ is a (smooth and invertible) **link function**, and
+- $o_i$ is the offset value for the $i$-th observation (if any).
+
+:::
+
+
+## Exponential family 
+
+<details>
+
+::: {.callout-note appearance="minimal"}
+
+A distribution is part of the exponential family if the probability density/mass function can be written in the form:
+
+$$f(y;\theta, \phi) = a(y, \theta)\text{exp}\left(\frac{y\cdot\theta - \kappa(\theta)}{\psi}\right)$$
+
+- $\theta$ is the _canonical parameter_
+- $\kappa(\theta)$ is a known function called the _cumulant function_
+- $\phi > 0$ is the _dispersion parameter_
+- $a(y, \theta)$ is a _normalising constant_.
+
+:::
+
+</details>
+
+![](/images/dist-binomial.png) ![](/images/dist-poisson.png) ![](/images/dist-neg-binomial.png) ![](/images/dist-geom.png) ![](/images/dist-betabinom.png){style="opacity:0.3;"} ![](/images/dist-hyper.png){style="opacity:0.3;"} ![](/images/dist-unif.png){style="opacity:0.3;"} ![](/images/dist-normal.png) ![](/images/dist-gamma.png)  ![](/images/dist-beta.png) ![](/images/dist-exp.png)  ![](/images/dist-cauchy.png){style="opacity:0.3;"}    ![](/images/dist-t.png){style="opacity:0.3;"}
+![](/images/dist-f.png){style="opacity:0.3;"} ![](/images/dist-chi.png) ![](/images/dist-lnormal.png) ![](/images/dist-invg.png) ![](/images/dist-skewnormal.png){style="opacity:0.3;"} 
+
+
+
+
+
+
+
+## Common GLMs
+
+
+| Family | Default Link | $g(\mu)$ | $g^{-1}(\eta)$ | Range of $Y_i$ | $Var(\mu)$ |
+|--------|--------|---------|---------------|-------| --- |
+| Normal/Gaussian | Identity | $\mu$ | $\eta$ | $(-\infty, \infty)$ | $1$ |
+| Gamma | Inverse | $\frac{1}{\mu}$ | $\frac{1}{\eta}$ | $(0, \infty)$ | $\mu^2$ |
+| Binomial | Logit | $\log_e(\frac{\mu}{1 - \mu})$ |  $\frac{\text{exp}(\eta)}{1 + \text{exp}(\eta)}$ | $[0, 1]$ | $\mu(1-\mu)$ |
+| Poisson | Log | $\log_e(\mu)$ | $\text{exp}(\eta)$|$[0, \infty)$ | $\mu$ |
+| Negative Binomial | Log |$\log_e(\mu)$ | $\text{exp}(\eta)$| $[0, \infty)$ | $\mu + \mu^2/k$ |
+
+
+
+
+- $\mu$ is the expected value on the response scale
+- $\eta$ is the expected value on the link scale
+
+## Fitting GLMs in R
+
+`glm(y ~ x, family = dist(link = "function"), data = data)`
+
+<br>
+
+| Family | Function | Default Link | Other Links |
+|-----|---|------|-----|
+| Normal/Gaussian | `gaussian` | identity | log, inverse |
+| Gamma | `Gamma` | inverse | identity, log|
+| Binomial | `binomial` | logit | probit, cauchit, log, cloglog |
+| Poisson | `poisson` | log | log, identity, sqrt |
+| Negative Binomial<sup>*</sup> | `MASS::glm.nb` | log | sqrt, identity |
+
+- The default links in R are the **canonical link** (except for the Negative Binomial)
+- <sup>*</sup>Negative Binomial is specified with `glm.nb` from the `MASS` package and does not require family to be specified.
+
+
+## Which GLM to use?
+
+::: incremental
+
+- For the _random component_: 
+    - What is the response type? E.g. positive integer, continuous over infinite support, etc.
+    - Look at the relationship between the group mean and the group variance<br>(left as an exercises -- see Exercise 3)
+- For the _systematic component_: 
+    - How are the explanatory variables related to the mean of the response variable?
+    - Do the explanatory variables need to be transformed or removed?
+- For the _practical component_:
+  - Are the interpretation from the fitted model understandable?
+  - Can you fit the model in practice?
+    
+:::
+
+
+
 ```{r}
-#| results: asis 
-#| echo: false
-learning_objectives(3)
-```
-
-
-## Continuous Distributions 
-
-
-
-```{r}
-#| echo: false
+#| include: false
 #| fig-width: 18
 #| fig-height: 12
 gnormal <- tibble(y = seq(-4, 4, length.out = 1000)) |> 
@@ -85,9 +188,9 @@ ggamma2 <- gnormal %+% (
   labs(title = "Y ~ Gamma(5, 1)")
 
 ggamma3 <- gnormal %+% (
-  tibble(y = seq(0, 15, length.out = 1000)) |> 
-    mutate(p = dgamma(y, 1, 1/3))) +
-  labs(title = "Y ~ Gamma(1, 1/3)")
+  tibble(y = seq(0, 80, length.out = 1000)) |> 
+    mutate(p = dgamma(y, 10, 1/3))) +
+  labs(title = "Y ~ Gamma(10, 1/3)")
 
 ginvnorm <- gnormal %+% (
   tibble(y = seq(0, 5, length.out = 1000)) |> 
@@ -111,11 +214,8 @@ ginvnorm3 <- gnormal %+% (
 ```
 
 
-## Discrete Distributions 
-
-
 ```{r}
-#| echo: false
+#| include: false
 #| fig-width: 18
 #| fig-height: 12
 gbernoulli <- tibble(y = 0:10) |> 
@@ -175,37 +275,122 @@ gpois3 <- gbernoulli %+% (tibble(y = 0:15) |>
 (gbernoulli + gnbinom + gpois) / (gbinom + gnbinom2 + gpois2) / (gbinom2 + gnbinom3 + gpois3)
 ```
 
-## Generalised linear models 
+# Diagnostics {background-color="#F5EDDE"}
 
-Genralised linear models (GLMs) has three components:
 
-- Assume that $Y_i$ is a member of an exponential family (e.g. Normal/Gaussian, Binomial, Poission, Gamma, etc).
-- A linear predictor $\eta_i = \beta_0 + \beta_1 x_{i1} + \ldots + \beta_k x_{ik}.$
-- A (smooth and invertible) link function $g(\cdot)$ which transforms the expectation of the response variable $\mu_i = E(Y_i)$ to the linear predictor: $$g(\mu_i) = \eta_i = \beta_0 + \beta_1 x_{i1} + \ldots + \beta_k x_{ik}.$$
+## Residual plot
 
-## Link functions 
+- Plots of residuals vs fitted values and each of the covariates is important to check.
+- If there are any trends in the plot, then the systematic component can be improved, e.g. change the link function, add extra predictors or transform predictors. 
+- If the random component is correct, then the variance should be approximately constant across fitted values and predictors. 
+- For discrete responses, it is better to use quantile residuals. 
 
-| Link | $\eta_i = g(\mu_i)$ | $\mu_i = g^{-1}(\eta_i)$ | 
-|------|----------------------|--------------------------|
-| Identity | $\mu_i$ | $\eta_i$ |
-| Log | $\log(\mu_i)$ | $\exp(\eta_i)$ |
-| Inverse | $1/\mu_i$ | $1/\eta_i$ |
-| Inverse-squared | $1/\mu_i^2$ | $1/\sqrt{\eta_i}$ |
-| Square-root | $\sqrt{\mu_i}$ | $\eta_i^2$ |
-| Logit | $\log(\mu_i/(1-\mu_i))$ | $\exp(\eta_i)/(1+\exp(\eta_i))$ |
-| Probit | $\Phi^{-1}(\mu_i)$ | $\Phi(\eta_i)$ | Log-log | $\log(-\log(1-\mu_i))$ | $1-\exp(-\exp(\eta_i))$ |
-| Complementary log-log | $\log(-\log(1-\mu_i))$ | $1-\exp(-\exp(\eta_i))$ |
+## Quantile residual plot
 
-where $\Phi(\cdot)$ is the cumulative distribution function of the standard normal distribution.
 
-## Canonical link
 
-| Family | Canonical Link | Range of $Y_i$ | $V(Y_i|\eta_i)$ |
-|--------|-----------------|---------------|-----------------|
-| Normal | Identity | $(-\infty, \infty)$ | $\psi$ |
-| Binomial | Logit | $[0, 1]$ | $\mu_i(1-\mu_i)$ |
-| Poisson | Log | $[0, \infty)$ | $\mu_i$ |
-| Gamma | Inverse | $(0, \infty)$ | $\psi\mu_i^2$ |
-| Inverse-Gaussian | Inverse-squared | $(0, \infty)$ | $\psi\mu_i^3$ |
+```{r}
+#| code-fold: true
+cancer <- read_csv("https://anu-bdsi.github.io/workshop-GLM/data/cancer.csv")
+cancer_fit <- glm(diagnosis_malignant ~ radius_mean + concave_points_mean, 
+                  data = cancer, 
+                  family = binomial(link = "logit"))
 
-where $\psi$ is the dispersion parameter, $\eta_i$ is the linear predictor, and $\mu_i$ is the expectation of $Y_i$. In the binomial family, $n_i$ is the number of trials.
+cancer_augment <- cancer_fit |> 
+  broom::augment(type.predict = "response") |> 
+  mutate(qres = statmod::qresid(cancer_fit))
+```
+
+::: columns
+
+::: {.column width="50%"}
+
+
+```{r}
+#| code-fold: true
+cancer_augment |> 
+  ggplot(aes(.fitted, .resid)) +
+    geom_point() + 
+    geom_hline(yintercept = 0, linetype = 2) +
+    labs(y = "Deviance residuals", x = "Fitted values")
+```
+
+:::
+
+::: {.column width="50%"}
+
+
+```{r}
+#| code-fold: true
+cancer_augment |> 
+  ggplot(aes(.fitted, qres)) +
+    geom_point() + 
+    geom_hline(yintercept = 0, linetype = 2) +
+    labs(y = "Quantile residuals", x = "Fitted values")
+```
+
+
+:::
+
+:::
+
+## Q-Q plot 
+
+::: columns
+
+::: {.column width="30%"}
+
+```{r}
+#| code-fold: true
+#| fig-width: 6
+#| fig-height: 6
+cancer_augment |> 
+  ggplot(aes(sample = qres)) +
+    stat_qq() + 
+    stat_qq_line() +
+    labs(title = "Q-Q plot of quantile residuals",
+         x = "Theoretical quantiles", 
+         y = "Sample quantiles")
+```
+
+:::
+
+::: {.column width="70%" .fragment}
+
+
+Simulate from fitted model and check the Q-Q plot of quantile residuals to know the "typical" Q-Q plot:
+
+```{r}
+#| code-fold: true
+#| fig-width: 18
+#| fig-height: 12
+simulate(cancer_fit, nsim = 6) |> 
+  bind_cols(cancer) |> 
+  pivot_longer(starts_with("sim_"),
+               names_to = "sim",
+               values_to = "sim_response") |> 
+  nest(.by = sim) |> 
+  mutate(fit = map(data, ~update(cancer_fit, data = .))) |> 
+  mutate(qres = map(fit, ~statmod::qresid(.))) |> 
+  unnest_longer(qres) |> 
+  ggplot(aes(sample = qres)) +
+  stat_qq() +
+  stat_qq_line() + 
+  facet_wrap(~sim) + 
+  coord_equal()
+```
+
+
+:::
+
+:::
+
+
+
+
+## Summary 
+
+- A generalised linear model are regression models that consist of two components:
+  - a random component (requiring decision on a distribution from the exponential family): $$Y_i \sim \text{Exponential family}$$
+  - a systematic component (requiring decision on the link function): $$g(\mu_i) = \eta_i = o_i + \beta_0 + \beta_1 x_{i1} + \ldots + \beta_k x_{ik}.$$
+- Diagnose the model using (quantile) residual plots and Q-Q plots.

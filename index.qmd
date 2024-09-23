@@ -11,6 +11,8 @@ webr:
     - tidyverse
     - faraway
     - broom
+    - GLMsData
+    - statmod
 ---
 
 
@@ -38,7 +40,7 @@ Please ensure that you download and install
 
 
 ```r
-install.packages(c("tidyverse", "broom", "faraway", "GLMsData", "GGally"))
+install.packages(c("tidyverse", "broom", "faraway", "GLMsData", "GGally", "statmod"))
 ```
 
 - For Window users, you may need to [install Rtools](https://cran.r-project.org/bin/windows/Rtools/) to install R packages.
@@ -89,6 +91,7 @@ Click on the heading to open the slides in a new tab, or click on details to see
 
 </details>
 
+
 ###  `r slide_title(2)`
 
 <details>
@@ -99,15 +102,17 @@ Click on the heading to open the slides in a new tab, or click on details to see
 
 </details>
 
-### `r slide_title(3)`
+
+###  `r slide_title(3)`
 
 <details>
-   
+
 <iframe class="slide-deck" src="slides/slide3.html"></iframe>
 
 `r ex_tabset(3)`
 
 </details>
+
 
 ## 📑 Resources
 
@@ -128,21 +133,15 @@ The following self-paced exercises are designed to check your understanding of t
 ## Exercise 1
 
 
-
 {{< include "exercises/_exercise1.qmd" >}}
-
 
 
 ## Exercise 2
 
 
-
 {{< include "exercises/_exercise2.qmd" >}}
 
-
-
 ## Exercise 3
-
 
 
 {{< include "exercises/_exercise3.qmd" >}}

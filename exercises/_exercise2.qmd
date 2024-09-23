@@ -1,4 +1,12 @@
 ---
+filters:
+  - webr2
+webr: 
+  show-startup-message: false    
+  packages:
+    - tidyverse
+    - faraway
+    - broom
 format: 
   html:
     self-contained: true
@@ -12,4 +20,115 @@ format:
 #| include: false
 library(webexercises)
 ```
+
+**Question**: What is the effect of gamma radiation (characterised by dose amount and dose rate) on the number of chromosomal abnormalities?
+
+::: callout-note
+
+## About the data
+
+- The data is from Purott and Reeder (1976) where an experiment was conducted to determine the effect of gamma radiation on chromosomal abnormalities.
+- The data recorded: 
+  - `ca`: the number of chromosomal abnormalities
+  - `cells`: the number of cells 
+  - `doseamt`: the dose amount
+  - `doserate`: the dose rate
+
+:::
+
+### Load the data
+
+- Is this data experimental or observational? `r mcq(sample(c("observational", answer = "experimental")))`
+
+```{webr-r}
+#| autorun: true
+library(tidyverse)
+data(dicentric, package = "faraway")
+glimpse(dicentric)
+```
+
+### Explore the data
+
+- What are the combination of `doseamt` and `doserate` that was used?
+
+```{webr-r}
+ggplot(dicentric, aes(doseamt, doserate)) + 
+  geom_point()
+```
+
+<details><summary>Answer</summary>
+There are 9 levels of `doserate` spanning from 0.1 to 4 and 3 levels of `doseamt` (1, 2.5, 5).
+</details>
+
+- `doseamt` and `doserate` are recorded as numeric variables. Should we consider it as categorical variables?
+
+```{webr-r}
+ggplot(dicentric, aes(doserate, ca/cells, color = doseamt)) +
+  geom_point() +
+  geom_line(aes(group = doseamt)) +
+  scale_x_log10()
+
+ggplot(dicentric, aes(doseamt, ca/cells, color = doserate)) +
+  geom_point() +
+  geom_line(aes(group = doserate))
+```
+
+<details><summary>Answer</summary>
+The effect of the `doserate` may be multiplicative (as indicated by the increasing spread) so we can consider taking the log of the variable and consider its interaction with `doseamt`. 
+
+There are only 3 levels of the `doseamt` and the quantity doesn't appear to be linearly related to the response rate. We can consider taking it as a categorical variable. 
+
+</details>
+
+
+## Model the data 
+
+
+- Let's consider using a linear model for the rate of chromosomal abnormalities. What proportion of the variation does the model explain? `r fitb(0.9874)`
+
+```{webr-r}
+#| autorun: true
+fit <- lm(ca/cells ~ log(doserate)*factor(doseamt), data = dicentric)
+summary(fit)
+```
+
+<details><summary>Answer</summary>
+
+Remember that you can find the proportion of (response) variation that the model explains from the coefficient of determination (or $R^2$). The value is 0.9874, which is quite high and suggest that model fits well.
+
+</details>
+
+- Let's check residual plot for model diagnostics. Do you see any issues from the residual plot?
+
+```{webr-r}
+broom::augment(fit) |> 
+  ggplot(aes(.fitted, .resid)) + 
+  geom_point()  +
+  geom_hline(yintercept = 0, linetype = 2)
+```
+
+<details><summary>Answer</summary>
+
+The variance does not appear to be constant as we see that the spread of the residuals is larger as the fitted value increases.
+
+</details>
+
+- Let's fit a Poisson regression instead. What is the default link for Poisson regression? `r fitb("log", ignore_case = TRUE)`
+
+- Now try fitting the Poisson regression model to this data.
+
+```{webr-r}
+glm(___)
+```
+
+<details><summary>Answer</summary>
+
+
+```{webr-r}
+fit <- glm(ca ~ offset(log(cells)) + log(doserate)*factor(doseamt), data = dicentric, family = poisson())
+summary(fit)
+```
+
+
+</details>
 

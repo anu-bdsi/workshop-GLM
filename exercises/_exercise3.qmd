@@ -1,4 +1,14 @@
 ---
+filters:
+  - webr2
+webr: 
+  show-startup-message: false    
+  packages:
+    - tidyverse
+    - GLMsData
+    - broom
+    - GGally
+    - statmod
 format: 
   html:
     self-contained: true
@@ -12,3 +22,175 @@ format:
 #| include: false
 library(webexercises)
 ```
+
+**Aim**: Propose a model for forest biomass of small-leaved lime trees. 
+
+::: callout-note
+
+## About the data
+
+- A series of studies sampled the forest biomass in Eurasia. 
+- We use part of that data for small-leaved lime trees (_Tilia cordata_).
+- The data contains the variables:
+  - `Foliage`: the foliage biomass (in kg)
+  - `DBH`: the tree diameter at breast height (in cm)
+  - `Age`: the age of tree (in years)
+  - `Origin`: the origin of the tree (Coppice, Natural, or Planted)
+
+:::
+
+## Load the data 
+
+- Is this data experimental or observational? `r mcq(sample(c(answer = "observational", "experimental")))`
+
+
+```{webr-r}
+#| autorun: true
+library(tidyverse)
+data(lime, package = "GLMsData")
+glimpse(lime)
+```
+
+## Explore the data 
+
+- Let's start by looking at the pairwise plots of the data. 
+
+```{webr-r}
+lime |> 
+  GGally::ggpairs()
+```
+
+- Before building the model, let's take into account some domain context. A foliage mostly grows on the outer canopy, which could be crudely approximated as a spherical shape. The surface area of a sphere is given as $4\pi r^2$ where $r$ is radius. So we could consider that $\texttt{Foliage} \propto 4 \pi (\texttt{DBH}/2)^2 = \pi \texttt{DBH}^2$. Taking log of both sides we have $$\log(\texttt{Foliage})  \approx \text{constant} + 2\log(\texttt{DBH}).$$ This suggests that we should take the log transformation for `Foliage` and `DBH`. What does the data show?
+
+```{webr-r}
+ggplot(lime, aes(DBH, Foliage)) + 
+  geom_point() +
+  scale_y_log10() +
+  scale_x_log10() +
+  geom_smooth(method = lm, formula = y ~ x)
+
+coef(lm(log(Foliage) ~ log(DBH), data = lime))
+```
+
+<details><summary>Answer</summary>
+
+The scatter plot shows that the log transformations of `Foliage` and `DBH` show a linear relationship. The coefficient of `log(DBH)` is close to 2.
+
+</details>
+
+## Model the data
+
+
+- Let's consider the systematic component to be `log(Foliage) ~ log(DBH) * Age * Origin` for now. Are the two models shown below the same? `r mcq(c(answer = "yes","no"))`
+
+```{webr-r}
+fit1 <- lm(log(Foliage) ~ log(DBH) * Age * Origin, 
+           data = lime)
+
+fit2 <- glm(log(Foliage) ~ log(DBH) * Age * Origin, 
+            data = lime, 
+            family = gaussian(link = "identity"))
+```
+
+- What about the two models shown below? Are they the same? `r mcq(c("yes", answer = "no"))` Why or why not?
+
+```{webr-r}
+fit2 <- glm(log(Foliage) ~ log(DBH) * Age * Origin, 
+            data = lime, 
+            family = gaussian(link = "identity"))
+
+fit3 <- glm(Foliage ~ log(DBH) * Age * Origin, 
+            data = lime, 
+            family = gaussian(link = "log"))
+```
+
+<details><summary>Answer</summary>
+
+The models are not the same. The first model is modelling the expected value of the log of the response variable, while the second model is modelling the log of the expected response value, i.e. $E(\log(Y)) \neq \log(E(Y))$. This is a subtle but important distinction.
+
+</details>
+
+
+- Let's consider breaking the data into small groups by `Age` and `Origin` and look at the relationship between mean and variance for `Foliage` of each group.
+
+```{webr-r}
+grp_df <- lime |> 
+  mutate(Ageg = cut_interval(Age, 4)) |> 
+  summarise(n = n(),
+            mean = mean(Foliage),
+            var = var(Foliage),
+            .by = c(Origin, Ageg))
+
+ggplot(grp_df, aes(mean, var)) + 
+  geom_point(aes(size = n)) + 
+  scale_x_log10() +
+  scale_y_log10() +
+  geom_smooth(method = lm, formula = y ~ x)
+
+broom::tidy(lm(log(var) ~ log(mean), data = grp_df))
+```
+<details><summary>Answer</summary>
+
+We have $\log(\text{group variance}) \approx 2\log(\text{group mean})$. This means that $\text{group variance} \approx \text{group mean}^2$. 
+Recall that $Var(\mu) = \mu^2$ for Gamma distribution, so this suggests that the Gamma distribution could be a good choice for modelling the data.
+
+</details>
+
+
+- Let's consider the systematic component to be `Foliage ~ log(DBH) * Age * Origin` and fit a Gamma regression with log link. Do you think `Age` should be included in the model?
+
+```{webr-r}
+fit <- glm(Foliage ~ log(DBH) * Age * Origin, 
+           data = lime, 
+           family = Gamma(link = "log"))
+anova(fit, test = "Chisq")
+```
+
+- Update the model without `Age`. Should `Origin` be included in the model? 
+
+```{webr-r}
+fit <- glm(Foliage ~ log(DBH) * Origin, 
+           data = lime, 
+           family = Gamma(link = "log"))
+anova(fit, test = "Chisq")
+```
+
+- Check some model diagnostics to assess your selected model. 
+
+```{webr-r}
+
+
+
+```
+
+<details><summary>Answer</summary>
+
+
+```{webr-r}
+fit <- glm(Foliage ~ log(DBH) * Origin, 
+           data = lime, 
+           family = Gamma(link = "log"))
+
+fit_augment <- broom::augment(fit, type.predict = "response") |> 
+  mutate(qres = statmod::qresid(fit)) 
+
+# similar plot with .resid
+fit_augment |> 
+  ggplot(aes(.fitted, qres)) + 
+  geom_hline(yintercept = 0, linetype = 2) +
+  geom_point()
+
+fit_augment |> 
+  ggplot(aes(`log(DBH)`, qres)) + 
+  geom_hline(yintercept = 0, linetype = 2) +
+  geom_point()
+
+fit_augment |> 
+  ggplot(aes(sample = qres)) + 
+  stat_qq() +
+  stat_qq_line() +
+  coord_equal()
+```
+
+
+</details>

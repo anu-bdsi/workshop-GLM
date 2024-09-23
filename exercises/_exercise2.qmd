@@ -81,7 +81,7 @@ There are only 3 levels of the `doseamt` and the quantity doesn't appear to be l
 </details>
 
 
-## Model the data 
+### Model the data 
 
 
 - Let's consider using a linear model for the rate of chromosomal abnormalities. What proportion of the variation does the model explain? `r fitb(0.9874)`

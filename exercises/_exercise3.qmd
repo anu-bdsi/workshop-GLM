@@ -39,7 +39,7 @@ library(webexercises)
 
 :::
 
-## Load the data 
+### Load the data 
 
 - Is this data experimental or observational? `r mcq(sample(c(answer = "observational", "experimental")))`
 
@@ -51,7 +51,7 @@ data(lime, package = "GLMsData")
 glimpse(lime)
 ```
 
-## Explore the data 
+### Explore the data 
 
 - Let's start by looking at the pairwise plots of the data. 
 
@@ -78,7 +78,7 @@ The scatter plot shows that the log transformations of `Foliage` and `DBH` show 
 
 </details>
 
-## Model the data
+### Model the data
 
 
 - Let's consider the systematic component to be `log(Foliage) ~ log(DBH) * Age * Origin` for now. Are the two models shown below the same? `r mcq(c(answer = "yes","no"))`

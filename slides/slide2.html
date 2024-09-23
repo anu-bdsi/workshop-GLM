@@ -8,7 +8,7 @@
 <link href="../site_libs/quarto-html/light-border.css" rel="stylesheet">
 <link href="../site_libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.5.30">
+  <meta name="generator" content="quarto-1.5.31">
 
   <meta name="author" content="Emi Tanaka">
   <title>ANU BDSI – Modelling for count responses</title>
@@ -618,40 +618,9 @@ Emi Tanaka
 </div>
 </div>
 </section>
-<section id="case-study-attitude-to-genetically-modified-foods" class="slide level2" data-background-color="#F5EDDE">
-<h2>Case study: attitude to genetically modified foods</h2>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a>gmfood <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data/gmfood.csv"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-<div class="columns">
-<div class="column" style="width:50%;">
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>      Attitude
-Income Against For
-  High     151 263
-  Low      222 258</code></pre>
-</div>
-</div>
-</div><div class="column" style="width:50%;">
-<ul>
-<li>The data in Table 10.3 were collected between December 1996 and January 1997, and comprise a two-dimensional (or two-way) table of counts collating the attitude of Australians to genetically modified (gm) foods (factor A) according to their income (factor B)</li>
-</ul>
-</div>
-</div>
-</section>
-<section id="contingency-tables" class="slide level2">
-<h2>Contingency tables</h2>
-</section>
-<section id="log-linear-models" class="slide level2">
-<h2>Log-linear models</h2>
-</section>
-<section id="poisson-regression-for-contingency-tables" class="slide level2">
-<h2>Poisson regression for contingency tables</h2>
-</section>
+
+
+
 <section id="case-study-cancer-diagnosis" class="slide level2" data-background-color="#F5EDDE">
 <h2>Case study: cancer diagnosis</h2>
 <ul>
@@ -668,7 +637,20 @@ Gender Breast Cervix Colorectal Lung Melanoma Other Prostate
      F    875     77        355  211      282  1082        0
      M      0      0        511  472      362  1406      923</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a><span class="fu">coef</span>(<span class="fu">glm</span>(Counts <span class="sc">~</span> Gender <span class="sc">*</span> Cancer, <span class="at">data =</span> wacancer, <span class="at">family =</span> poisson))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li>Note that a woman cannot get prostate cancer and a man cannot get cervix cancer.</li>
+<li>A man can get breast cancer, but it is extremely rare.</li>
+</ul>
+</section>
+<section id="structural-zeroes" class="slide level2">
+<h2>Structural zeroes</h2>
+<ul>
+<li>Structural zeros need to be removed from the data.</li>
+</ul>
+<div class="f2">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a><span class="fu">coef</span>(<span class="fu">glm</span>(Counts <span class="sc">~</span> Gender <span class="sc">*</span> Cancer, <span class="at">family =</span> poisson, <span class="at">data =</span> wacancer))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>             (Intercept)                  GenderM             CancerCervix 
                6.7742239              -30.0768090               -2.4304185 
@@ -681,7 +663,10 @@ GenderM:CancerColorectal       GenderM:CancerLung   GenderM:CancerMelanoma
      GenderM:CancerOther   GenderM:CancerProstate 
               30.3387466               60.2070233 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a></a><span class="fu">coef</span>(<span class="fu">glm</span>(Counts <span class="sc">~</span> Gender <span class="sc">*</span> Cancer, <span class="at">data =</span> wacancer <span class="sc">|&gt;</span> <span class="fu">filter</span>(Counts <span class="sc">&gt;</span> <span class="dv">0</span>), <span class="at">family =</span> poisson))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a></a><span class="fu">coef</span>(<span class="fu">glm</span>(Counts <span class="sc">~</span> Gender <span class="sc">*</span> Cancer, <span class="at">family =</span> poisson,</span>
+<span id="cb16-2"><a></a>         <span class="at">data =</span> <span class="fu">filter</span>(wacancer, Counts <span class="sc">&gt;</span> <span class="dv">0</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>             (Intercept)                  GenderM             CancerCervix 
               6.77422389               0.26193761              -2.43041846 
@@ -695,9 +680,7 @@ GenderM:CancerColorectal       GenderM:CancerLung   GenderM:CancerMelanoma
                       NA                       NA </code></pre>
 </div>
 </div>
-</section>
-<section id="structural-zeroes" class="slide level2">
-<h2>Structural zeroes</h2>
+</div>
 </section>
 <section id="case-study-lung-cancer-in-danish-cities" class="slide level2" data-background-color="#F5EDDE">
 <h2>Case study: Lung cancer in Danish cities</h2>
@@ -742,20 +725,21 @@ GenderM:CancerColorectal       GenderM:CancerLung   GenderM:CancerMelanoma
 </section>
 <section id="modelling-rates-with-poisson-regression" class="slide level2">
 <h2>Modelling rates with Poisson regression</h2>
+<p><span class="math display">\log\left(\frac{\mu_i}{\texttt{Pop}_i}\right) =  \beta_0 + \beta_{1\texttt{Age}_i} + \beta_{2\texttt{City}_i} + \beta_{3\texttt{AgeCity}_i}</span></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a>fit_glm1 <span class="ot">&lt;-</span> <span class="fu">glm</span>(Cases<span class="sc">/</span>Pop <span class="sc">~</span> Age<span class="sc">*</span>City, <span class="at">data =</span> danishlc,</span>
-<span id="cb19-2"><a></a>                  <span class="at">family =</span> <span class="fu">poisson</span>(<span class="at">link =</span> <span class="st">"log"</span>))</span>
-<span id="cb19-3"><a></a></span>
-<span id="cb19-4"><a></a>fit_glm2 <span class="ot">&lt;-</span> <span class="fu">glm</span>(Cases <span class="sc">~</span> <span class="fu">offset</span>(<span class="fu">log</span>(Pop)) <span class="sc">+</span> Age<span class="sc">*</span>City, <span class="at">data =</span> danishlc,</span>
-<span id="cb19-5"><a></a>                  <span class="at">family =</span> <span class="fu">poisson</span>(<span class="at">link =</span> <span class="st">"log"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb19-2"><a></a>                  <span class="at">family =</span> <span class="fu">poisson</span>(<span class="at">link =</span> <span class="st">"log"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p><span class="math display">\log\left(\frac{\mu_i}{\texttt{Pop}_i}\right) =  \beta_0 + \beta_{1\texttt{Age}_i} + \beta_{2\texttt{City}_i} + \beta_{3\texttt{AgeCity}_i}</span></p>
 <p><span class="math display">\log(\mu_i) = \log(\texttt{Pop}_i) + \beta_0 + \beta_{1\texttt{Age}_i} + \beta_{2\texttt{City}_i} + \beta_{3\texttt{AgeCity}_i}</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a></a>fit_glm2 <span class="ot">&lt;-</span> <span class="fu">glm</span>(Cases <span class="sc">~</span> <span class="fu">offset</span>(<span class="fu">log</span>(Pop)) <span class="sc">+</span> Age<span class="sc">*</span>City, <span class="at">data =</span> danishlc,</span>
+<span id="cb20-2"><a></a>                  <span class="at">family =</span> <span class="fu">poisson</span>(<span class="at">link =</span> <span class="st">"log"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 </section>
 <section id="chi-square-test" class="slide level2">
 <h2>Chi-square test</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a></a><span class="fu">anova</span>(fit_glm2, <span class="at">test =</span> <span class="st">"Chisq"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a></a><span class="fu">anova</span>(fit_glm2, <span class="at">test =</span> <span class="st">"Chisq"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Analysis of Deviance Table
 
@@ -781,38 +765,38 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <section id="predicting-rate-response-with-poisson-regression" class="slide level2">
 <h2>Predicting rate response with Poisson regression</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a></a>fit_glm3 <span class="ot">&lt;-</span> <span class="fu">glm</span>(Cases <span class="sc">~</span> <span class="fu">offset</span>(<span class="fu">log</span>(Pop)) <span class="sc">+</span> Age, <span class="at">data =</span> danishlc,</span>
-<span id="cb22-2"><a></a>                <span class="at">family =</span> <span class="fu">poisson</span>(<span class="at">link =</span> <span class="st">"log"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a></a>fit_glm3 <span class="ot">&lt;-</span> <span class="fu">glm</span>(Cases <span class="sc">~</span> <span class="fu">offset</span>(<span class="fu">log</span>(Pop)) <span class="sc">+</span> Age, <span class="at">data =</span> danishlc,</span>
+<span id="cb23-2"><a></a>                <span class="at">family =</span> <span class="fu">poisson</span>(<span class="at">link =</span> <span class="st">"log"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="columns">
 <div class="column" style="width:50%;">
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a></a>broom<span class="sc">::</span><span class="fu">augment</span>(fit_glm3, <span class="at">type.predict =</span> <span class="st">"response"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb23-2"><a></a>  <span class="fu">mutate</span>(<span class="at">Pop =</span> <span class="fu">exp</span>(<span class="st">`</span><span class="at">offset(log(Pop))</span><span class="st">`</span>)) <span class="sc">|&gt;</span> </span>
-<span id="cb23-3"><a></a>  <span class="fu">mutate</span>(<span class="at">Age =</span> <span class="fu">fct_reorder</span>(Age, <span class="fu">parse_number</span>(<span class="fu">as.character</span>(Age)), min)) <span class="sc">|&gt;</span> </span>
-<span id="cb23-4"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(Age, Cases<span class="sc">/</span>Pop <span class="sc">*</span> <span class="dv">1000</span>)) <span class="sc">+</span></span>
-<span id="cb23-5"><a></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
-<span id="cb23-6"><a></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> .fitted<span class="sc">/</span>Pop <span class="sc">*</span> <span class="dv">1000</span>), <span class="at">color =</span> <span class="st">"blue"</span>, <span class="at">size =</span> <span class="dv">4</span>) <span class="sc">+</span></span>
-<span id="cb23-7"><a></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> .fitted<span class="sc">/</span>Pop <span class="sc">*</span> <span class="dv">1000</span>), <span class="at">color =</span> <span class="st">"blue"</span>, <span class="at">group =</span> <span class="dv">1</span>, <span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
-<span id="cb23-8"><a></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Cases per 1000 people"</span>, <span class="at">x =</span> <span class="st">"Age group"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a></a>broom<span class="sc">::</span><span class="fu">augment</span>(fit_glm3, <span class="at">type.predict =</span> <span class="st">"response"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb24-2"><a></a>  <span class="fu">mutate</span>(<span class="at">Pop =</span> <span class="fu">exp</span>(<span class="st">`</span><span class="at">offset(log(Pop))</span><span class="st">`</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb24-3"><a></a>  <span class="fu">mutate</span>(<span class="at">Age =</span> <span class="fu">fct_reorder</span>(Age, <span class="fu">parse_number</span>(<span class="fu">as.character</span>(Age)), min)) <span class="sc">|&gt;</span> </span>
+<span id="cb24-4"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(Age, Cases<span class="sc">/</span>Pop <span class="sc">*</span> <span class="dv">1000</span>)) <span class="sc">+</span></span>
+<span id="cb24-5"><a></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb24-6"><a></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> .fitted<span class="sc">/</span>Pop <span class="sc">*</span> <span class="dv">1000</span>), <span class="at">color =</span> <span class="st">"blue"</span>, <span class="at">size =</span> <span class="dv">4</span>) <span class="sc">+</span></span>
+<span id="cb24-7"><a></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> .fitted<span class="sc">/</span>Pop <span class="sc">*</span> <span class="dv">1000</span>), <span class="at">color =</span> <span class="st">"blue"</span>, <span class="at">group =</span> <span class="dv">1</span>, <span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb24-8"><a></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Cases per 1000 people"</span>, <span class="at">x =</span> <span class="st">"Age group"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="slide2_files/figure-revealjs/unnamed-chunk-16-1.png" width="960"></p>
+<p><img data-src="slide2_files/figure-revealjs/unnamed-chunk-19-1.png" width="960"></p>
 </figure>
 </div>
 </div>
 </div>
 </div><div class="column" style="width:50%;">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a></a>broom<span class="sc">::</span><span class="fu">augment</span>(fit_glm3, </span>
-<span id="cb24-2"><a></a>   <span class="at">type.predict =</span> <span class="st">"response"</span>, </span>
-<span id="cb24-3"><a></a>   <span class="at">newdata =</span> danishlc <span class="sc">|&gt;</span> </span>
-<span id="cb24-4"><a></a>        <span class="fu">distinct</span>(Age) <span class="sc">|&gt;</span> </span>
-<span id="cb24-5"><a></a>        <span class="fu">mutate</span>(<span class="at">Pop =</span> <span class="dv">1000</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a></a>broom<span class="sc">::</span><span class="fu">augment</span>(fit_glm3, </span>
+<span id="cb25-2"><a></a>   <span class="at">type.predict =</span> <span class="st">"response"</span>, </span>
+<span id="cb25-3"><a></a>   <span class="at">newdata =</span> danishlc <span class="sc">|&gt;</span> </span>
+<span id="cb25-4"><a></a>        <span class="fu">distinct</span>(Age) <span class="sc">|&gt;</span> </span>
+<span id="cb25-5"><a></a>        <span class="fu">mutate</span>(<span class="at">Pop =</span> <span class="dv">1000</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 3
   Age     Pop .fitted
@@ -830,22 +814,28 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </section>
 <section id="case-study-pock" class="slide level2" data-background-color="#F5EDDE">
 <h2>Case study: pock</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a></a><span class="fu">data</span>(pock, <span class="at">package =</span> <span class="st">"GLMsData"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
+<div class="columns">
+<div class="column" style="width:50%;">
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a></a><span class="fu">ggplot</span>(pock, <span class="fu">aes</span>(Dilution, Count)) <span class="sc">+</span></span>
-<span id="cb27-2"><a></a>  ggbeeswarm<span class="sc">::</span><span class="fu">geom_quasirandom</span>(<span class="at">width =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
-<span id="cb27-3"><a></a>  <span class="fu">scale_x_continuous</span>(<span class="at">transform =</span> <span class="st">"log2"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a></a><span class="fu">data</span>(pock, <span class="at">package =</span> <span class="st">"GLMsData"</span>)</span>
+<span id="cb27-2"><a></a><span class="fu">ggplot</span>(pock, <span class="fu">aes</span>(Dilution, Count)) <span class="sc">+</span></span>
+<span id="cb27-3"><a></a>  ggbeeswarm<span class="sc">::</span><span class="fu">geom_quasirandom</span>(<span class="at">width =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb27-4"><a></a>  <span class="fu">scale_x_continuous</span>(<span class="at">transform =</span> <span class="st">"log2"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="slide2_files/figure-revealjs/unnamed-chunk-19-1.png" width="960"></p>
+<p><img data-src="slide2_files/figure-revealjs/unnamed-chunk-21-1.png" width="960"></p>
 </figure>
 </div>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<ul>
+<li>In an experiment to assess viral activity, pock marks were counted at various dilutions of the viral medium.</li>
+</ul>
 </div>
 </div>
 </section>
@@ -854,29 +844,38 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <div class="columns">
 <div class="column" style="width:50%;">
 <div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a></a>pock_group <span class="ot">&lt;-</span> pock <span class="sc">|&gt;</span> </span>
+<span id="cb28-2"><a></a>  <span class="fu">summarise</span>(<span class="at">mean =</span> <span class="fu">mean</span>(Count), </span>
+<span id="cb28-3"><a></a>            <span class="at">var =</span> <span class="fu">var</span>(Count),</span>
+<span id="cb28-4"><a></a>            <span class="at">.by =</span> Dilution) </span>
+<span id="cb28-5"><a></a></span>
+<span id="cb28-6"><a></a><span class="fu">coef</span>(<span class="fu">lm</span>(<span class="fu">log</span>(var) <span class="sc">~</span> <span class="fu">log</span>(mean), </span>
+<span id="cb28-7"><a></a>        <span class="at">data =</span> pock_group))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(Intercept)   log(mean) 
+ 0.02861162  1.44318666 </code></pre>
+</div>
+</div>
+<ul>
+<li>For a Poisson distribution, the variance should be equal to the mean.</li>
+</ul>
+</div><div class="column" style="width:50%;">
+<div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a></a>pock <span class="sc">|&gt;</span> </span>
-<span id="cb28-2"><a></a>  <span class="fu">summarise</span>(<span class="at">mean =</span> <span class="fu">mean</span>(Count), <span class="at">var =</span> <span class="fu">var</span>(Count),</span>
-<span id="cb28-3"><a></a>            <span class="at">.by =</span> Dilution) <span class="sc">|&gt;</span></span>
-<span id="cb28-4"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(mean, var)) <span class="sc">+</span> </span>
-<span id="cb28-5"><a></a>  <span class="fu">geom_point</span>(<span class="at">size =</span><span class="dv">3</span>) <span class="sc">+</span></span>
-<span id="cb28-6"><a></a>  <span class="fu">geom_abline</span>(<span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">slope =</span> <span class="dv">1</span>, <span class="at">linetype =</span> <span class="dv">2</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a></a>pock_group <span class="sc">|&gt;</span></span>
+<span id="cb30-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(mean, var)) <span class="sc">+</span> </span>
+<span id="cb30-3"><a></a>  <span class="fu">geom_point</span>(<span class="at">size =</span><span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb30-4"><a></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> lm, <span class="at">se =</span> <span class="cn">FALSE</span>) <span class="sc">+</span> </span>
+<span id="cb30-5"><a></a>  <span class="fu">geom_abline</span>(<span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">slope =</span> <span class="dv">1</span>, <span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span> </span>
+<span id="cb30-6"><a></a>  <span class="fu">scale_y_log10</span>() <span class="sc">+</span></span>
+<span id="cb30-7"><a></a>  <span class="fu">scale_x_log10</span>() <span class="sc">+</span></span>
+<span id="cb30-8"><a></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Group mean"</span>, <span class="at">y =</span> <span class="st">"Group variance"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="slide2_files/figure-revealjs/unnamed-chunk-20-1.png" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
-</div><div class="column" style="width:50%;">
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure>
-<p><img data-src="slide2_files/figure-revealjs/unnamed-chunk-21-1.png" width="960"></p>
+<p><img data-src="slide2_files/figure-revealjs/unnamed-chunk-23-1.png" width="576"></p>
 </figure>
 </div>
 </div>
@@ -892,7 +891,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="slide2_files/figure-revealjs/unnamed-chunk-22-1.png" width="960"></p>
+<p><img data-src="slide2_files/figure-revealjs/unnamed-chunk-24-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -912,7 +911,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="slide2_files/figure-revealjs/unnamed-chunk-23-1.png" width="720"></p>
+<p><img data-src="slide2_files/figure-revealjs/unnamed-chunk-25-1.png" width="720"></p>
 </figure>
 </div>
 </div>
@@ -929,24 +928,38 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </section>
 <section id="negative-binomial-regression" class="slide level2">
 <h2>Negative binomial regression</h2>
-<p><span class="math inline">Y_i \sim \text{Poisson}(\lambda_i)</span> and <span class="math inline">\lambda_i \sim \text{Gamma}(\mu_i, \psi)</span></p>
-<p><span class="math inline">E(Y_i) = \mu_i</span> and <span class="math inline">\text{Var}(Y_i) = \mu_i + \psi \mu_i^2</span></p>
-<p><span class="math display">P(Y_i = y_i) = \frac{\Gamma(y_i + k)}{\Gamma(y_i + 1) \Gamma(k)} \left(\frac{\mu_i}{\mu_i + k}\right)^{y_i} \left(\frac{k}{\mu_i + k}\right)^{k}</span></p>
-<p>Above is the same as <span class="math inline">Y_i \sim \text{Negative Binomial}(\mu_i, k)</span> where <span class="math inline">k = \frac{1}{\psi}</span></p>
-<p>If <span class="math inline">\psi = 0</span> then Negative Binomial reduces to Poisson.</p>
+<ul>
+<li>Suppose we consider a hierarchical model.</li>
+<li>Instead of assuming <span class="math inline">Y_i \sim \text{Poisson}(\mu_i)</span>, we assume that:
+<ol type="1">
+<li><span class="math inline">\lambda_i \sim \text{Gamma}(\mu_i, \psi)</span>.</li>
+<li><span class="math inline">Y_i \sim \text{Poisson}(\lambda_i)</span></li>
+</ol></li>
+<li>This hierarchical model in facts results in <span class="math display">Y_i \sim \text{Negative Binomial}(\mu_i, k)</span> where <span class="math inline">k = \frac{1}{\psi}</span>.</li>
+<li><span class="math inline">E(Y_i) = \mu_i</span> and <span class="math inline">\text{Var}(Y_i) = \mu_i + \psi \mu_i^2</span></li>
+<li>If <span class="math inline">\psi = 0</span> then Negative Binomial reduces to Poisson.</li>
+</ul>
 </section>
-<section id="modelling-with-negative-binomial-regression" class="slide level2">
-<h2>Modelling with negative binomial regression</h2>
+<section id="negative-binomial-regression-in-r" class="slide level2">
+<h2>Negative binomial regression in R</h2>
+<ul>
+<li>Negative binomial regression can be fitted using <code>MASS::glm.nb()</code> function:</li>
+</ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a></a>fit_nb <span class="ot">&lt;-</span> MASS<span class="sc">::</span><span class="fu">glm.nb</span>(Count <span class="sc">~</span> <span class="fu">log2</span>(Dilution), <span class="at">data =</span> pock)</span>
-<span id="cb29-2"><a></a>fit_nb<span class="sc">$</span>theta <span class="co"># estimate of k</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 9.892894</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a></a><span class="fu">coef</span>(fit_nb)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a></a>fit_nb <span class="ot">&lt;-</span> MASS<span class="sc">::</span><span class="fu">glm.nb</span>(Count <span class="sc">~</span> <span class="fu">log2</span>(Dilution), <span class="at">data =</span> pock)</span>
+<span id="cb31-2"><a></a><span class="fu">coef</span>(fit_nb)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   (Intercept) log2(Dilution) 
      5.3328439     -0.7245983 </code></pre>
+</div>
+</div>
+<ul>
+<li>The estimate of <span class="math inline">k</span> is stored as <code>theta</code> in the model object:</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a></a>fit_nb<span class="sc">$</span>theta </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 9.892894</code></pre>
 </div>
 </div>
 </section>

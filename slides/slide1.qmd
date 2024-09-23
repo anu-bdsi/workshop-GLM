@@ -26,8 +26,6 @@ execute:
 webr: 
   show-startup-message: false  
   packages: 
-    - tidyverse
-    #- janitor # this takes too long to load
     - broom
     - GLMsData
 ---
@@ -572,8 +570,7 @@ $$\text{logit}(p_i) = \log_e \left(\frac{p_i}{1-p_i}\right) = \sum_{j=0}^p\beta_
 ```{webr-r}
 #| autorun: true
 #| code-fold: true
-library(tidyverse)
-cancer <- read_csv("https://anu-bdsi.github.io/workshop-GLM/data/cancer.csv")
+cancer <- read.csv("https://anu-bdsi.github.io/workshop-GLM/data/cancer.csv")
 ```
 </details>
 

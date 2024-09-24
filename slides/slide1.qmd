@@ -660,7 +660,7 @@ predict(cancer_fit, newdata = dat, type = "response", se.fit = TRUE)
 By hand:
 
 - $\hat{\eta} = `r round(coef(cancer_fit)[1], 3)` + `r round(coef(cancer_fit)[2], 3)`\times 15 + `r round(coef(cancer_fit)[3], 3)`\times 0.05 \approx `r p <- coef(cancer_fit)[1] + 15 * coef(cancer_fit)[2] + 0.05 * coef(cancer_fit)[3]; round(p, 4)`$  
-- $\dfrac{\exp(`r round(p, 4)`)}{1 + \exp(`r round(p, 4)`)} = `r round(exp(p)/(1 + exp(p)), 3)`$
+- $\hat{p} = \dfrac{\exp(`r round(p, 4)`)}{1 + \exp(`r round(p, 4)`)} = `r round(exp(p)/(1 + exp(p)), 3)`$
 
 
 

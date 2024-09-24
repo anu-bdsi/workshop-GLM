@@ -8,11 +8,12 @@ filters:
 webr: 
   show-startup-message: false    
   packages:
+    - GLMsData
+    - statmod
     - tidyverse
     - faraway
     - broom
-    - GLMsData
-    - statmod
+    - GGally
 ---
 
 

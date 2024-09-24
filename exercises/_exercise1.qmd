@@ -56,6 +56,7 @@ library(tidyverse)
 ```{webr-r}
 #| autorun: true
 library(tidyverse)
+if(!("faraway" %in% installed.packages()[,1])) install.packages("faraway")
 data(wcgs, package = "faraway")
 glimpse(wcgs)
 ```

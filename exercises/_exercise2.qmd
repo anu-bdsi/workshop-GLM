@@ -43,6 +43,7 @@ library(webexercises)
 ```{webr-r}
 #| autorun: true
 library(tidyverse)
+if(!("faraway" %in% installed.packages()[,1])) install.packages("faraway")
 data(dicentric, package = "faraway")
 glimpse(dicentric)
 ```

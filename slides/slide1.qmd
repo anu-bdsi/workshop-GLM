@@ -399,31 +399,19 @@ cancer |>
 
 
 
-##  Propensity score
-
+##  Odds of a class
 
 ::: incremental
+
 - Suppose we consider $Y_i$ as a binary category:
 $$Y_i = \begin{cases} 
        0 & \text{ if $i$-th observation is in class 1}\\
        1 & \text{ if $i$-th observation is in class 2}\\
   \end{cases}$$
-- We consider the conditional probability, say $P(Y_i = 1|\boldsymbol{x}_i)$ where $\boldsymbol{x}_i = (x_{i1}, x_{i2}, \ldots, x_{ik})$, also known as the **propensity score** of class 2.
-- The propensity score of class 1 is $$P(Y_i=0|\boldsymbol{x}_i) = 1 - P(Y_i=1|\boldsymbol{x}_i).$$
-
-
+- $P(Y_i = 1|\boldsymbol{x}_i)$, where $\boldsymbol{x}_i = (x_{i1}, x_{i2}, \ldots, x_{ik})$ is the covariates of $i$-th observational unit, is the conditional probability of $i$-th observation belonging to class 2.
+- Note $P(Y_i=0|\boldsymbol{x}_i) = 1 - P(Y_i=1|\boldsymbol{x}_i).$
+- The odds of class 2 (for $i$-th observation) then is the ratio: $$\text{odds}_i = \frac{P(Y_i=1|\boldsymbol{x}_i)}{1-P(Y_i=1|\boldsymbol{x}_i)}.$$
 :::
-
-## Odds of an event 
-
-
-- The **odds of an event** is defined as  $$\text{odds} = \color{#BE830E}{\frac{p}{1-p}} = \frac{\text{probability that the event will occur}}{\text{probability that the event will not occur}},$$ where $p$ is the probability of an event occuring. 
-
-. . . 
-
-- The **ratio of the propensity scores of the two classes** is the odds of being in class 2:
-
-$$\text{odds}_i = \frac{P(Y_i=1|\boldsymbol{x}_i)}{1-P(Y_i=1|\boldsymbol{x}_i)}.$$
 
 
 ## {}
@@ -548,6 +536,8 @@ gbernoulli / gbinom / gbinom2
 
 ## Logistic regression for a binary response
 
+::: incremental
+
 - We assume that [$Y_i \sim B(1, p_i)$]{.anu-gold} where $p_i = P(Y_i=1|\boldsymbol{x}_i)$.
 - Note that $E(Y_i|\boldsymbol{x}_i) = p_i$.
 - We model the the log odds (or logit of $p_i$) as a linear combination of predictors:
@@ -555,6 +545,7 @@ $$\text{logit}(p_i) = \log_e \left(\frac{p_i}{1-p_i}\right) = \sum_{j=0}^k\beta_
 - The $\hat{\beta}_j$s are found through _maximum likelihood estimate_.
 - Then  $\hat{p}_i = \text{logistic}\left(\displaystyle\sum_{j=0}^k\hat{\beta}_jx_{ij}\right) =  \dfrac{e^{\sum_{j=0}^k\hat{\beta}_jx_{ij}}}{1+e^{\sum_{j=0}^k\hat{\beta}_jx_{ij}}}$.
 
+:::
 
 
 
@@ -631,6 +622,7 @@ coef(cancer_fit3)
 ## Interpretation of logistic regression
 
 ```{webr-r}
+#| autorun: true
 broom::tidy(cancer_fit) # coefficients
 ```
 

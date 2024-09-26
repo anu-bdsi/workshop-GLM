@@ -133,3 +133,13 @@
 .skimr table tr:nth-child(odd), .skimr table th {
   background-color: transparent!important;
 }
+
+.gt_table {
+  font-size: 1em!important;
+  background-color: transparent!important;
+}
+
+.gt_col_heading, .gt_column_spanner_outer, .gt_stub {
+  background-color: transparent!important;
+  font-weight: "bold"!important;
+}

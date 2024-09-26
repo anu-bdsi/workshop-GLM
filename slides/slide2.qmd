@@ -10,7 +10,6 @@ format:
     self-contained: false
     css: 
      - /assets/slides.css
-     - /assets/table.css
     footer: "{{< var workshop-url >}}"
 author: Emi Tanaka
 institute: Biological Data Science Institute
@@ -27,6 +26,7 @@ webr:
     - tidyverse
     - GLMsData
     - broom
+    - janitor
 ---
 
 
@@ -36,6 +36,7 @@ webr:
 #| include: false
 library(tidyverse)
 library(patchwork)
+library(gt)
 source("setup.R")
 theme_set(theme_classic(base_size = 24) + 
             theme(plot.title.position = "plot",
@@ -53,7 +54,12 @@ options(ggplot2.discrete.fill = list(c("#E16A86", "#00AD9A"),
 
 
 
-
+```{webr-r}
+#| context: setup
+library(tidyverse)
+data(nminer, package = "GLMsData")
+gmfood <- read_csv("https://anu-bdsi.github.io/workshop-GLM/data/gmfood.csv")
+```
 
 
 ## Case study: Abundance of Noisy Miners {background-color="#F5EDDE"}
@@ -93,9 +99,14 @@ base
 
 ## Linear regression
 
+```{webr-r}
+fit_lm_asis <- lm(Minerab ~ Eucs, data = nminer)
+fit_lm_sqrt <- lm(sqrt(Minerab) ~ Eucs, data = nminer)
+```
 
 
 ```{r}
+#| echo: false
 fit_lm_asis <- lm(Minerab ~ Eucs, data = nminer)
 fit_lm_sqrt <- lm(sqrt(Minerab) ~ Eucs, data = nminer)
 ```
@@ -215,20 +226,64 @@ gpois / gpois2 / gpois3
 
 ## Poisson regression model
 
+
+
+
 - We assume $Y_i \sim \text{Poisson}(\mu_i)$ and model the mean $\mu_i$ as:
 
 $$\log_e(\mu_i) = \beta_0 + \beta_1x_{i1} + \beta_1x_{i2} + \ldots  + \beta_kx_{ik}.$$
 
-- $\hat{\mu}_i = \text{exp}(\hat{\beta}_0 + \hat{\beta}_1x_{i1} + \hat{\beta}_1x_{i2} + \ldots  + \hat{\beta}_kx_{ik})$
+- Then $\hat{\mu}_i = \text{exp}(\hat{\beta}_0 + \hat{\beta}_1x_{i1} + \hat{\beta}_1x_{i2} + \ldots  + \hat{\beta}_kx_{ik})$.
 
-## Modelling (unrestricted) counts with Poisson regression 
+::: columns
 
-
+::: {.column width="50%"}
 
 ```{r}
+#| echo: false
+tibble(x = seq(0.0001, 5, length.out = 1000)) |> 
+  mutate(y = log(x)) |> 
+  ggplot(aes(x, y)) +
+  geom_line(linewidth = 1.2) +
+  labs(title = "y = log(x)") +
+  geom_vline(xintercept = 0, linetype = 2) +
+  geom_hline(yintercept = 0, linetype = 2)
+```
+
+
+:::
+
+::: {.column width="50%"}
+
+```{r}
+#| echo: false
+tibble(x = seq(-2, 5, length.out = 1000)) |> 
+  mutate(y = exp(x)) |> 
+  ggplot(aes(x, y)) +
+  geom_line(linewidth = 1.2) +
+  labs(title = "y = exp(x)") +
+  geom_vline(xintercept = 0, linetype = 2) +
+  geom_hline(yintercept = 0, linetype = 2)
+```
+
+:::
+
+:::
+
+## {{< fa brands r-project >}} Modelling counts with Poisson regression 
+
+
+```{webr-r}
+#| autorun: true
+fit_glm <- glm(Minerab ~ Eucs, data = nminer, family = poisson(link = "log"))
+```
+```{r}
+#| echo: false
 fit_glm <- glm(Minerab ~ Eucs, data = nminer,
                family = poisson(link = "log"))
 ```
+
+. . . 
 
 ::: columns
 
@@ -255,7 +310,7 @@ base +
 
 - Predicting the response:
 
-```{r}
+```{webr-r}
 broom::augment(fit_glm, 
  type.predict = "response",
  newdata = tibble(Eucs = seq(0, 30, by = 10)))
@@ -267,10 +322,10 @@ broom::augment(fit_glm,
 :::
 
 
-## Case study: attitude to genetically modified foods {background-color="#F5EDDE" visibility="hidden"}
+## Case study: attitude to genetically modified foods {background-color="#F5EDDE"}
 ```{r}
 #| code-fold: true
-gmfood <- read_csv(here::here("data/gmfood.csv"))
+gmfood <- read_csv("https://anu-bdsi.github.io/workshop-GLM/data/gmfood.csv")
 ```
 
 ::: {.columns}
@@ -279,14 +334,41 @@ gmfood <- read_csv(here::here("data/gmfood.csv"))
 
 ```{r}
 #| echo: false
-xtabs(Counts ~ Income + Attitude, data = gmfood) 
+gmfood |> 
+  pivot_wider(names_from = Attitude, values_from = Counts) |>  
+  janitor::as_tabyl() |> 
+  janitor::adorn_totals(c("row", "col")) |> 
+  gt(auto_align = FALSE) |> 
+  #gt(rowname_col = "Income") |> 
+  #tab_stubhead("Income") |> 
+  tab_spanner("Attitude", columns = c(For, Against)) |> 
+  tab_style(style = cell_borders(sides = "bottom", 
+                                 color = "black",
+                                 weight = px(2)),
+            locations = cells_body(rows = 2)) |> 
+  tab_style(style = cell_borders(sides = "right", 
+                                 color = "black",
+                                 weight = px(2)),
+            locations = cells_body(columns = c(1, 3))) |> 
+  tab_style(style = cell_text(weight = "600", align = "center"),
+            locations = cells_body(columns = 1)) |> 
+  tab_options(
+    column_labels.font.weight = "600",
+    table.font.size = "1em",
+    table.width = 900,
+    table_body.border.top.color = "black",
+    column_labels.border.bottom.color = "black",
+    quarto.use_bootstrap = FALSE,
+    quarto.disable_processing = TRUE
+  )
 ```
 
 :::
 
 ::: {.column width="50%"}
 
-- The data, collected between December 1996 and January 1997, shows the counts of the attitude of Australians to genetically modified (gm) foods according to their income.
+- The data, collected between December 1996 and January 1997, includes the counts of the attitude (Against or For) of Australians to genetically modified foods according to their income (High or Low).
+- This data is presented often as a _contingency table_ on left.
 
 :::
 
@@ -296,18 +378,212 @@ xtabs(Counts ~ Income + Attitude, data = gmfood)
 
 
 
-## Contingency tables  {visibility="hidden"}
+## $\chi^2$ test for independence 
+
+$H_0: p_{ij} = p_{i\cdot}p_{\cdot j}$
+
+
+```{webr-r}
+#| autorun: true
+observed <- xtabs(Counts ~ Income + Attitude, data = gmfood) 
+C <- chisq.test(observed, correct = FALSE)
+```
+
+. . . 
+
+::: {.columns}
+
+::: {.column width="50%"}
+
+Observed:
+
+```{webr-r}
+#| autorun: true
+observed
+```
+
+:::
+
+::: {.column width="50%"}
+
+Expected:
+
+```{webr-r}
+#| autorun: true
+C$expected
+```
+
+
+:::
+
+:::
+
+. . . 
+
+
+::: {.columns}
+
+::: {.column width="50%"}
+
+- $\chi^2 = \dfrac{(\text{observed} - \text{expected})^2}{\text{expected}}$
+- $p$-value $= P(\chi^2_1 \geq \chi^2)$
+
+:::
+
+::: {.column width="50%"}
+
+
+```{webr-r}
+#| autorun: true
+C$statistic
+```
+
+
+```{webr-r}
+#| autorun: true
+C$p.value # = 1 - pchisq(C$statistic, 1)
+```
+
+
+
+:::
+
+
+:::
 
 
 
 
-## Poisson regression for contingency tables  {visibility="hidden"}
 
+
+
+
+
+## Poisson regression for contingency tables  
+
+```{webr-r}
+#| autorun: true
+fit_inter <- glm(Counts ~ Income * Attitude, family = poisson(), data = gmfood)
+fit_main <- glm(Counts ~ Income + Attitude, family = poisson(), data = gmfood)
+```
+
+. . . 
+
+- Compare expected value under $H_0$ (independence) to no interaction in `fit_main`:
+
+::: {.columns}
+
+::: {.column width="40%"}
+
+```{webr-r}
+C$expected
+```
+
+:::
+
+::: {.column width="60%"}
+
+```{webr-r}
+fit_main |> 
+  broom::augment(type.predict = "response") |> 
+  xtabs(.fitted ~ Income + Attitude, data = _)
+```
+
+:::
+
+:::
+
+. . . 
+
+- $p$-value for interaction effect is closely related to $p$-value from $\chi^2$ test for independence:
+
+::: {.columns}
+
+::: {.column width="40%"}
+
+```{webr-r}
+C$p.value
+```
+
+:::
+
+::: {.column width="60%"}
+
+```{webr-r}
+anova(fit_inter, test = "Chisq")
+```
+
+:::
+
+:::
+
+
+## Fixed totals 
+
+
+```{webr-r}
+#| autorun: true
+fit1 <- glm(Counts ~ Income + Attitude, family = poisson(), data = gmfood)
+fit2 <- glm(Counts ~ Income:Attitude, family = poisson(), data = gmfood)
+fit3 <- glm(Counts ~ Income, family = poisson(), data = gmfood)
+fit4 <- glm(Counts ~ Attitude, family = poisson(), data = gmfood)
+```
+
+::: {.columns}
+
+::: {.column width="50%"}
+
+```{r}
+#| echo: false
+gmfood |> 
+  pivot_wider(names_from = Attitude, values_from = Counts) |>  
+  janitor::as_tabyl() |> 
+  janitor::adorn_totals(c("row", "col")) |> 
+  gt(auto_align = FALSE) |> 
+  #gt(rowname_col = "Income") |> 
+  #tab_stubhead("Income") |> 
+  tab_spanner("Attitude", columns = c(For, Against)) |> 
+  tab_style(style = cell_borders(sides = "bottom", 
+                                 color = "black",
+                                 weight = px(2)),
+            locations = cells_body(rows = 2)) |> 
+  tab_style(style = cell_borders(sides = "right", 
+                                 color = "black",
+                                 weight = px(2)),
+            locations = cells_body(columns = c(1, 3))) |> 
+  tab_style(style = cell_text(weight = "600", align = "center"),
+            locations = cells_body(columns = 1)) |> 
+  tab_options(
+    column_labels.font.weight = "600",
+    table.font.size = "1em",
+    table.width = 900,
+    table_body.border.top.color = "black",
+    column_labels.border.bottom.color = "black",
+    quarto.use_bootstrap = FALSE,
+    quarto.disable_processing = TRUE
+  )
+```
+
+:::
+
+::: {.column width="50%"}
+
+```{webr-r}
+fit1 |> 
+  broom::augment(type.predict = "response", newdata = gmfood) |> 
+  pivot_wider(id_cols = Income, names_from = Attitude, values_from = .fitted) |>  
+  janitor::as_tabyl() |> 
+  janitor::adorn_totals(c("row", "col"))
+```
+
+:::
+
+:::
 
 ## Case study: cancer diagnosis {background-color="#F5EDDE"}
 
-- types of cancer diagnosed in Western Australia in 1996 were recorded for males and females
-- females cannot have prostate cancer, and males cannot have cervical cancer
+- Types of cancer diagnosed in Western Australia in 1996 were recorded for males and females.
+- Females cannot have prostate cancer, and males cannot have cervical cancer.
 - Breast cancer is a possible, but very rare, disease among men
 
 ```{r}
@@ -318,7 +594,7 @@ xtabs(Counts ~ Gender + Cancer, data = wacancer)
 - Note that a woman cannot get prostate cancer and a man cannot get cervix cancer. 
 - A man can get breast cancer, but it is extremely rare. 
 
-## Structural zeroes 
+## {{< fa brands r-project >}}  Structural zeroes 
 
 - Structural zeros need to be removed from the data.
 
@@ -376,7 +652,7 @@ danishlc |>
 
 
 
-## Modelling rates with Poisson regression 
+## {{< fa brands r-project >}}  Modelling rates with Poisson regression 
 
 $$\log\left(\frac{\mu_i}{\texttt{Pop}_i}\right) =  \beta_0 + \beta_{1\texttt{Age}_i} + \beta_{2\texttt{City}_i} + \beta_{3\texttt{AgeCity}_i}$$
 
@@ -398,7 +674,7 @@ fit_glm2 <- glm(Cases ~ offset(log(Pop)) + Age*City, data = danishlc,
 
 
 
-## Chi-square test
+## {{< fa brands r-project >}}  Chi-square test
 
 ```{r}
 anova(fit_glm2, test = "Chisq")
@@ -406,7 +682,7 @@ anova(fit_glm2, test = "Chisq")
 
 - We retain only `Age` in the model. 
 
-## Predicting rate response with Poisson regression 
+## {{< fa brands r-project >}}  Predicting rate response with Poisson regression 
 
 ```{r}
 fit_glm3 <- glm(Cases ~ offset(log(Pop)) + Age, data = danishlc,
@@ -634,7 +910,7 @@ $E(Y) = m$ and $\text{Var}(Y) = m + \frac{1}{r}m^2$
 - If $\psi = 0$ then Negative Binomial reduces to Poisson.
 
 
-## Negative binomial regression in R 
+## {{< fa brands r-project >}}  Negative binomial regression in R 
 
 - Negative binomial regression can be fitted using `MASS::glm.nb()` function:
 

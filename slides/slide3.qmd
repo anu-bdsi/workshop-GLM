@@ -118,7 +118,7 @@ $$f(y;\theta, \phi) = a(y, \theta)\text{exp}\left(\frac{y\cdot\theta - \kappa(\t
 - $\mu$ is the expected value on the response scale
 - $\eta$ is the expected value on the link scale
 
-## Fitting GLMs in R
+## {{< fa brands r-project >}}  Fitting GLMs in R
 
 `glm(y ~ x, family = dist(link = "function"), data = data)`
 

@@ -57,7 +57,9 @@ options(ggplot2.discrete.fill = list(c("#E16A86", "#00AD9A"),
 ```{webr-r}
 #| context: setup
 library(tidyverse)
+data(danishlc, package = "GLMsData")
 data(nminer, package = "GLMsData")
+data(pock, package = "GLMsData")
 gmfood <- read_csv("https://anu-bdsi.github.io/workshop-GLM/data/gmfood.csv")
 ```
 
@@ -459,7 +461,7 @@ C$p.value # = 1 - pchisq(C$statistic, 1)
 
 
 
-## Poisson regression for contingency tables  
+## <i class="fab fa-r-project"></i> Poisson regression for contingency tables  
 
 ```{webr-r}
 #| autorun: true
@@ -518,8 +520,7 @@ anova(fit_inter, test = "Chisq")
 :::
 
 
-## Fixed totals 
-
+## Main effects fix marginal totals
 
 ```{webr-r}
 #| autorun: true
@@ -528,6 +529,10 @@ fit2 <- glm(Counts ~ Income:Attitude, family = poisson(), data = gmfood)
 fit3 <- glm(Counts ~ Income, family = poisson(), data = gmfood)
 fit4 <- glm(Counts ~ Attitude, family = poisson(), data = gmfood)
 ```
+
+
+
+
 
 ::: {.columns}
 
@@ -586,7 +591,8 @@ fit1 |>
 - Females cannot have prostate cancer, and males cannot have cervical cancer.
 - Breast cancer is a possible, but very rare, disease among men
 
-```{r}
+```{webr-r}
+#| autorun: true
 data(wacancer, package = "GLMsData")
 xtabs(Counts ~ Gender + Cancer, data = wacancer)
 ```
@@ -600,11 +606,13 @@ xtabs(Counts ~ Gender + Cancer, data = wacancer)
 
 ::: f2
 
-```{r}
+```{webr-r}
+#| autorun: true
 coef(glm(Counts ~ Gender * Cancer, family = poisson, data = wacancer))
 ```
 
-```{r}
+```{webr-r}
+#| autorun: true
 coef(glm(Counts ~ Gender * Cancer, family = poisson,
          data = filter(wacancer, Counts > 0)))
 ```
@@ -656,14 +664,17 @@ danishlc |>
 
 $$\log\left(\frac{\mu_i}{\texttt{Pop}_i}\right) =  \beta_0 + \beta_{1\texttt{Age}_i} + \beta_{2\texttt{City}_i} + \beta_{3\texttt{AgeCity}_i}$$
 
-```{r}
+```{webr-r}
+#| autorun: true
+#| warning: false
 fit_glm1 <- glm(Cases/Pop ~ Age*City, data = danishlc,
                   family = poisson(link = "log"))
 ```
 
 $$\log(\mu_i) = \log(\texttt{Pop}_i) + \beta_0 + \beta_{1\texttt{Age}_i} + \beta_{2\texttt{City}_i} + \beta_{3\texttt{AgeCity}_i}$$
 
-```{r}
+```{webr-r}
+#| autorun: true
 fit_glm2 <- glm(Cases ~ offset(log(Pop)) + Age*City, data = danishlc,
                   family = poisson(link = "log"))
 ```
@@ -676,7 +687,9 @@ fit_glm2 <- glm(Cases ~ offset(log(Pop)) + Age*City, data = danishlc,
 
 ## {{< fa brands r-project >}}  Chi-square test
 
-```{r}
+
+```{webr-r}
+#| autorun: true
 anova(fit_glm2, test = "Chisq")
 ```
 
@@ -684,11 +697,17 @@ anova(fit_glm2, test = "Chisq")
 
 ## {{< fa brands r-project >}}  Predicting rate response with Poisson regression 
 
-```{r}
+```{webr-r}
+#| autorun: true
 fit_glm3 <- glm(Cases ~ offset(log(Pop)) + Age, data = danishlc,
                 family = poisson(link = "log"))
 ```
 
+```{r}
+#| echo: false
+fit_glm3 <- glm(Cases ~ offset(log(Pop)) + Age, data = danishlc,
+                family = poisson(link = "log"))
+```
 
 ::: columns
 
@@ -712,7 +731,7 @@ broom::augment(fit_glm3, type.predict = "response") |>
 ::: {.column width="50%"}
 
 
-```{r}
+```{webr-r}
 broom::augment(fit_glm3, 
    type.predict = "response", 
    newdata = danishlc |> 
@@ -756,7 +775,8 @@ ggplot(pock, aes(Dilution, Count)) +
 
 ::: {.column width="50%"}
 
-```{r}
+```{webr-r}
+#| autorun: true
 pock_group <- pock |> 
   summarise(mean = mean(Count), 
             var = var(Count),
@@ -766,8 +786,17 @@ coef(lm(log(var) ~ log(mean),
         data = pock_group))
 ```
 
+```{r}
+#| echo: false
+pock_group <- pock |> 
+  summarise(mean = mean(Count), 
+            var = var(Count),
+            .by = Dilution) 
+```
 
-- For a Poisson distribution, the variance should be equal to the mean.
+
+
+- <i class="fas fa-exclamation-circle"></i> For a Poisson distribution, the variance should be equal to the mean.
 
 :::
 
@@ -914,13 +943,15 @@ $E(Y) = m$ and $\text{Var}(Y) = m + \frac{1}{r}m^2$
 
 - Negative binomial regression can be fitted using `MASS::glm.nb()` function:
 
-```{r}
+```{webr-r}
+#| autorun: true
 fit_nb <- MASS::glm.nb(Count ~ log2(Dilution), data = pock)
 coef(fit_nb)
 ```
 - The estimate of $k$ is stored as `theta` in the model object:
 
-```{r}
+```{webr-r}
+#| autorun: true
 fit_nb$theta 
 ```
 

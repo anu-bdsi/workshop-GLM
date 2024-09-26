@@ -7,7 +7,9 @@
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="../site_libs/quarto-html/light-border.css" rel="stylesheet">
 <link href="../site_libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-contrib/fontawesome6-0.1.0/all.css" rel="stylesheet">
+<link href="../site_libs/quarto-contrib/fontawesome6-0.1.0/latex-fontsize.css" rel="stylesheet"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.5.30">
 
   <meta name="author" content="Emi Tanaka">
@@ -561,15 +563,39 @@ Emi Tanaka
 </ul>
 <p><span class="math display">\log_e(\mu_i) = \beta_0 + \beta_1x_{i1} + \beta_1x_{i2} + \ldots  + \beta_kx_{ik}.</span></p>
 <ul>
-<li><span class="math inline">\hat{\mu}_i = \text{exp}(\hat{\beta}_0 + \hat{\beta}_1x_{i1} + \hat{\beta}_1x_{i2} + \ldots  + \hat{\beta}_kx_{ik})</span></li>
+<li>Then <span class="math inline">\hat{\mu}_i = \text{exp}(\hat{\beta}_0 + \hat{\beta}_1x_{i1} + \hat{\beta}_1x_{i2} + \ldots  + \hat{\beta}_kx_{ik})</span>.</li>
 </ul>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="slide2_files/figure-revealjs/unnamed-chunk-8-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="slide2_files/figure-revealjs/unnamed-chunk-9-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
 </section>
-<section id="modelling-unrestricted-counts-with-poisson-regression" class="slide level2">
-<h2>Modelling (unrestricted) counts with Poisson regression</h2>
+<section id="modelling-counts-with-poisson-regression" class="slide level2">
+<h2><i class="fa-brands fa-r-project" aria-label="r-project"></i> Modelling counts with Poisson regression</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a>fit_glm <span class="ot">&lt;-</span> <span class="fu">glm</span>(Minerab <span class="sc">~</span> Eucs, <span class="at">data =</span> nminer,</span>
 <span id="cb6-2"><a></a>               <span class="at">family =</span> <span class="fu">poisson</span>(<span class="at">link =</span> <span class="st">"log"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<div class="fragment">
 <div class="columns">
 <div class="column" style="width:40%;">
 <div class="cell">
@@ -617,6 +643,7 @@ Emi Tanaka
 </div>
 </div>
 </div>
+</div>
 </section>
 
 
@@ -624,8 +651,8 @@ Emi Tanaka
 <section id="case-study-cancer-diagnosis" class="slide level2" data-background-color="#F5EDDE">
 <h2>Case study: cancer diagnosis</h2>
 <ul>
-<li>types of cancer diagnosed in Western Australia in 1996 were recorded for males and females</li>
-<li>females cannot have prostate cancer, and males cannot have cervical cancer</li>
+<li>Types of cancer diagnosed in Western Australia in 1996 were recorded for males and females.</li>
+<li>Females cannot have prostate cancer, and males cannot have cervical cancer.</li>
 <li>Breast cancer is a possible, but very rare, disease among men</li>
 </ul>
 <div class="cell">
@@ -644,7 +671,7 @@ Gender Breast Cervix Colorectal Lung Melanoma Other Prostate
 </ul>
 </section>
 <section id="structural-zeroes" class="slide level2">
-<h2>Structural zeroes</h2>
+<h2><i class="fa-brands fa-r-project" aria-label="r-project"></i> Structural zeroes</h2>
 <ul>
 <li>Structural zeros need to be removed from the data.</li>
 </ul>
@@ -724,7 +751,7 @@ GenderM:CancerColorectal       GenderM:CancerLung   GenderM:CancerMelanoma
 </div>
 </section>
 <section id="modelling-rates-with-poisson-regression" class="slide level2">
-<h2>Modelling rates with Poisson regression</h2>
+<h2><i class="fa-brands fa-r-project" aria-label="r-project"></i> Modelling rates with Poisson regression</h2>
 <p><span class="math display">\log\left(\frac{\mu_i}{\texttt{Pop}_i}\right) =  \beta_0 + \beta_{1\texttt{Age}_i} + \beta_{2\texttt{City}_i} + \beta_{3\texttt{AgeCity}_i}</span></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a>fit_glm1 <span class="ot">&lt;-</span> <span class="fu">glm</span>(Cases<span class="sc">/</span>Pop <span class="sc">~</span> Age<span class="sc">*</span>City, <span class="at">data =</span> danishlc,</span>
@@ -737,7 +764,7 @@ GenderM:CancerColorectal       GenderM:CancerLung   GenderM:CancerMelanoma
 </div>
 </section>
 <section id="chi-square-test" class="slide level2">
-<h2>Chi-square test</h2>
+<h2><i class="fa-brands fa-r-project" aria-label="r-project"></i> Chi-square test</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a></a><span class="fu">anova</span>(fit_glm2, <span class="at">test =</span> <span class="st">"Chisq"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -763,7 +790,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </ul>
 </section>
 <section id="predicting-rate-response-with-poisson-regression" class="slide level2">
-<h2>Predicting rate response with Poisson regression</h2>
+<h2><i class="fa-brands fa-r-project" aria-label="r-project"></i> Predicting rate response with Poisson regression</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a></a>fit_glm3 <span class="ot">&lt;-</span> <span class="fu">glm</span>(Cases <span class="sc">~</span> <span class="fu">offset</span>(<span class="fu">log</span>(Pop)) <span class="sc">+</span> Age, <span class="at">data =</span> danishlc,</span>
 <span id="cb23-2"><a></a>                <span class="at">family =</span> <span class="fu">poisson</span>(<span class="at">link =</span> <span class="st">"log"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -785,7 +812,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="slide2_files/figure-revealjs/unnamed-chunk-19-1.png" width="960"></p>
+<p><img data-src="slide2_files/figure-revealjs/unnamed-chunk-21-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -827,7 +854,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="slide2_files/figure-revealjs/unnamed-chunk-21-1.png" width="960"></p>
+<p><img data-src="slide2_files/figure-revealjs/unnamed-chunk-23-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -875,7 +902,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="slide2_files/figure-revealjs/unnamed-chunk-23-1.png" width="576"></p>
+<p><img data-src="slide2_files/figure-revealjs/unnamed-chunk-25-1.png" width="576"></p>
 </figure>
 </div>
 </div>
@@ -891,7 +918,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="slide2_files/figure-revealjs/unnamed-chunk-24-1.png" width="960"></p>
+<p><img data-src="slide2_files/figure-revealjs/unnamed-chunk-26-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -911,7 +938,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="slide2_files/figure-revealjs/unnamed-chunk-25-1.png" width="720"></p>
+<p><img data-src="slide2_files/figure-revealjs/unnamed-chunk-27-1.png" width="720"></p>
 </figure>
 </div>
 </div>
@@ -941,7 +968,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </ul>
 </section>
 <section id="negative-binomial-regression-in-r" class="slide level2">
-<h2>Negative binomial regression in R</h2>
+<h2><i class="fa-brands fa-r-project" aria-label="r-project"></i> Negative binomial regression in R</h2>
 <ul>
 <li>Negative binomial regression can be fitted using <code>MASS::glm.nb()</code> function:</li>
 </ul>

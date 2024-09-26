@@ -10,7 +10,7 @@
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <link href="../site_libs/quarto-contrib/fontawesome6-0.1.0/all.css" rel="stylesheet">
 <link href="../site_libs/quarto-contrib/fontawesome6-0.1.0/latex-fontsize.css" rel="stylesheet"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.5.30">
+  <meta name="generator" content="quarto-1.5.31">
 
   <meta name="author" content="Emi Tanaka">
   <title>ANU BDSI – Modelling for count responses</title>
@@ -694,7 +694,7 @@
   };
 
   // Store cell data
-  globalThis.qwebrCellDetails = [{"id":1,"options":{"comment":"","editor-max-height":"","editor-font-scale":"0.5","context":"setup","results":"markup","editor-quick-suggestions":"false","read-only":"false","label":"unnamed-chunk-1","output":"true","classes":"","editor-word-wrap":"true","fig-cap":"","message":"true","out-height":"","out-width":"700px","dpi":72,"fig-height":5,"autorun":"true","warning":"true","fig-width":7},"code":"library(tidyverse)\ndata(nminer, package = \"GLMsData\")\ngmfood <- read_csv(\"https://anu-bdsi.github.io/workshop-GLM/data/gmfood.csv\")"},{"id":2,"options":{"comment":"","editor-max-height":"","editor-font-scale":"0.5","context":"interactive","results":"markup","editor-quick-suggestions":"false","read-only":"false","label":"unnamed-chunk-2","output":"true","classes":"","editor-word-wrap":"true","fig-cap":"","message":"true","out-height":"","out-width":"700px","dpi":72,"fig-height":5,"autorun":"false","warning":"true","fig-width":7},"code":"fit_lm_asis <- lm(Minerab ~ Eucs, data = nminer)\nfit_lm_sqrt <- lm(sqrt(Minerab) ~ Eucs, data = nminer)"},{"id":3,"options":{"comment":"","editor-max-height":"","editor-font-scale":"0.5","context":"interactive","results":"markup","editor-quick-suggestions":"false","read-only":"false","label":"unnamed-chunk-3","output":"true","classes":"","editor-word-wrap":"true","fig-cap":"","message":"true","out-height":"","out-width":"700px","dpi":72,"fig-height":5,"autorun":"true","warning":"true","fig-width":7},"code":"fit_glm <- glm(Minerab ~ Eucs, data = nminer, family = poisson(link = \"log\"))"},{"id":4,"options":{"comment":"","editor-max-height":"","editor-font-scale":"0.5","context":"interactive","results":"markup","editor-quick-suggestions":"false","read-only":"false","label":"unnamed-chunk-4","output":"true","classes":"","editor-word-wrap":"true","fig-cap":"","message":"true","out-height":"","out-width":"700px","dpi":72,"fig-height":5,"autorun":"false","warning":"true","fig-width":7},"code":"broom::augment(fit_glm, \n type.predict = \"response\",\n newdata = tibble(Eucs = seq(0, 30, by = 10)))"},{"id":5,"options":{"comment":"","editor-max-height":"","editor-font-scale":"0.5","context":"interactive","results":"markup","editor-quick-suggestions":"false","read-only":"false","label":"unnamed-chunk-5","output":"true","classes":"","editor-word-wrap":"true","fig-cap":"","message":"true","out-height":"","out-width":"700px","dpi":72,"fig-height":5,"autorun":"true","warning":"true","fig-width":7},"code":"observed <- xtabs(Counts ~ Income + Attitude, data = gmfood) \nC <- chisq.test(observed, correct = FALSE)"},{"id":6,"options":{"comment":"","editor-max-height":"","editor-font-scale":"0.5","context":"interactive","results":"markup","editor-quick-suggestions":"false","read-only":"false","label":"unnamed-chunk-6","output":"true","classes":"","editor-word-wrap":"true","fig-cap":"","message":"true","out-height":"","out-width":"700px","dpi":72,"fig-height":5,"autorun":"true","warning":"true","fig-width":7},"code":"observed"},{"id":7,"options":{"comment":"","editor-max-height":"","editor-font-scale":"0.5","context":"interactive","results":"markup","editor-quick-suggestions":"false","read-only":"false","label":"unnamed-chunk-7","output":"true","classes":"","editor-word-wrap":"true","fig-cap":"","message":"true","out-height":"","out-width":"700px","dpi":72,"fig-height":5,"autorun":"true","warning":"true","fig-width":7},"code":"C$expected"},{"id":8,"options":{"comment":"","editor-max-height":"","editor-font-scale":"0.5","context":"interactive","results":"markup","editor-quick-suggestions":"false","read-only":"false","label":"unnamed-chunk-8","output":"true","classes":"","editor-word-wrap":"true","fig-cap":"","message":"true","out-height":"","out-width":"700px","dpi":72,"fig-height":5,"autorun":"true","warning":"true","fig-width":7},"code":"C$statistic"},{"id":9,"options":{"comment":"","editor-max-height":"","editor-font-scale":"0.5","context":"interactive","results":"markup","editor-quick-suggestions":"false","read-only":"false","label":"unnamed-chunk-9","output":"true","classes":"","editor-word-wrap":"true","fig-cap":"","message":"true","out-height":"","out-width":"700px","dpi":72,"fig-height":5,"autorun":"true","warning":"true","fig-width":7},"code":"C$p.value # = 1 - pchisq(C$statistic, 1)"},{"id":10,"options":{"comment":"","editor-max-height":"","editor-font-scale":"0.5","context":"interactive","results":"markup","editor-quick-suggestions":"false","read-only":"false","label":"unnamed-chunk-10","output":"true","classes":"","editor-word-wrap":"true","fig-cap":"","message":"true","out-height":"","out-width":"700px","dpi":72,"fig-height":5,"autorun":"true","warning":"true","fig-width":7},"code":"fit_inter <- glm(Counts ~ Income * Attitude, family = poisson(), data = gmfood)\nfit_main <- glm(Counts ~ Income + Attitude, family = poisson(), data = gmfood)"},{"id":11,"options":{"comment":"","editor-max-height":"","editor-font-scale":"0.5","context":"interactive","results":"markup","editor-quick-suggestions":"false","read-only":"false","label":"unnamed-chunk-11","output":"true","classes":"","editor-word-wrap":"true","fig-cap":"","message":"true","out-height":"","out-width":"700px","dpi":72,"fig-height":5,"autorun":"false","warning":"true","fig-width":7},"code":"C$expected"},{"id":12,"options":{"comment":"","editor-max-height":"","editor-font-scale":"0.5","context":"interactive","results":"markup","editor-quick-suggestions":"false","read-only":"false","label":"unnamed-chunk-12","output":"true","classes":"","editor-word-wrap":"true","fig-cap":"","message":"true","out-height":"","out-width":"700px","dpi":72,"fig-height":5,"autorun":"false","warning":"true","fig-width":7},"code":"fit_main |> \n  broom::augment(type.predict = \"response\") |> \n  xtabs(.fitted ~ Income + Attitude, data = _)"},{"id":13,"options":{"comment":"","editor-max-height":"","editor-font-scale":"0.5","context":"interactive","results":"markup","editor-quick-suggestions":"false","read-only":"false","label":"unnamed-chunk-13","output":"true","classes":"","editor-word-wrap":"true","fig-cap":"","message":"true","out-height":"","out-width":"700px","dpi":72,"fig-height":5,"autorun":"false","warning":"true","fig-width":7},"code":"C$p.value"},{"id":14,"options":{"comment":"","editor-max-height":"","editor-font-scale":"0.5","context":"interactive","results":"markup","editor-quick-suggestions":"false","read-only":"false","label":"unnamed-chunk-14","output":"true","classes":"","editor-word-wrap":"true","fig-cap":"","message":"true","out-height":"","out-width":"700px","dpi":72,"fig-height":5,"autorun":"false","warning":"true","fig-width":7},"code":"anova(fit_inter, test = \"Chisq\")"},{"id":15,"options":{"comment":"","editor-max-height":"","editor-font-scale":"0.5","context":"interactive","results":"markup","editor-quick-suggestions":"false","read-only":"false","label":"unnamed-chunk-15","output":"true","classes":"","editor-word-wrap":"true","fig-cap":"","message":"true","out-height":"","out-width":"700px","dpi":72,"fig-height":5,"autorun":"true","warning":"true","fig-width":7},"code":"fit1 <- glm(Counts ~ Income + Attitude, family = poisson(), data = gmfood)\nfit2 <- glm(Counts ~ Income:Attitude, family = poisson(), data = gmfood)\nfit3 <- glm(Counts ~ Income, family = poisson(), data = gmfood)\nfit4 <- glm(Counts ~ Attitude, family = poisson(), data = gmfood)"},{"id":16,"options":{"comment":"","editor-max-height":"","editor-font-scale":"0.5","context":"interactive","results":"markup","editor-quick-suggestions":"false","read-only":"false","label":"unnamed-chunk-16","output":"true","classes":"","editor-word-wrap":"true","fig-cap":"","message":"true","out-height":"","out-width":"700px","dpi":72,"fig-height":5,"autorun":"false","warning":"true","fig-width":7},"code":"fit1 |> \n  broom::augment(type.predict = \"response\", newdata = gmfood) |> \n  pivot_wider(id_cols = Income, names_from = Attitude, values_from = .fitted) |>  \n  janitor::as_tabyl() |> \n  janitor::adorn_totals(c(\"row\", \"col\"))"}];
+  globalThis.qwebrCellDetails = [{"id":1,"options":{"comment":"","editor-quick-suggestions":"false","results":"markup","editor-word-wrap":"true","read-only":"false","editor-max-height":"","classes":"","editor-font-scale":"0.5","context":"setup","warning":"true","out-height":"","fig-cap":"","fig-width":7,"out-width":"700px","label":"unnamed-chunk-1","dpi":72,"message":"true","fig-height":5,"autorun":"true","output":"true"},"code":"library(tidyverse)\ndata(danishlc, package = \"GLMsData\")\ndata(nminer, package = \"GLMsData\")\ndata(pock, package = \"GLMsData\")\ngmfood <- read_csv(\"https://anu-bdsi.github.io/workshop-GLM/data/gmfood.csv\")"},{"id":2,"options":{"comment":"","editor-quick-suggestions":"false","results":"markup","editor-word-wrap":"true","read-only":"false","editor-max-height":"","classes":"","editor-font-scale":"0.5","context":"interactive","warning":"true","out-height":"","fig-cap":"","fig-width":7,"out-width":"700px","label":"unnamed-chunk-2","dpi":72,"message":"true","fig-height":5,"autorun":"false","output":"true"},"code":"fit_lm_asis <- lm(Minerab ~ Eucs, data = nminer)\nfit_lm_sqrt <- lm(sqrt(Minerab) ~ Eucs, data = nminer)"},{"id":3,"options":{"comment":"","editor-quick-suggestions":"false","results":"markup","editor-word-wrap":"true","read-only":"false","editor-max-height":"","classes":"","editor-font-scale":"0.5","context":"interactive","warning":"true","out-height":"","fig-cap":"","fig-width":7,"out-width":"700px","label":"unnamed-chunk-3","dpi":72,"message":"true","fig-height":5,"autorun":"true","output":"true"},"code":"fit_glm <- glm(Minerab ~ Eucs, data = nminer, family = poisson(link = \"log\"))"},{"id":4,"options":{"comment":"","editor-quick-suggestions":"false","results":"markup","editor-word-wrap":"true","read-only":"false","editor-max-height":"","classes":"","editor-font-scale":"0.5","context":"interactive","warning":"true","out-height":"","fig-cap":"","fig-width":7,"out-width":"700px","label":"unnamed-chunk-4","dpi":72,"message":"true","fig-height":5,"autorun":"false","output":"true"},"code":"broom::augment(fit_glm, \n type.predict = \"response\",\n newdata = tibble(Eucs = seq(0, 30, by = 10)))"},{"id":5,"options":{"comment":"","editor-quick-suggestions":"false","results":"markup","editor-word-wrap":"true","read-only":"false","editor-max-height":"","classes":"","editor-font-scale":"0.5","context":"interactive","warning":"true","out-height":"","fig-cap":"","fig-width":7,"out-width":"700px","label":"unnamed-chunk-5","dpi":72,"message":"true","fig-height":5,"autorun":"true","output":"true"},"code":"observed <- xtabs(Counts ~ Income + Attitude, data = gmfood) \nC <- chisq.test(observed, correct = FALSE)"},{"id":6,"options":{"comment":"","editor-quick-suggestions":"false","results":"markup","editor-word-wrap":"true","read-only":"false","editor-max-height":"","classes":"","editor-font-scale":"0.5","context":"interactive","warning":"true","out-height":"","fig-cap":"","fig-width":7,"out-width":"700px","label":"unnamed-chunk-6","dpi":72,"message":"true","fig-height":5,"autorun":"true","output":"true"},"code":"observed"},{"id":7,"options":{"comment":"","editor-quick-suggestions":"false","results":"markup","editor-word-wrap":"true","read-only":"false","editor-max-height":"","classes":"","editor-font-scale":"0.5","context":"interactive","warning":"true","out-height":"","fig-cap":"","fig-width":7,"out-width":"700px","label":"unnamed-chunk-7","dpi":72,"message":"true","fig-height":5,"autorun":"true","output":"true"},"code":"C$expected"},{"id":8,"options":{"comment":"","editor-quick-suggestions":"false","results":"markup","editor-word-wrap":"true","read-only":"false","editor-max-height":"","classes":"","editor-font-scale":"0.5","context":"interactive","warning":"true","out-height":"","fig-cap":"","fig-width":7,"out-width":"700px","label":"unnamed-chunk-8","dpi":72,"message":"true","fig-height":5,"autorun":"true","output":"true"},"code":"C$statistic"},{"id":9,"options":{"comment":"","editor-quick-suggestions":"false","results":"markup","editor-word-wrap":"true","read-only":"false","editor-max-height":"","classes":"","editor-font-scale":"0.5","context":"interactive","warning":"true","out-height":"","fig-cap":"","fig-width":7,"out-width":"700px","label":"unnamed-chunk-9","dpi":72,"message":"true","fig-height":5,"autorun":"true","output":"true"},"code":"C$p.value # = 1 - pchisq(C$statistic, 1)"},{"id":10,"options":{"comment":"","editor-quick-suggestions":"false","results":"markup","editor-word-wrap":"true","read-only":"false","editor-max-height":"","classes":"","editor-font-scale":"0.5","context":"interactive","warning":"true","out-height":"","fig-cap":"","fig-width":7,"out-width":"700px","label":"unnamed-chunk-10","dpi":72,"message":"true","fig-height":5,"autorun":"true","output":"true"},"code":"fit_inter <- glm(Counts ~ Income * Attitude, family = poisson(), data = gmfood)\nfit_main <- glm(Counts ~ Income + Attitude, family = poisson(), data = gmfood)"},{"id":11,"options":{"comment":"","editor-quick-suggestions":"false","results":"markup","editor-word-wrap":"true","read-only":"false","editor-max-height":"","classes":"","editor-font-scale":"0.5","context":"interactive","warning":"true","out-height":"","fig-cap":"","fig-width":7,"out-width":"700px","label":"unnamed-chunk-11","dpi":72,"message":"true","fig-height":5,"autorun":"false","output":"true"},"code":"C$expected"},{"id":12,"options":{"comment":"","editor-quick-suggestions":"false","results":"markup","editor-word-wrap":"true","read-only":"false","editor-max-height":"","classes":"","editor-font-scale":"0.5","context":"interactive","warning":"true","out-height":"","fig-cap":"","fig-width":7,"out-width":"700px","label":"unnamed-chunk-12","dpi":72,"message":"true","fig-height":5,"autorun":"false","output":"true"},"code":"fit_main |> \n  broom::augment(type.predict = \"response\") |> \n  xtabs(.fitted ~ Income + Attitude, data = _)"},{"id":13,"options":{"comment":"","editor-quick-suggestions":"false","results":"markup","editor-word-wrap":"true","read-only":"false","editor-max-height":"","classes":"","editor-font-scale":"0.5","context":"interactive","warning":"true","out-height":"","fig-cap":"","fig-width":7,"out-width":"700px","label":"unnamed-chunk-13","dpi":72,"message":"true","fig-height":5,"autorun":"false","output":"true"},"code":"C$p.value"},{"id":14,"options":{"comment":"","editor-quick-suggestions":"false","results":"markup","editor-word-wrap":"true","read-only":"false","editor-max-height":"","classes":"","editor-font-scale":"0.5","context":"interactive","warning":"true","out-height":"","fig-cap":"","fig-width":7,"out-width":"700px","label":"unnamed-chunk-14","dpi":72,"message":"true","fig-height":5,"autorun":"false","output":"true"},"code":"anova(fit_inter, test = \"Chisq\")"},{"id":15,"options":{"comment":"","editor-quick-suggestions":"false","results":"markup","editor-word-wrap":"true","read-only":"false","editor-max-height":"","classes":"","editor-font-scale":"0.5","context":"interactive","warning":"true","out-height":"","fig-cap":"","fig-width":7,"out-width":"700px","label":"unnamed-chunk-15","dpi":72,"message":"true","fig-height":5,"autorun":"true","output":"true"},"code":"fit1 <- glm(Counts ~ Income + Attitude, family = poisson(), data = gmfood)\nfit2 <- glm(Counts ~ Income:Attitude, family = poisson(), data = gmfood)\nfit3 <- glm(Counts ~ Income, family = poisson(), data = gmfood)\nfit4 <- glm(Counts ~ Attitude, family = poisson(), data = gmfood)"},{"id":16,"options":{"comment":"","editor-quick-suggestions":"false","results":"markup","editor-word-wrap":"true","read-only":"false","editor-max-height":"","classes":"","editor-font-scale":"0.5","context":"interactive","warning":"true","out-height":"","fig-cap":"","fig-width":7,"out-width":"700px","label":"unnamed-chunk-16","dpi":72,"message":"true","fig-height":5,"autorun":"false","output":"true"},"code":"fit1 |> \n  broom::augment(type.predict = \"response\", newdata = gmfood) |> \n  pivot_wider(id_cols = Income, names_from = Attitude, values_from = .fitted) |>  \n  janitor::as_tabyl() |> \n  janitor::adorn_totals(c(\"row\", \"col\"))"},{"id":17,"options":{"comment":"","editor-quick-suggestions":"false","results":"markup","editor-word-wrap":"true","read-only":"false","editor-max-height":"","classes":"","editor-font-scale":"0.5","context":"interactive","warning":"true","out-height":"","fig-cap":"","fig-width":7,"out-width":"700px","label":"unnamed-chunk-17","dpi":72,"message":"true","fig-height":5,"autorun":"true","output":"true"},"code":"data(wacancer, package = \"GLMsData\")\nxtabs(Counts ~ Gender + Cancer, data = wacancer)"},{"id":18,"options":{"comment":"","editor-quick-suggestions":"false","results":"markup","editor-word-wrap":"true","read-only":"false","editor-max-height":"","classes":"","editor-font-scale":"0.5","context":"interactive","warning":"true","out-height":"","fig-cap":"","fig-width":7,"out-width":"700px","label":"unnamed-chunk-18","dpi":72,"message":"true","fig-height":5,"autorun":"true","output":"true"},"code":"coef(glm(Counts ~ Gender * Cancer, family = poisson, data = wacancer))"},{"id":19,"options":{"comment":"","editor-quick-suggestions":"false","results":"markup","editor-word-wrap":"true","read-only":"false","editor-max-height":"","classes":"","editor-font-scale":"0.5","context":"interactive","warning":"true","out-height":"","fig-cap":"","fig-width":7,"out-width":"700px","label":"unnamed-chunk-19","dpi":72,"message":"true","fig-height":5,"autorun":"true","output":"true"},"code":"coef(glm(Counts ~ Gender * Cancer, family = poisson,\n         data = filter(wacancer, Counts > 0)))"},{"id":20,"options":{"comment":"","editor-quick-suggestions":"false","results":"markup","editor-word-wrap":"true","read-only":"false","editor-max-height":"","classes":"","editor-font-scale":"0.5","context":"interactive","warning":"false","out-height":"","fig-cap":"","fig-width":7,"out-width":"700px","label":"unnamed-chunk-20","dpi":72,"message":"true","fig-height":5,"autorun":"true","output":"true"},"code":"fit_glm1 <- glm(Cases/Pop ~ Age*City, data = danishlc,\n                  family = poisson(link = \"log\"))"},{"id":21,"options":{"comment":"","editor-quick-suggestions":"false","results":"markup","editor-word-wrap":"true","read-only":"false","editor-max-height":"","classes":"","editor-font-scale":"0.5","context":"interactive","warning":"true","out-height":"","fig-cap":"","fig-width":7,"out-width":"700px","label":"unnamed-chunk-21","dpi":72,"message":"true","fig-height":5,"autorun":"true","output":"true"},"code":"fit_glm2 <- glm(Cases ~ offset(log(Pop)) + Age*City, data = danishlc,\n                  family = poisson(link = \"log\"))"},{"id":22,"options":{"comment":"","editor-quick-suggestions":"false","results":"markup","editor-word-wrap":"true","read-only":"false","editor-max-height":"","classes":"","editor-font-scale":"0.5","context":"interactive","warning":"true","out-height":"","fig-cap":"","fig-width":7,"out-width":"700px","label":"unnamed-chunk-22","dpi":72,"message":"true","fig-height":5,"autorun":"true","output":"true"},"code":"anova(fit_glm2, test = \"Chisq\")"},{"id":23,"options":{"comment":"","editor-quick-suggestions":"false","results":"markup","editor-word-wrap":"true","read-only":"false","editor-max-height":"","classes":"","editor-font-scale":"0.5","context":"interactive","warning":"true","out-height":"","fig-cap":"","fig-width":7,"out-width":"700px","label":"unnamed-chunk-23","dpi":72,"message":"true","fig-height":5,"autorun":"true","output":"true"},"code":"fit_glm3 <- glm(Cases ~ offset(log(Pop)) + Age, data = danishlc,\n                family = poisson(link = \"log\"))"},{"id":24,"options":{"comment":"","editor-quick-suggestions":"false","results":"markup","editor-word-wrap":"true","read-only":"false","editor-max-height":"","classes":"","editor-font-scale":"0.5","context":"interactive","warning":"true","out-height":"","fig-cap":"","fig-width":7,"out-width":"700px","label":"unnamed-chunk-24","dpi":72,"message":"true","fig-height":5,"autorun":"false","output":"true"},"code":"broom::augment(fit_glm3, \n   type.predict = \"response\", \n   newdata = danishlc |> \n        distinct(Age) |> \n        mutate(Pop = 1000)) "},{"id":25,"options":{"comment":"","editor-quick-suggestions":"false","results":"markup","editor-word-wrap":"true","read-only":"false","editor-max-height":"","classes":"","editor-font-scale":"0.5","context":"interactive","warning":"true","out-height":"","fig-cap":"","fig-width":7,"out-width":"700px","label":"unnamed-chunk-25","dpi":72,"message":"true","fig-height":5,"autorun":"true","output":"true"},"code":"pock_group <- pock |> \n  summarise(mean = mean(Count), \n            var = var(Count),\n            .by = Dilution) \n\ncoef(lm(log(var) ~ log(mean), \n        data = pock_group))"},{"id":26,"options":{"comment":"","editor-quick-suggestions":"false","results":"markup","editor-word-wrap":"true","read-only":"false","editor-max-height":"","classes":"","editor-font-scale":"0.5","context":"interactive","warning":"true","out-height":"","fig-cap":"","fig-width":7,"out-width":"700px","label":"unnamed-chunk-26","dpi":72,"message":"true","fig-height":5,"autorun":"true","output":"true"},"code":"fit_nb <- MASS::glm.nb(Count ~ log2(Dilution), data = pock)\ncoef(fit_nb)"},{"id":27,"options":{"comment":"","editor-quick-suggestions":"false","results":"markup","editor-word-wrap":"true","read-only":"false","editor-max-height":"","classes":"","editor-font-scale":"0.5","context":"interactive","warning":"true","out-height":"","fig-cap":"","fig-width":7,"out-width":"700px","label":"unnamed-chunk-27","dpi":72,"message":"true","fig-height":5,"autorun":"true","output":"true"},"code":"fit_nb$theta "}];
 
   </script>
   <script type="module">
@@ -2416,23 +2416,23 @@ Emi Tanaka
 <div class="column" style="width:50%;">
 <div class="cell">
 <div class="cell-output-display">
-<div id="bsvlgjwxbc" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#bsvlgjwxbc table {
+<div id="ffehqjnsaq" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#ffehqjnsaq table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#bsvlgjwxbc thead, #bsvlgjwxbc tbody, #bsvlgjwxbc tfoot, #bsvlgjwxbc tr, #bsvlgjwxbc td, #bsvlgjwxbc th {
+#ffehqjnsaq thead, #ffehqjnsaq tbody, #ffehqjnsaq tfoot, #ffehqjnsaq tr, #ffehqjnsaq td, #ffehqjnsaq th {
   border-style: none;
 }
 
-#bsvlgjwxbc p {
+#ffehqjnsaq p {
   margin: 0;
   padding: 0;
 }
 
-#bsvlgjwxbc .gt_table {
+#ffehqjnsaq .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -2458,12 +2458,12 @@ Emi Tanaka
   border-left-color: #D3D3D3;
 }
 
-#bsvlgjwxbc .gt_caption {
+#ffehqjnsaq .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#bsvlgjwxbc .gt_title {
+#ffehqjnsaq .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -2475,7 +2475,7 @@ Emi Tanaka
   border-bottom-width: 0;
 }
 
-#bsvlgjwxbc .gt_subtitle {
+#ffehqjnsaq .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -2487,7 +2487,7 @@ Emi Tanaka
   border-top-width: 0;
 }
 
-#bsvlgjwxbc .gt_heading {
+#ffehqjnsaq .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -2499,13 +2499,13 @@ Emi Tanaka
   border-right-color: #D3D3D3;
 }
 
-#bsvlgjwxbc .gt_bottom_border {
+#ffehqjnsaq .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#bsvlgjwxbc .gt_col_headings {
+#ffehqjnsaq .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2520,7 +2520,7 @@ Emi Tanaka
   border-right-color: #D3D3D3;
 }
 
-#bsvlgjwxbc .gt_col_heading {
+#ffehqjnsaq .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2540,7 +2540,7 @@ Emi Tanaka
   overflow-x: hidden;
 }
 
-#bsvlgjwxbc .gt_column_spanner_outer {
+#ffehqjnsaq .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2552,15 +2552,15 @@ Emi Tanaka
   padding-right: 4px;
 }
 
-#bsvlgjwxbc .gt_column_spanner_outer:first-child {
+#ffehqjnsaq .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#bsvlgjwxbc .gt_column_spanner_outer:last-child {
+#ffehqjnsaq .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#bsvlgjwxbc .gt_column_spanner {
+#ffehqjnsaq .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #000000;
@@ -2572,11 +2572,11 @@ Emi Tanaka
   width: 100%;
 }
 
-#bsvlgjwxbc .gt_spanner_row {
+#ffehqjnsaq .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#bsvlgjwxbc .gt_group_heading {
+#ffehqjnsaq .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2602,7 +2602,7 @@ Emi Tanaka
   text-align: left;
 }
 
-#bsvlgjwxbc .gt_empty_group_heading {
+#ffehqjnsaq .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -2617,15 +2617,15 @@ Emi Tanaka
   vertical-align: middle;
 }
 
-#bsvlgjwxbc .gt_from_md > :first-child {
+#ffehqjnsaq .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#bsvlgjwxbc .gt_from_md > :last-child {
+#ffehqjnsaq .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#bsvlgjwxbc .gt_row {
+#ffehqjnsaq .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2644,7 +2644,7 @@ Emi Tanaka
   overflow-x: hidden;
 }
 
-#bsvlgjwxbc .gt_stub {
+#ffehqjnsaq .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2657,7 +2657,7 @@ Emi Tanaka
   padding-right: 5px;
 }
 
-#bsvlgjwxbc .gt_stub_row_group {
+#ffehqjnsaq .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2671,15 +2671,15 @@ Emi Tanaka
   vertical-align: top;
 }
 
-#bsvlgjwxbc .gt_row_group_first td {
+#ffehqjnsaq .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#bsvlgjwxbc .gt_row_group_first th {
+#ffehqjnsaq .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#bsvlgjwxbc .gt_summary_row {
+#ffehqjnsaq .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2689,16 +2689,16 @@ Emi Tanaka
   padding-right: 5px;
 }
 
-#bsvlgjwxbc .gt_first_summary_row {
+#ffehqjnsaq .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#bsvlgjwxbc .gt_first_summary_row.thick {
+#ffehqjnsaq .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#bsvlgjwxbc .gt_last_summary_row {
+#ffehqjnsaq .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2708,7 +2708,7 @@ Emi Tanaka
   border-bottom-color: #D3D3D3;
 }
 
-#bsvlgjwxbc .gt_grand_summary_row {
+#ffehqjnsaq .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2718,7 +2718,7 @@ Emi Tanaka
   padding-right: 5px;
 }
 
-#bsvlgjwxbc .gt_first_grand_summary_row {
+#ffehqjnsaq .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2728,7 +2728,7 @@ Emi Tanaka
   border-top-color: #D3D3D3;
 }
 
-#bsvlgjwxbc .gt_last_grand_summary_row_top {
+#ffehqjnsaq .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2738,11 +2738,11 @@ Emi Tanaka
   border-bottom-color: #D3D3D3;
 }
 
-#bsvlgjwxbc .gt_striped {
+#ffehqjnsaq .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#bsvlgjwxbc .gt_table_body {
+#ffehqjnsaq .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #000000;
@@ -2751,7 +2751,7 @@ Emi Tanaka
   border-bottom-color: #D3D3D3;
 }
 
-#bsvlgjwxbc .gt_footnotes {
+#ffehqjnsaq .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2765,7 +2765,7 @@ Emi Tanaka
   border-right-color: #D3D3D3;
 }
 
-#bsvlgjwxbc .gt_footnote {
+#ffehqjnsaq .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -2774,7 +2774,7 @@ Emi Tanaka
   padding-right: 5px;
 }
 
-#bsvlgjwxbc .gt_sourcenotes {
+#ffehqjnsaq .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2788,7 +2788,7 @@ Emi Tanaka
   border-right-color: #D3D3D3;
 }
 
-#bsvlgjwxbc .gt_sourcenote {
+#ffehqjnsaq .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -2796,73 +2796,64 @@ Emi Tanaka
   padding-right: 5px;
 }
 
-#bsvlgjwxbc .gt_left {
+#ffehqjnsaq .gt_left {
   text-align: left;
 }
 
-#bsvlgjwxbc .gt_center {
+#ffehqjnsaq .gt_center {
   text-align: center;
 }
 
-#bsvlgjwxbc .gt_right {
+#ffehqjnsaq .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#bsvlgjwxbc .gt_font_normal {
+#ffehqjnsaq .gt_font_normal {
   font-weight: normal;
 }
 
-#bsvlgjwxbc .gt_font_bold {
+#ffehqjnsaq .gt_font_bold {
   font-weight: bold;
 }
 
-#bsvlgjwxbc .gt_font_italic {
+#ffehqjnsaq .gt_font_italic {
   font-style: italic;
 }
 
-#bsvlgjwxbc .gt_super {
+#ffehqjnsaq .gt_super {
   font-size: 65%;
 }
 
-#bsvlgjwxbc .gt_footnote_marks {
+#ffehqjnsaq .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#bsvlgjwxbc .gt_asterisk {
+#ffehqjnsaq .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#bsvlgjwxbc .gt_indent_1 {
+#ffehqjnsaq .gt_indent_1 {
   text-indent: 5px;
 }
 
-#bsvlgjwxbc .gt_indent_2 {
+#ffehqjnsaq .gt_indent_2 {
   text-indent: 10px;
 }
 
-#bsvlgjwxbc .gt_indent_3 {
+#ffehqjnsaq .gt_indent_3 {
   text-indent: 15px;
 }
 
-#bsvlgjwxbc .gt_indent_4 {
+#ffehqjnsaq .gt_indent_4 {
   text-indent: 20px;
 }
 
-#bsvlgjwxbc .gt_indent_5 {
+#ffehqjnsaq .gt_indent_5 {
   text-indent: 25px;
-}
-
-#bsvlgjwxbc .katex-display {
-  display: inline-flex !important;
-  margin-bottom: 0.75em !important;
-}
-
-#bsvlgjwxbc div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
-  height: 0px !important;
 }
 </style>
 <table class="gt_table" data-quarto-disable-processing="true" data-quarto-bootstrap="false">
@@ -2942,7 +2933,7 @@ Emi Tanaka
 </div>
 </section>
 <section id="poisson-regression-for-contingency-tables" class="slide level2">
-<h2>Poisson regression for contingency tables</h2>
+<h2><i class="fab fa-r-project"></i> Poisson regression for contingency tables</h2>
 <div id="qwebr-insertion-location-10"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <div class="fragment">
@@ -2974,31 +2965,31 @@ Emi Tanaka
 </div>
 </div>
 </section>
-<section id="fixed-totals" class="slide level2">
-<h2>Fixed totals</h2>
+<section id="main-effects-fix-marginal-totals" class="slide level2">
+<h2>Main effects fix marginal totals</h2>
 <div id="qwebr-insertion-location-15"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <div class="columns">
 <div class="column" style="width:50%;">
 <div class="cell">
 <div class="cell-output-display">
-<div id="cprnwfmped" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#cprnwfmped table {
+<div id="llgxxlrzrf" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#llgxxlrzrf table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#cprnwfmped thead, #cprnwfmped tbody, #cprnwfmped tfoot, #cprnwfmped tr, #cprnwfmped td, #cprnwfmped th {
+#llgxxlrzrf thead, #llgxxlrzrf tbody, #llgxxlrzrf tfoot, #llgxxlrzrf tr, #llgxxlrzrf td, #llgxxlrzrf th {
   border-style: none;
 }
 
-#cprnwfmped p {
+#llgxxlrzrf p {
   margin: 0;
   padding: 0;
 }
 
-#cprnwfmped .gt_table {
+#llgxxlrzrf .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -3024,12 +3015,12 @@ Emi Tanaka
   border-left-color: #D3D3D3;
 }
 
-#cprnwfmped .gt_caption {
+#llgxxlrzrf .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#cprnwfmped .gt_title {
+#llgxxlrzrf .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -3041,7 +3032,7 @@ Emi Tanaka
   border-bottom-width: 0;
 }
 
-#cprnwfmped .gt_subtitle {
+#llgxxlrzrf .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -3053,7 +3044,7 @@ Emi Tanaka
   border-top-width: 0;
 }
 
-#cprnwfmped .gt_heading {
+#llgxxlrzrf .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -3065,13 +3056,13 @@ Emi Tanaka
   border-right-color: #D3D3D3;
 }
 
-#cprnwfmped .gt_bottom_border {
+#llgxxlrzrf .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#cprnwfmped .gt_col_headings {
+#llgxxlrzrf .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3086,7 +3077,7 @@ Emi Tanaka
   border-right-color: #D3D3D3;
 }
 
-#cprnwfmped .gt_col_heading {
+#llgxxlrzrf .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3106,7 +3097,7 @@ Emi Tanaka
   overflow-x: hidden;
 }
 
-#cprnwfmped .gt_column_spanner_outer {
+#llgxxlrzrf .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3118,15 +3109,15 @@ Emi Tanaka
   padding-right: 4px;
 }
 
-#cprnwfmped .gt_column_spanner_outer:first-child {
+#llgxxlrzrf .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#cprnwfmped .gt_column_spanner_outer:last-child {
+#llgxxlrzrf .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#cprnwfmped .gt_column_spanner {
+#llgxxlrzrf .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #000000;
@@ -3138,11 +3129,11 @@ Emi Tanaka
   width: 100%;
 }
 
-#cprnwfmped .gt_spanner_row {
+#llgxxlrzrf .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#cprnwfmped .gt_group_heading {
+#llgxxlrzrf .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3168,7 +3159,7 @@ Emi Tanaka
   text-align: left;
 }
 
-#cprnwfmped .gt_empty_group_heading {
+#llgxxlrzrf .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -3183,15 +3174,15 @@ Emi Tanaka
   vertical-align: middle;
 }
 
-#cprnwfmped .gt_from_md > :first-child {
+#llgxxlrzrf .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#cprnwfmped .gt_from_md > :last-child {
+#llgxxlrzrf .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#cprnwfmped .gt_row {
+#llgxxlrzrf .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3210,7 +3201,7 @@ Emi Tanaka
   overflow-x: hidden;
 }
 
-#cprnwfmped .gt_stub {
+#llgxxlrzrf .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3223,7 +3214,7 @@ Emi Tanaka
   padding-right: 5px;
 }
 
-#cprnwfmped .gt_stub_row_group {
+#llgxxlrzrf .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3237,15 +3228,15 @@ Emi Tanaka
   vertical-align: top;
 }
 
-#cprnwfmped .gt_row_group_first td {
+#llgxxlrzrf .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#cprnwfmped .gt_row_group_first th {
+#llgxxlrzrf .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#cprnwfmped .gt_summary_row {
+#llgxxlrzrf .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3255,16 +3246,16 @@ Emi Tanaka
   padding-right: 5px;
 }
 
-#cprnwfmped .gt_first_summary_row {
+#llgxxlrzrf .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#cprnwfmped .gt_first_summary_row.thick {
+#llgxxlrzrf .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#cprnwfmped .gt_last_summary_row {
+#llgxxlrzrf .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3274,7 +3265,7 @@ Emi Tanaka
   border-bottom-color: #D3D3D3;
 }
 
-#cprnwfmped .gt_grand_summary_row {
+#llgxxlrzrf .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3284,7 +3275,7 @@ Emi Tanaka
   padding-right: 5px;
 }
 
-#cprnwfmped .gt_first_grand_summary_row {
+#llgxxlrzrf .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3294,7 +3285,7 @@ Emi Tanaka
   border-top-color: #D3D3D3;
 }
 
-#cprnwfmped .gt_last_grand_summary_row_top {
+#llgxxlrzrf .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3304,11 +3295,11 @@ Emi Tanaka
   border-bottom-color: #D3D3D3;
 }
 
-#cprnwfmped .gt_striped {
+#llgxxlrzrf .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#cprnwfmped .gt_table_body {
+#llgxxlrzrf .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #000000;
@@ -3317,7 +3308,7 @@ Emi Tanaka
   border-bottom-color: #D3D3D3;
 }
 
-#cprnwfmped .gt_footnotes {
+#llgxxlrzrf .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3331,7 +3322,7 @@ Emi Tanaka
   border-right-color: #D3D3D3;
 }
 
-#cprnwfmped .gt_footnote {
+#llgxxlrzrf .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -3340,7 +3331,7 @@ Emi Tanaka
   padding-right: 5px;
 }
 
-#cprnwfmped .gt_sourcenotes {
+#llgxxlrzrf .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3354,7 +3345,7 @@ Emi Tanaka
   border-right-color: #D3D3D3;
 }
 
-#cprnwfmped .gt_sourcenote {
+#llgxxlrzrf .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -3362,73 +3353,64 @@ Emi Tanaka
   padding-right: 5px;
 }
 
-#cprnwfmped .gt_left {
+#llgxxlrzrf .gt_left {
   text-align: left;
 }
 
-#cprnwfmped .gt_center {
+#llgxxlrzrf .gt_center {
   text-align: center;
 }
 
-#cprnwfmped .gt_right {
+#llgxxlrzrf .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#cprnwfmped .gt_font_normal {
+#llgxxlrzrf .gt_font_normal {
   font-weight: normal;
 }
 
-#cprnwfmped .gt_font_bold {
+#llgxxlrzrf .gt_font_bold {
   font-weight: bold;
 }
 
-#cprnwfmped .gt_font_italic {
+#llgxxlrzrf .gt_font_italic {
   font-style: italic;
 }
 
-#cprnwfmped .gt_super {
+#llgxxlrzrf .gt_super {
   font-size: 65%;
 }
 
-#cprnwfmped .gt_footnote_marks {
+#llgxxlrzrf .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#cprnwfmped .gt_asterisk {
+#llgxxlrzrf .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#cprnwfmped .gt_indent_1 {
+#llgxxlrzrf .gt_indent_1 {
   text-indent: 5px;
 }
 
-#cprnwfmped .gt_indent_2 {
+#llgxxlrzrf .gt_indent_2 {
   text-indent: 10px;
 }
 
-#cprnwfmped .gt_indent_3 {
+#llgxxlrzrf .gt_indent_3 {
   text-indent: 15px;
 }
 
-#cprnwfmped .gt_indent_4 {
+#llgxxlrzrf .gt_indent_4 {
   text-indent: 20px;
 }
 
-#cprnwfmped .gt_indent_5 {
+#llgxxlrzrf .gt_indent_5 {
   text-indent: 25px;
-}
-
-#cprnwfmped .katex-display {
-  display: inline-flex !important;
-  margin-bottom: 0.75em !important;
-}
-
-#cprnwfmped div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
-  height: 0px !important;
 }
 </style>
 <table class="gt_table" data-quarto-disable-processing="true" data-quarto-bootstrap="false">
@@ -3478,16 +3460,8 @@ Emi Tanaka
 <li>Females cannot have prostate cancer, and males cannot have cervical cancer.</li>
 <li>Breast cancer is a possible, but very rare, disease among men</li>
 </ul>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a><span class="fu">data</span>(wacancer, <span class="at">package =</span> <span class="st">"GLMsData"</span>)</span>
-<span id="cb7-2"><a></a><span class="fu">xtabs</span>(Counts <span class="sc">~</span> Gender <span class="sc">+</span> Cancer, <span class="at">data =</span> wacancer)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>      Cancer
-Gender Breast Cervix Colorectal Lung Melanoma Other Prostate
-     F    875     77        355  211      282  1082        0
-     M      0      0        511  472      362  1406      923</code></pre>
-</div>
-</div>
+<div id="qwebr-insertion-location-17"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <ul>
 <li>Note that a woman cannot get prostate cancer and a man cannot get cervix cancer.</li>
 <li>A man can get breast cancer, but it is extremely rare.</li>
@@ -3499,37 +3473,10 @@ Gender Breast Cervix Colorectal Lung Melanoma Other Prostate
 <li>Structural zeros need to be removed from the data.</li>
 </ul>
 <div class="f2">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a><span class="fu">coef</span>(<span class="fu">glm</span>(Counts <span class="sc">~</span> Gender <span class="sc">*</span> Cancer, <span class="at">family =</span> poisson, <span class="at">data =</span> wacancer))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>             (Intercept)                  GenderM             CancerCervix 
-               6.7742239              -30.0768090               -2.4304185 
-        CancerColorectal               CancerLung           CancerMelanoma 
-              -0.9021061               -1.4223658               -1.1323168 
-             CancerOther           CancerProstate     GenderM:CancerCervix 
-               0.2123426              -30.0768090                2.4304185 
-GenderM:CancerColorectal       GenderM:CancerLung   GenderM:CancerMelanoma 
-              30.4410608               30.8819299               30.3265461 
-     GenderM:CancerOther   GenderM:CancerProstate 
-              30.3387466               60.2070233 </code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a><span class="fu">coef</span>(<span class="fu">glm</span>(Counts <span class="sc">~</span> Gender <span class="sc">*</span> Cancer, <span class="at">family =</span> poisson,</span>
-<span id="cb11-2"><a></a>         <span class="at">data =</span> <span class="fu">filter</span>(wacancer, Counts <span class="sc">&gt;</span> <span class="dv">0</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>             (Intercept)                  GenderM             CancerCervix 
-              6.77422389               0.26193761              -2.43041846 
-        CancerColorectal               CancerLung           CancerMelanoma 
-             -0.90210610              -1.42236575              -1.13231682 
-             CancerOther           CancerProstate     GenderM:CancerCervix 
-              0.21234257              -0.20853226                       NA 
-GenderM:CancerColorectal       GenderM:CancerLung   GenderM:CancerMelanoma 
-              0.10231419               0.54318324              -0.01220047 
-     GenderM:CancerOther   GenderM:CancerProstate 
-                      NA                       NA </code></pre>
-</div>
-</div>
+<div id="qwebr-insertion-location-18"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<div id="qwebr-insertion-location-19"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </div>
 </section>
 <section id="case-study-lung-cancer-in-danish-cities" class="slide level2" data-background-color="#F5EDDE">
@@ -3542,19 +3489,19 @@ GenderM:CancerColorectal       GenderM:CancerLung   GenderM:CancerMelanoma
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a><span class="fu">data</span>(danishlc, <span class="at">package =</span> <span class="st">"GLMsData"</span>)</span>
-<span id="cb13-2"><a></a></span>
-<span id="cb13-3"><a></a>danishlc <span class="sc">|&gt;</span> </span>
-<span id="cb13-4"><a></a>  <span class="fu">mutate</span>(<span class="at">Age =</span> <span class="fu">fct_reorder</span>(Age, <span class="fu">parse_number</span>(<span class="fu">as.character</span>(Age)), min)) <span class="sc">|&gt;</span> </span>
-<span id="cb13-5"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(Age, Cases<span class="sc">/</span>Pop <span class="sc">*</span> <span class="dv">1000</span>, <span class="at">color =</span> City)) <span class="sc">+</span> </span>
-<span id="cb13-6"><a></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
-<span id="cb13-7"><a></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">group =</span> City), <span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
-<span id="cb13-8"><a></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> City), </span>
-<span id="cb13-9"><a></a>            <span class="at">hjust =</span> <span class="dv">0</span>, <span class="at">nudge_x =</span> <span class="fl">0.1</span>,</span>
-<span id="cb13-10"><a></a>            <span class="at">data =</span> <span class="sc">~</span><span class="fu">filter</span>(., Age <span class="sc">==</span> <span class="st">"&gt;74"</span>), <span class="at">size =</span> <span class="dv">9</span>) <span class="sc">+</span></span>
-<span id="cb13-11"><a></a>  <span class="fu">guides</span>(<span class="at">color =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
-<span id="cb13-12"><a></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Cases per 1000 people"</span>, <span class="at">x =</span> <span class="st">"Age group"</span>) <span class="sc">+</span></span>
-<span id="cb13-13"><a></a>  <span class="fu">scale_x_discrete</span>(<span class="at">expand =</span> <span class="fu">expansion</span>(<span class="at">mult =</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.3</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a><span class="fu">data</span>(danishlc, <span class="at">package =</span> <span class="st">"GLMsData"</span>)</span>
+<span id="cb7-2"><a></a></span>
+<span id="cb7-3"><a></a>danishlc <span class="sc">|&gt;</span> </span>
+<span id="cb7-4"><a></a>  <span class="fu">mutate</span>(<span class="at">Age =</span> <span class="fu">fct_reorder</span>(Age, <span class="fu">parse_number</span>(<span class="fu">as.character</span>(Age)), min)) <span class="sc">|&gt;</span> </span>
+<span id="cb7-5"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(Age, Cases<span class="sc">/</span>Pop <span class="sc">*</span> <span class="dv">1000</span>, <span class="at">color =</span> City)) <span class="sc">+</span> </span>
+<span id="cb7-6"><a></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb7-7"><a></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">group =</span> City), <span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb7-8"><a></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> City), </span>
+<span id="cb7-9"><a></a>            <span class="at">hjust =</span> <span class="dv">0</span>, <span class="at">nudge_x =</span> <span class="fl">0.1</span>,</span>
+<span id="cb7-10"><a></a>            <span class="at">data =</span> <span class="sc">~</span><span class="fu">filter</span>(., Age <span class="sc">==</span> <span class="st">"&gt;74"</span>), <span class="at">size =</span> <span class="dv">9</span>) <span class="sc">+</span></span>
+<span id="cb7-11"><a></a>  <span class="fu">guides</span>(<span class="at">color =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
+<span id="cb7-12"><a></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Cases per 1000 people"</span>, <span class="at">x =</span> <span class="st">"Age group"</span>) <span class="sc">+</span></span>
+<span id="cb7-13"><a></a>  <span class="fu">scale_x_discrete</span>(<span class="at">expand =</span> <span class="fu">expansion</span>(<span class="at">mult =</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.3</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div id="fig-lung" class="quarto-figure quarto-figure-center quarto-float" width="1344">
@@ -3576,89 +3523,49 @@ GenderM:CancerColorectal       GenderM:CancerLung   GenderM:CancerMelanoma
 <section id="modelling-rates-with-poisson-regression" class="slide level2">
 <h2><i class="fa-brands fa-r-project" aria-label="r-project"></i> Modelling rates with Poisson regression</h2>
 <p><span class="math display">\log\left(\frac{\mu_i}{\texttt{Pop}_i}\right) =  \beta_0 + \beta_{1\texttt{Age}_i} + \beta_{2\texttt{City}_i} + \beta_{3\texttt{AgeCity}_i}</span></p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a>fit_glm1 <span class="ot">&lt;-</span> <span class="fu">glm</span>(Cases<span class="sc">/</span>Pop <span class="sc">~</span> Age<span class="sc">*</span>City, <span class="at">data =</span> danishlc,</span>
-<span id="cb14-2"><a></a>                  <span class="at">family =</span> <span class="fu">poisson</span>(<span class="at">link =</span> <span class="st">"log"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
+<div id="qwebr-insertion-location-20"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <p><span class="math display">\log(\mu_i) = \log(\texttt{Pop}_i) + \beta_0 + \beta_{1\texttt{Age}_i} + \beta_{2\texttt{City}_i} + \beta_{3\texttt{AgeCity}_i}</span></p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a>fit_glm2 <span class="ot">&lt;-</span> <span class="fu">glm</span>(Cases <span class="sc">~</span> <span class="fu">offset</span>(<span class="fu">log</span>(Pop)) <span class="sc">+</span> Age<span class="sc">*</span>City, <span class="at">data =</span> danishlc,</span>
-<span id="cb15-2"><a></a>                  <span class="at">family =</span> <span class="fu">poisson</span>(<span class="at">link =</span> <span class="st">"log"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
+<div id="qwebr-insertion-location-21"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </section>
 <section id="chi-square-test" class="slide level2">
 <h2><i class="fa-brands fa-r-project" aria-label="r-project"></i> Chi-square test</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a></a><span class="fu">anova</span>(fit_glm2, <span class="at">test =</span> <span class="st">"Chisq"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Analysis of Deviance Table
-
-Model: poisson, link: log
-
-Response: Cases
-
-Terms added sequentially (first to last)
-
-         Df Deviance Resid. Df Resid. Dev Pr(&gt;Chi)    
-NULL                        23    129.908             
-Age       5  101.601        18     28.307  &lt; 2e-16 ***
-City      3    4.859        15     23.447  0.18241    
-Age:City 15   23.447         0      0.000  0.07509 .  
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
-</div>
-</div>
+<div id="qwebr-insertion-location-22"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <ul>
 <li>We retain only <code>Age</code> in the model.</li>
 </ul>
 </section>
 <section id="predicting-rate-response-with-poisson-regression" class="slide level2">
 <h2><i class="fa-brands fa-r-project" aria-label="r-project"></i> Predicting rate response with Poisson regression</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a></a>fit_glm3 <span class="ot">&lt;-</span> <span class="fu">glm</span>(Cases <span class="sc">~</span> <span class="fu">offset</span>(<span class="fu">log</span>(Pop)) <span class="sc">+</span> Age, <span class="at">data =</span> danishlc,</span>
-<span id="cb18-2"><a></a>                <span class="at">family =</span> <span class="fu">poisson</span>(<span class="at">link =</span> <span class="st">"log"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
+<div id="qwebr-insertion-location-23"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <div class="columns">
 <div class="column" style="width:50%;">
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a>broom<span class="sc">::</span><span class="fu">augment</span>(fit_glm3, <span class="at">type.predict =</span> <span class="st">"response"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb19-2"><a></a>  <span class="fu">mutate</span>(<span class="at">Pop =</span> <span class="fu">exp</span>(<span class="st">`</span><span class="at">offset(log(Pop))</span><span class="st">`</span>)) <span class="sc">|&gt;</span> </span>
-<span id="cb19-3"><a></a>  <span class="fu">mutate</span>(<span class="at">Age =</span> <span class="fu">fct_reorder</span>(Age, <span class="fu">parse_number</span>(<span class="fu">as.character</span>(Age)), min)) <span class="sc">|&gt;</span> </span>
-<span id="cb19-4"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(Age, Cases<span class="sc">/</span>Pop <span class="sc">*</span> <span class="dv">1000</span>)) <span class="sc">+</span></span>
-<span id="cb19-5"><a></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
-<span id="cb19-6"><a></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> .fitted<span class="sc">/</span>Pop <span class="sc">*</span> <span class="dv">1000</span>), <span class="at">color =</span> <span class="st">"blue"</span>, <span class="at">size =</span> <span class="dv">4</span>) <span class="sc">+</span></span>
-<span id="cb19-7"><a></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> .fitted<span class="sc">/</span>Pop <span class="sc">*</span> <span class="dv">1000</span>), <span class="at">color =</span> <span class="st">"blue"</span>, <span class="at">group =</span> <span class="dv">1</span>, <span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
-<span id="cb19-8"><a></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Cases per 1000 people"</span>, <span class="at">x =</span> <span class="st">"Age group"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a>broom<span class="sc">::</span><span class="fu">augment</span>(fit_glm3, <span class="at">type.predict =</span> <span class="st">"response"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb8-2"><a></a>  <span class="fu">mutate</span>(<span class="at">Pop =</span> <span class="fu">exp</span>(<span class="st">`</span><span class="at">offset(log(Pop))</span><span class="st">`</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb8-3"><a></a>  <span class="fu">mutate</span>(<span class="at">Age =</span> <span class="fu">fct_reorder</span>(Age, <span class="fu">parse_number</span>(<span class="fu">as.character</span>(Age)), min)) <span class="sc">|&gt;</span> </span>
+<span id="cb8-4"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(Age, Cases<span class="sc">/</span>Pop <span class="sc">*</span> <span class="dv">1000</span>)) <span class="sc">+</span></span>
+<span id="cb8-5"><a></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb8-6"><a></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> .fitted<span class="sc">/</span>Pop <span class="sc">*</span> <span class="dv">1000</span>), <span class="at">color =</span> <span class="st">"blue"</span>, <span class="at">size =</span> <span class="dv">4</span>) <span class="sc">+</span></span>
+<span id="cb8-7"><a></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> .fitted<span class="sc">/</span>Pop <span class="sc">*</span> <span class="dv">1000</span>), <span class="at">color =</span> <span class="st">"blue"</span>, <span class="at">group =</span> <span class="dv">1</span>, <span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb8-8"><a></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Cases per 1000 people"</span>, <span class="at">x =</span> <span class="st">"Age group"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="slide2_files/figure-revealjs/unnamed-chunk-21-1.png" width="960"></p>
+<p><img data-src="slide2_files/figure-revealjs/unnamed-chunk-15-1.png" width="960"></p>
 </figure>
 </div>
 </div>
 </div>
 </div><div class="column" style="width:50%;">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a></a>broom<span class="sc">::</span><span class="fu">augment</span>(fit_glm3, </span>
-<span id="cb20-2"><a></a>   <span class="at">type.predict =</span> <span class="st">"response"</span>, </span>
-<span id="cb20-3"><a></a>   <span class="at">newdata =</span> danishlc <span class="sc">|&gt;</span> </span>
-<span id="cb20-4"><a></a>        <span class="fu">distinct</span>(Age) <span class="sc">|&gt;</span> </span>
-<span id="cb20-5"><a></a>        <span class="fu">mutate</span>(<span class="at">Pop =</span> <span class="dv">1000</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 6 × 3
-  Age     Pop .fitted
-  &lt;fct&gt; &lt;dbl&gt;   &lt;dbl&gt;
-1 40-54  1000    2.84
-2 55-59  1000    8.40
-3 60-64  1000   12.8 
-4 65-69  1000   16.4 
-5 70-74  1000   18.0 
-6 &gt;74    1000   11.6 </code></pre>
-</div>
-</div>
+<div id="qwebr-insertion-location-24"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </div>
 </div>
 </section>
@@ -3669,15 +3576,15 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a></a><span class="fu">data</span>(pock, <span class="at">package =</span> <span class="st">"GLMsData"</span>)</span>
-<span id="cb22-2"><a></a><span class="fu">ggplot</span>(pock, <span class="fu">aes</span>(Dilution, Count)) <span class="sc">+</span></span>
-<span id="cb22-3"><a></a>  ggbeeswarm<span class="sc">::</span><span class="fu">geom_quasirandom</span>(<span class="at">width =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
-<span id="cb22-4"><a></a>  <span class="fu">scale_x_continuous</span>(<span class="at">transform =</span> <span class="st">"log2"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a><span class="fu">data</span>(pock, <span class="at">package =</span> <span class="st">"GLMsData"</span>)</span>
+<span id="cb9-2"><a></a><span class="fu">ggplot</span>(pock, <span class="fu">aes</span>(Dilution, Count)) <span class="sc">+</span></span>
+<span id="cb9-3"><a></a>  ggbeeswarm<span class="sc">::</span><span class="fu">geom_quasirandom</span>(<span class="at">width =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb9-4"><a></a>  <span class="fu">scale_x_continuous</span>(<span class="at">transform =</span> <span class="st">"log2"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="slide2_files/figure-revealjs/unnamed-chunk-23-1.png" width="960"></p>
+<p><img data-src="slide2_files/figure-revealjs/unnamed-chunk-16-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -3693,39 +3600,28 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <h2>Overdispersion</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a></a>pock_group <span class="ot">&lt;-</span> pock <span class="sc">|&gt;</span> </span>
-<span id="cb23-2"><a></a>  <span class="fu">summarise</span>(<span class="at">mean =</span> <span class="fu">mean</span>(Count), </span>
-<span id="cb23-3"><a></a>            <span class="at">var =</span> <span class="fu">var</span>(Count),</span>
-<span id="cb23-4"><a></a>            <span class="at">.by =</span> Dilution) </span>
-<span id="cb23-5"><a></a></span>
-<span id="cb23-6"><a></a><span class="fu">coef</span>(<span class="fu">lm</span>(<span class="fu">log</span>(var) <span class="sc">~</span> <span class="fu">log</span>(mean), </span>
-<span id="cb23-7"><a></a>        <span class="at">data =</span> pock_group))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>(Intercept)   log(mean) 
- 0.02861162  1.44318666 </code></pre>
-</div>
-</div>
+<div id="qwebr-insertion-location-25"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <ul>
-<li>For a Poisson distribution, the variance should be equal to the mean.</li>
+<li><i class="fas fa-exclamation-circle"></i> For a Poisson distribution, the variance should be equal to the mean.</li>
 </ul>
 </div><div class="column" style="width:50%;">
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a></a>pock_group <span class="sc">|&gt;</span></span>
-<span id="cb25-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(mean, var)) <span class="sc">+</span> </span>
-<span id="cb25-3"><a></a>  <span class="fu">geom_point</span>(<span class="at">size =</span><span class="dv">3</span>) <span class="sc">+</span></span>
-<span id="cb25-4"><a></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> lm, <span class="at">se =</span> <span class="cn">FALSE</span>) <span class="sc">+</span> </span>
-<span id="cb25-5"><a></a>  <span class="fu">geom_abline</span>(<span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">slope =</span> <span class="dv">1</span>, <span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span> </span>
-<span id="cb25-6"><a></a>  <span class="fu">scale_y_log10</span>() <span class="sc">+</span></span>
-<span id="cb25-7"><a></a>  <span class="fu">scale_x_log10</span>() <span class="sc">+</span></span>
-<span id="cb25-8"><a></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Group mean"</span>, <span class="at">y =</span> <span class="st">"Group variance"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a>pock_group <span class="sc">|&gt;</span></span>
+<span id="cb10-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(mean, var)) <span class="sc">+</span> </span>
+<span id="cb10-3"><a></a>  <span class="fu">geom_point</span>(<span class="at">size =</span><span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb10-4"><a></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> lm, <span class="at">se =</span> <span class="cn">FALSE</span>) <span class="sc">+</span> </span>
+<span id="cb10-5"><a></a>  <span class="fu">geom_abline</span>(<span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">slope =</span> <span class="dv">1</span>, <span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span> </span>
+<span id="cb10-6"><a></a>  <span class="fu">scale_y_log10</span>() <span class="sc">+</span></span>
+<span id="cb10-7"><a></a>  <span class="fu">scale_x_log10</span>() <span class="sc">+</span></span>
+<span id="cb10-8"><a></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Group mean"</span>, <span class="at">y =</span> <span class="st">"Group variance"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="slide2_files/figure-revealjs/unnamed-chunk-25-1.png" width="576"></p>
+<p><img data-src="slide2_files/figure-revealjs/unnamed-chunk-18-1.png" width="576"></p>
 </figure>
 </div>
 </div>
@@ -3741,7 +3637,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="slide2_files/figure-revealjs/unnamed-chunk-26-1.png" width="960"></p>
+<p><img data-src="slide2_files/figure-revealjs/unnamed-chunk-19-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -3761,7 +3657,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="slide2_files/figure-revealjs/unnamed-chunk-27-1.png" width="720"></p>
+<p><img data-src="slide2_files/figure-revealjs/unnamed-chunk-20-1.png" width="720"></p>
 </figure>
 </div>
 </div>
@@ -3795,23 +3691,13 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <ul>
 <li>Negative binomial regression can be fitted using <code>MASS::glm.nb()</code> function:</li>
 </ul>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a></a>fit_nb <span class="ot">&lt;-</span> MASS<span class="sc">::</span><span class="fu">glm.nb</span>(Count <span class="sc">~</span> <span class="fu">log2</span>(Dilution), <span class="at">data =</span> pock)</span>
-<span id="cb26-2"><a></a><span class="fu">coef</span>(fit_nb)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>   (Intercept) log2(Dilution) 
-     5.3328439     -0.7245983 </code></pre>
-</div>
-</div>
+<div id="qwebr-insertion-location-26"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <ul>
 <li>The estimate of <span class="math inline">k</span> is stored as <code>theta</code> in the model object:</li>
 </ul>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a></a>fit_nb<span class="sc">$</span>theta </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 9.892894</code></pre>
-</div>
-</div>
+<div id="qwebr-insertion-location-27"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </section>
 <section id="summary" class="slide level2">
 <h2>Summary</h2>

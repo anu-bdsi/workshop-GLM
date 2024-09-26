@@ -325,29 +325,29 @@
     "objectID": "slides/slide2.html#poisson-regression-for-contingency-tables",
     "href": "slides/slide2.html#poisson-regression-for-contingency-tables",
     "title": "Modelling for count responses",
-    "section": "Poisson regression for contingency tables",
+    "section": " Poisson regression for contingency tables",
     "text": "Poisson regression for contingency tables\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\nCompare expected value under H_0 (independence) to no interaction in fit_main:\n\n\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\np-value for interaction effect is closely related to p-value from \\chi^2 test for independence:\n\n\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page."
   },
   {
-    "objectID": "slides/slide2.html#fixed-totals",
-    "href": "slides/slide2.html#fixed-totals",
+    "objectID": "slides/slide2.html#main-effects-fix-marginal-totals",
+    "href": "slides/slide2.html#main-effects-fix-marginal-totals",
     "title": "Modelling for count responses",
-    "section": "Fixed totals",
-    "text": "Fixed totals\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\n\n  \n    \n      Income\n      \n        Attitude\n      \n      Total\n    \n    \n      For\n      Against\n    \n  \n  \n    High\n263\n151\n414\n    Low\n258\n222\n480\n    Total\n521\n373\n894\n  \n  \n  \n\n\n\n\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page."
+    "section": "Main effects fix marginal totals",
+    "text": "Main effects fix marginal totals\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\n\n  \n    \n      Income\n      \n        Attitude\n      \n      Total\n    \n    \n      For\n      Against\n    \n  \n  \n    High\n263\n151\n414\n    Low\n258\n222\n480\n    Total\n521\n373\n894\n  \n  \n  \n\n\n\n\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page."
   },
   {
     "objectID": "slides/slide2.html#case-study-cancer-diagnosis",
     "href": "slides/slide2.html#case-study-cancer-diagnosis",
     "title": "Modelling for count responses",
     "section": "Case study: cancer diagnosis",
-    "text": "Case study: cancer diagnosis\n\nTypes of cancer diagnosed in Western Australia in 1996 were recorded for males and females.\nFemales cannot have prostate cancer, and males cannot have cervical cancer.\nBreast cancer is a possible, but very rare, disease among men\n\n\ndata(wacancer, package = \"GLMsData\")\nxtabs(Counts ~ Gender + Cancer, data = wacancer)\n\n      Cancer\nGender Breast Cervix Colorectal Lung Melanoma Other Prostate\n     F    875     77        355  211      282  1082        0\n     M      0      0        511  472      362  1406      923\n\n\n\nNote that a woman cannot get prostate cancer and a man cannot get cervix cancer.\nA man can get breast cancer, but it is extremely rare."
+    "text": "Case study: cancer diagnosis\n\nTypes of cancer diagnosed in Western Australia in 1996 were recorded for males and females.\nFemales cannot have prostate cancer, and males cannot have cervical cancer.\nBreast cancer is a possible, but very rare, disease among men\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nNote that a woman cannot get prostate cancer and a man cannot get cervix cancer.\nA man can get breast cancer, but it is extremely rare."
   },
   {
     "objectID": "slides/slide2.html#structural-zeroes",
     "href": "slides/slide2.html#structural-zeroes",
     "title": "Modelling for count responses",
     "section": " Structural zeroes",
-    "text": "Structural zeroes\n\nStructural zeros need to be removed from the data.\n\n\n\ncoef(glm(Counts ~ Gender * Cancer, family = poisson, data = wacancer))\n\n             (Intercept)                  GenderM             CancerCervix \n               6.7742239              -30.0768090               -2.4304185 \n        CancerColorectal               CancerLung           CancerMelanoma \n              -0.9021061               -1.4223658               -1.1323168 \n             CancerOther           CancerProstate     GenderM:CancerCervix \n               0.2123426              -30.0768090                2.4304185 \nGenderM:CancerColorectal       GenderM:CancerLung   GenderM:CancerMelanoma \n              30.4410608               30.8819299               30.3265461 \n     GenderM:CancerOther   GenderM:CancerProstate \n              30.3387466               60.2070233 \n\n\n\ncoef(glm(Counts ~ Gender * Cancer, family = poisson,\n         data = filter(wacancer, Counts &gt; 0)))\n\n             (Intercept)                  GenderM             CancerCervix \n              6.77422389               0.26193761              -2.43041846 \n        CancerColorectal               CancerLung           CancerMelanoma \n             -0.90210610              -1.42236575              -1.13231682 \n             CancerOther           CancerProstate     GenderM:CancerCervix \n              0.21234257              -0.20853226                       NA \nGenderM:CancerColorectal       GenderM:CancerLung   GenderM:CancerMelanoma \n              0.10231419               0.54318324              -0.01220047 \n     GenderM:CancerOther   GenderM:CancerProstate \n                      NA                       NA"
+    "text": "Structural zeroes\n\nStructural zeros need to be removed from the data.\n\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page."
   },
   {
     "objectID": "slides/slide2.html#case-study-lung-cancer-in-danish-cities",
@@ -361,21 +361,21 @@
     "href": "slides/slide2.html#modelling-rates-with-poisson-regression",
     "title": "Modelling for count responses",
     "section": " Modelling rates with Poisson regression",
-    "text": "Modelling rates with Poisson regression\n\\log\\left(\\frac{\\mu_i}{\\texttt{Pop}_i}\\right) =  \\beta_0 + \\beta_{1\\texttt{Age}_i} + \\beta_{2\\texttt{City}_i} + \\beta_{3\\texttt{AgeCity}_i}\n\nfit_glm1 &lt;- glm(Cases/Pop ~ Age*City, data = danishlc,\n                  family = poisson(link = \"log\"))\n\n\\log(\\mu_i) = \\log(\\texttt{Pop}_i) + \\beta_0 + \\beta_{1\\texttt{Age}_i} + \\beta_{2\\texttt{City}_i} + \\beta_{3\\texttt{AgeCity}_i}\n\nfit_glm2 &lt;- glm(Cases ~ offset(log(Pop)) + Age*City, data = danishlc,\n                  family = poisson(link = \"log\"))"
+    "text": "Modelling rates with Poisson regression\n\\log\\left(\\frac{\\mu_i}{\\texttt{Pop}_i}\\right) =  \\beta_0 + \\beta_{1\\texttt{Age}_i} + \\beta_{2\\texttt{City}_i} + \\beta_{3\\texttt{AgeCity}_i}\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\\log(\\mu_i) = \\log(\\texttt{Pop}_i) + \\beta_0 + \\beta_{1\\texttt{Age}_i} + \\beta_{2\\texttt{City}_i} + \\beta_{3\\texttt{AgeCity}_i}\n\nPlease enable JavaScript to experience the dynamic code cell content on this page."
   },
   {
     "objectID": "slides/slide2.html#chi-square-test",
     "href": "slides/slide2.html#chi-square-test",
     "title": "Modelling for count responses",
     "section": " Chi-square test",
-    "text": "Chi-square test\n\nanova(fit_glm2, test = \"Chisq\")\n\nAnalysis of Deviance Table\n\nModel: poisson, link: log\n\nResponse: Cases\n\nTerms added sequentially (first to last)\n\n         Df Deviance Resid. Df Resid. Dev Pr(&gt;Chi)    \nNULL                        23    129.908             \nAge       5  101.601        18     28.307  &lt; 2e-16 ***\nCity      3    4.859        15     23.447  0.18241    \nAge:City 15   23.447         0      0.000  0.07509 .  \n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\n\n\nWe retain only Age in the model."
+    "text": "Chi-square test\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nWe retain only Age in the model."
   },
   {
     "objectID": "slides/slide2.html#predicting-rate-response-with-poisson-regression",
     "href": "slides/slide2.html#predicting-rate-response-with-poisson-regression",
     "title": "Modelling for count responses",
     "section": " Predicting rate response with Poisson regression",
-    "text": "Predicting rate response with Poisson regression\n\nfit_glm3 &lt;- glm(Cases ~ offset(log(Pop)) + Age, data = danishlc,\n                family = poisson(link = \"log\"))\n\n\n\n\n\nCode\nbroom::augment(fit_glm3, type.predict = \"response\") |&gt; \n  mutate(Pop = exp(`offset(log(Pop))`)) |&gt; \n  mutate(Age = fct_reorder(Age, parse_number(as.character(Age)), min)) |&gt; \n  ggplot(aes(Age, Cases/Pop * 1000)) +\n  geom_point(size = 3) +\n  geom_point(aes(y = .fitted/Pop * 1000), color = \"blue\", size = 4) +\n  geom_line(aes(y = .fitted/Pop * 1000), color = \"blue\", group = 1, linewidth = 1.2) +\n  labs(y = \"Cases per 1000 people\", x = \"Age group\") \n\n\n\n\n\n\n\n\n\n\n\nbroom::augment(fit_glm3, \n   type.predict = \"response\", \n   newdata = danishlc |&gt; \n        distinct(Age) |&gt; \n        mutate(Pop = 1000)) \n\n# A tibble: 6 × 3\n  Age     Pop .fitted\n  &lt;fct&gt; &lt;dbl&gt;   &lt;dbl&gt;\n1 40-54  1000    2.84\n2 55-59  1000    8.40\n3 60-64  1000   12.8 \n4 65-69  1000   16.4 \n5 70-74  1000   18.0 \n6 &gt;74    1000   11.6"
+    "text": "Predicting rate response with Poisson regression\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\nCode\nbroom::augment(fit_glm3, type.predict = \"response\") |&gt; \n  mutate(Pop = exp(`offset(log(Pop))`)) |&gt; \n  mutate(Age = fct_reorder(Age, parse_number(as.character(Age)), min)) |&gt; \n  ggplot(aes(Age, Cases/Pop * 1000)) +\n  geom_point(size = 3) +\n  geom_point(aes(y = .fitted/Pop * 1000), color = \"blue\", size = 4) +\n  geom_line(aes(y = .fitted/Pop * 1000), color = \"blue\", group = 1, linewidth = 1.2) +\n  labs(y = \"Cases per 1000 people\", x = \"Age group\") \n\n\n\n\n\n\n\n\n\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page."
   },
   {
     "objectID": "slides/slide2.html#case-study-pock",
@@ -389,7 +389,7 @@
     "href": "slides/slide2.html#overdispersion",
     "title": "Modelling for count responses",
     "section": "Overdispersion",
-    "text": "Overdispersion\n\n\n\npock_group &lt;- pock |&gt; \n  summarise(mean = mean(Count), \n            var = var(Count),\n            .by = Dilution) \n\ncoef(lm(log(var) ~ log(mean), \n        data = pock_group))\n\n(Intercept)   log(mean) \n 0.02861162  1.44318666 \n\n\n\nFor a Poisson distribution, the variance should be equal to the mean.\n\n\n\n\nCode\npock_group |&gt;\n  ggplot(aes(mean, var)) + \n  geom_point(size =3) +\n  geom_smooth(method = lm, se = FALSE) + \n  geom_abline(intercept = 0, slope = 1, linetype = 2) + \n  scale_y_log10() +\n  scale_x_log10() +\n  labs(x = \"Group mean\", y = \"Group variance\")"
+    "text": "Overdispersion\n\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n For a Poisson distribution, the variance should be equal to the mean.\n\n\n\n\nCode\npock_group |&gt;\n  ggplot(aes(mean, var)) + \n  geom_point(size =3) +\n  geom_smooth(method = lm, se = FALSE) + \n  geom_abline(intercept = 0, slope = 1, linetype = 2) + \n  scale_y_log10() +\n  scale_x_log10() +\n  labs(x = \"Group mean\", y = \"Group variance\")"
   },
   {
     "objectID": "slides/slide2.html#gamma-distrbution",
@@ -417,7 +417,7 @@
     "href": "slides/slide2.html#negative-binomial-regression-in-r",
     "title": "Modelling for count responses",
     "section": " Negative binomial regression in R",
-    "text": "Negative binomial regression in R\n\nNegative binomial regression can be fitted using MASS::glm.nb() function:\n\n\nfit_nb &lt;- MASS::glm.nb(Count ~ log2(Dilution), data = pock)\ncoef(fit_nb)\n\n   (Intercept) log2(Dilution) \n     5.3328439     -0.7245983 \n\n\n\nThe estimate of k is stored as theta in the model object:\n\n\nfit_nb$theta \n\n[1] 9.892894"
+    "text": "Negative binomial regression in R\n\nNegative binomial regression can be fitted using MASS::glm.nb() function:\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\nThe estimate of k is stored as theta in the model object:\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page."
   },
   {
     "objectID": "slides/slide2.html#summary",

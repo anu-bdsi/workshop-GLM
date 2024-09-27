@@ -600,18 +600,19 @@ xtabs(Counts ~ Gender + Cancer, data = wacancer)
 
 ## {{< fa brands r-project >}}  Structural zeroes 
 
-- Structural zeros need to be removed from the data.
+- <i class="fas fa-exclamation-circle"></i> Structural zeros need to be removed from the data.
 
 
 ```{webr-r}
 #| autorun: true
-coef(glm(Counts ~ Gender * Cancer, family = poisson, data = wacancer))
+coef(glm(Counts ~ Gender * Cancer, family = poisson, 
+         data = wacancer |> filter(Cancer != "Breast")))
 ```
 
 ```{webr-r}
 #| autorun: true
 coef(glm(Counts ~ Gender * Cancer, family = poisson,
-         data = filter(wacancer, Counts > 0)))
+         data = wacancer |> filter(Cancer != "Breast", Counts > 0)))
 ```
 
 

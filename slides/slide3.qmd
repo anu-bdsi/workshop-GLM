@@ -389,5 +389,5 @@ simulate(cancer_fit, nsim = 6) |>
 
 - A generalised linear model are regression models that consist of two components:
   - a random component (requiring decision on a distribution from the exponential family): $$Y_i \sim \text{Exponential family}$$
-  - a systematic component (requiring decision on the link function): $$g(\mu_i) = \eta_i = o_i + \beta_0 + \beta_1 x_{i1} + \ldots + \beta_k x_{ik}.$$
-- Diagnose the model using (quantile) residual plots and Q-Q plots.
+  - a systematic component (requiring decision on the link function and predictors): $$g(\mu_i) = \eta_i = o_i + \beta_0 + \beta_1 x_{i1} + \ldots + \beta_k x_{ik}.$$
+- Diagnose the model using (quantile) residual plots, Q-Q plots, and other methods (e.g. influential points or outliers).

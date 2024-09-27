@@ -602,7 +602,6 @@ xtabs(Counts ~ Gender + Cancer, data = wacancer)
 
 - Structural zeros need to be removed from the data.
 
-::: f2
 
 ```{webr-r}
 #| autorun: true
@@ -615,7 +614,7 @@ coef(glm(Counts ~ Gender * Cancer, family = poisson,
          data = filter(wacancer, Counts > 0)))
 ```
 
-:::
+
 
 
 

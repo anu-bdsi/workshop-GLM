@@ -81,7 +81,7 @@ where
 
 A distribution is part of the exponential family if the probability density/mass function can be written in the form:
 
-$$f(y;\theta, \phi) = a(y, \theta)\text{exp}\left(\frac{y\cdot\theta - \kappa(\theta)}{\psi}\right)$$
+$$f(y;\theta, \phi) = a(y, \theta)\text{exp}\left(\frac{y\cdot\theta - \kappa(\theta)}{\phi}\right)$$
 
 - $\theta$ is the _canonical parameter_
 - $\kappa(\theta)$ is a known function called the _cumulant function_

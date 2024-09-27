@@ -277,7 +277,7 @@
     "href": "slides/slide2.html#case-study-abundance-of-noisy-miners",
     "title": "Modelling for count responses",
     "section": "Case study: Abundance of Noisy Miners",
-    "text": "Case study: Abundance of Noisy Miners\n\n\n\nThe noisy miner is a small but aggressive native Australian bird.\nA study of the habitats of the noisy miner recorded the abundance of noise miners in two hectare transects located in buloke woodland patches along its characteristics,\n\nEucs = number of eucalypt trees, and\nMinerab = abundance of noisy miners.\n\n\n\n\n\nCode\ndata(nminer, package = \"GLMsData\")\nbase &lt;- nminer |&gt; \n  ggplot(aes(Eucs, Minerab)) +\n  geom_hex() +\n  colorspace::scale_fill_continuous_sequential(breaks = 1:3, palette = \"ag_GrnYl\", begin = 0.3) +\n  geom_hline(yintercept = 0, linetype = 2) +\n  theme(legend.position = \"bottom\")\n\nbase"
+    "text": "Case study: Abundance of Noisy Miners\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\nThe noisy miner is a small but aggressive native Australian bird.\nA study of the habitats of the noisy miner recorded the abundance of noise miners in two hectare transects located in buloke woodland patches along its characteristics,\n\nEucs = number of eucalypt trees, and\nMinerab = abundance of noisy miners.\n\n\n\n\n\nCode\ndata(nminer, package = \"GLMsData\")\nbase &lt;- nminer |&gt; \n  ggplot(aes(Eucs, Minerab)) +\n  geom_hex() +\n  colorspace::scale_fill_continuous_sequential(breaks = 1:3, palette = \"ag_GrnYl\", begin = 0.3) +\n  geom_hline(yintercept = 0, linetype = 2) +\n  theme(legend.position = \"bottom\")\n\nbase"
   },
   {
     "objectID": "slides/slide2.html#linear-regression",

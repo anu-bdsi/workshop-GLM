@@ -694,7 +694,7 @@
   };
 
   // Store cell data
-  globalThis.qwebrCellDetails = [{"options":{"editor-font-scale":"0.5","output":"true","classes":"","editor-quick-suggestions":"false","editor-word-wrap":"true","autorun":"true","fig-cap":"","fig-height":5,"message":"true","out-width":"700px","read-only":"false","fig-width":7,"dpi":72,"label":"unnamed-chunk-1","context":"setup","comment":"","out-height":"","results":"markup","editor-max-height":"","warning":"true"},"id":1,"code":"library(tidyverse)\ndata(danishlc, package = \"GLMsData\")\ndata(nminer, package = \"GLMsData\")\ndata(pock, package = \"GLMsData\")\ngmfood <- read_csv(\"https://anu-bdsi.github.io/workshop-GLM/data/gmfood.csv\")"},{"options":{"editor-font-scale":"0.5","output":"true","classes":"","editor-quick-suggestions":"false","editor-word-wrap":"true","autorun":"false","fig-cap":"","fig-height":5,"message":"true","out-width":"700px","read-only":"false","fig-width":7,"dpi":72,"label":"unnamed-chunk-2","context":"interactive","comment":"","out-height":"","results":"markup","editor-max-height":"","warning":"true"},"id":2,"code":"fit_lm_asis <- lm(Minerab ~ Eucs, data = nminer)\nfit_lm_sqrt <- lm(sqrt(Minerab) ~ Eucs, data = nminer)"},{"options":{"editor-font-scale":"0.5","output":"true","classes":"","editor-quick-suggestions":"false","editor-word-wrap":"true","autorun":"true","fig-cap":"","fig-height":5,"message":"true","out-width":"700px","read-only":"false","fig-width":7,"dpi":72,"label":"unnamed-chunk-3","context":"interactive","comment":"","out-height":"","results":"markup","editor-max-height":"","warning":"true"},"id":3,"code":"fit_glm <- glm(Minerab ~ Eucs, data = nminer, family = poisson(link = \"log\"))"},{"options":{"editor-font-scale":"0.5","output":"true","classes":"","editor-quick-suggestions":"false","editor-word-wrap":"true","autorun":"false","fig-cap":"","fig-height":5,"message":"true","out-width":"700px","read-only":"false","fig-width":7,"dpi":72,"label":"unnamed-chunk-4","context":"interactive","comment":"","out-height":"","results":"markup","editor-max-height":"","warning":"true"},"id":4,"code":"broom::augment(fit_glm, \n type.predict = \"response\",\n newdata = tibble(Eucs = seq(0, 30, by = 10)))"},{"options":{"editor-font-scale":"0.5","output":"true","classes":"","editor-quick-suggestions":"false","editor-word-wrap":"true","autorun":"true","fig-cap":"","fig-height":5,"message":"true","out-width":"700px","read-only":"false","fig-width":7,"dpi":72,"label":"unnamed-chunk-5","context":"interactive","comment":"","out-height":"","results":"markup","editor-max-height":"","warning":"true"},"id":5,"code":"observed <- xtabs(Counts ~ Income + Attitude, data = gmfood) \nC <- chisq.test(observed, correct = FALSE)"},{"options":{"editor-font-scale":"0.5","output":"true","classes":"","editor-quick-suggestions":"false","editor-word-wrap":"true","autorun":"true","fig-cap":"","fig-height":5,"message":"true","out-width":"700px","read-only":"false","fig-width":7,"dpi":72,"label":"unnamed-chunk-6","context":"interactive","comment":"","out-height":"","results":"markup","editor-max-height":"","warning":"true"},"id":6,"code":"observed"},{"options":{"editor-font-scale":"0.5","output":"true","classes":"","editor-quick-suggestions":"false","editor-word-wrap":"true","autorun":"true","fig-cap":"","fig-height":5,"message":"true","out-width":"700px","read-only":"false","fig-width":7,"dpi":72,"label":"unnamed-chunk-7","context":"interactive","comment":"","out-height":"","results":"markup","editor-max-height":"","warning":"true"},"id":7,"code":"C$expected"},{"options":{"editor-font-scale":"0.5","output":"true","classes":"","editor-quick-suggestions":"false","editor-word-wrap":"true","autorun":"true","fig-cap":"","fig-height":5,"message":"true","out-width":"700px","read-only":"false","fig-width":7,"dpi":72,"label":"unnamed-chunk-8","context":"interactive","comment":"","out-height":"","results":"markup","editor-max-height":"","warning":"true"},"id":8,"code":"C$statistic"},{"options":{"editor-font-scale":"0.5","output":"true","classes":"","editor-quick-suggestions":"false","editor-word-wrap":"true","autorun":"true","fig-cap":"","fig-height":5,"message":"true","out-width":"700px","read-only":"false","fig-width":7,"dpi":72,"label":"unnamed-chunk-9","context":"interactive","comment":"","out-height":"","results":"markup","editor-max-height":"","warning":"true"},"id":9,"code":"C$p.value # = 1 - pchisq(C$statistic, 1)"},{"options":{"editor-font-scale":"0.5","output":"true","classes":"","editor-quick-suggestions":"false","editor-word-wrap":"true","autorun":"true","fig-cap":"","fig-height":5,"message":"true","out-width":"700px","read-only":"false","fig-width":7,"dpi":72,"label":"unnamed-chunk-10","context":"interactive","comment":"","out-height":"","results":"markup","editor-max-height":"","warning":"true"},"id":10,"code":"fit_inter <- glm(Counts ~ Income * Attitude, family = poisson(), data = gmfood)\nfit_main <- glm(Counts ~ Income + Attitude, family = poisson(), data = gmfood)"},{"options":{"editor-font-scale":"0.5","output":"true","classes":"","editor-quick-suggestions":"false","editor-word-wrap":"true","autorun":"false","fig-cap":"","fig-height":5,"message":"true","out-width":"700px","read-only":"false","fig-width":7,"dpi":72,"label":"unnamed-chunk-11","context":"interactive","comment":"","out-height":"","results":"markup","editor-max-height":"","warning":"true"},"id":11,"code":"C$expected"},{"options":{"editor-font-scale":"0.5","output":"true","classes":"","editor-quick-suggestions":"false","editor-word-wrap":"true","autorun":"false","fig-cap":"","fig-height":5,"message":"true","out-width":"700px","read-only":"false","fig-width":7,"dpi":72,"label":"unnamed-chunk-12","context":"interactive","comment":"","out-height":"","results":"markup","editor-max-height":"","warning":"true"},"id":12,"code":"fit_main |> \n  broom::augment(type.predict = \"response\") |> \n  xtabs(.fitted ~ Income + Attitude, data = _)"},{"options":{"editor-font-scale":"0.5","output":"true","classes":"","editor-quick-suggestions":"false","editor-word-wrap":"true","autorun":"false","fig-cap":"","fig-height":5,"message":"true","out-width":"700px","read-only":"false","fig-width":7,"dpi":72,"label":"unnamed-chunk-13","context":"interactive","comment":"","out-height":"","results":"markup","editor-max-height":"","warning":"true"},"id":13,"code":"C$p.value"},{"options":{"editor-font-scale":"0.5","output":"true","classes":"","editor-quick-suggestions":"false","editor-word-wrap":"true","autorun":"false","fig-cap":"","fig-height":5,"message":"true","out-width":"700px","read-only":"false","fig-width":7,"dpi":72,"label":"unnamed-chunk-14","context":"interactive","comment":"","out-height":"","results":"markup","editor-max-height":"","warning":"true"},"id":14,"code":"anova(fit_inter, test = \"Chisq\")"},{"options":{"editor-font-scale":"0.5","output":"true","classes":"","editor-quick-suggestions":"false","editor-word-wrap":"true","autorun":"true","fig-cap":"","fig-height":5,"message":"true","out-width":"700px","read-only":"false","fig-width":7,"dpi":72,"label":"unnamed-chunk-15","context":"interactive","comment":"","out-height":"","results":"markup","editor-max-height":"","warning":"true"},"id":15,"code":"fit1 <- glm(Counts ~ Income + Attitude, family = poisson(), data = gmfood)\nfit2 <- glm(Counts ~ Income:Attitude, family = poisson(), data = gmfood)\nfit3 <- glm(Counts ~ Income, family = poisson(), data = gmfood)\nfit4 <- glm(Counts ~ Attitude, family = poisson(), data = gmfood)"},{"options":{"editor-font-scale":"0.5","output":"true","classes":"","editor-quick-suggestions":"false","editor-word-wrap":"true","autorun":"false","fig-cap":"","fig-height":5,"message":"true","out-width":"700px","read-only":"false","fig-width":7,"dpi":72,"label":"unnamed-chunk-16","context":"interactive","comment":"","out-height":"","results":"markup","editor-max-height":"","warning":"true"},"id":16,"code":"fit1 |> \n  broom::augment(type.predict = \"response\", newdata = gmfood) |> \n  pivot_wider(id_cols = Income, names_from = Attitude, values_from = .fitted) |>  \n  janitor::as_tabyl() |> \n  janitor::adorn_totals(c(\"row\", \"col\"))"},{"options":{"editor-font-scale":"0.5","output":"true","classes":"","editor-quick-suggestions":"false","editor-word-wrap":"true","autorun":"true","fig-cap":"","fig-height":5,"message":"true","out-width":"700px","read-only":"false","fig-width":7,"dpi":72,"label":"unnamed-chunk-17","context":"interactive","comment":"","out-height":"","results":"markup","editor-max-height":"","warning":"true"},"id":17,"code":"data(wacancer, package = \"GLMsData\")\nxtabs(Counts ~ Gender + Cancer, data = wacancer)"},{"options":{"editor-font-scale":"0.5","output":"true","classes":"","editor-quick-suggestions":"false","editor-word-wrap":"true","autorun":"true","fig-cap":"","fig-height":5,"message":"true","out-width":"700px","read-only":"false","fig-width":7,"dpi":72,"label":"unnamed-chunk-18","context":"interactive","comment":"","out-height":"","results":"markup","editor-max-height":"","warning":"true"},"id":18,"code":"coef(glm(Counts ~ Gender * Cancer, family = poisson, data = wacancer))"},{"options":{"editor-font-scale":"0.5","output":"true","classes":"","editor-quick-suggestions":"false","editor-word-wrap":"true","autorun":"true","fig-cap":"","fig-height":5,"message":"true","out-width":"700px","read-only":"false","fig-width":7,"dpi":72,"label":"unnamed-chunk-19","context":"interactive","comment":"","out-height":"","results":"markup","editor-max-height":"","warning":"true"},"id":19,"code":"coef(glm(Counts ~ Gender * Cancer, family = poisson,\n         data = filter(wacancer, Counts > 0)))"},{"options":{"editor-font-scale":"0.5","output":"true","classes":"","editor-quick-suggestions":"false","editor-word-wrap":"true","autorun":"true","fig-cap":"","fig-height":5,"message":"true","out-width":"700px","read-only":"false","fig-width":7,"dpi":72,"label":"unnamed-chunk-20","context":"interactive","comment":"","out-height":"","results":"markup","editor-max-height":"","warning":"false"},"id":20,"code":"fit_glm1 <- glm(Cases/Pop ~ Age*City, data = danishlc,\n                  family = poisson(link = \"log\"))"},{"options":{"editor-font-scale":"0.5","output":"true","classes":"","editor-quick-suggestions":"false","editor-word-wrap":"true","autorun":"true","fig-cap":"","fig-height":5,"message":"true","out-width":"700px","read-only":"false","fig-width":7,"dpi":72,"label":"unnamed-chunk-21","context":"interactive","comment":"","out-height":"","results":"markup","editor-max-height":"","warning":"true"},"id":21,"code":"fit_glm2 <- glm(Cases ~ offset(log(Pop)) + Age*City, data = danishlc,\n                  family = poisson(link = \"log\"))"},{"options":{"editor-font-scale":"0.5","output":"true","classes":"","editor-quick-suggestions":"false","editor-word-wrap":"true","autorun":"true","fig-cap":"","fig-height":5,"message":"true","out-width":"700px","read-only":"false","fig-width":7,"dpi":72,"label":"unnamed-chunk-22","context":"interactive","comment":"","out-height":"","results":"markup","editor-max-height":"","warning":"true"},"id":22,"code":"anova(fit_glm2, test = \"Chisq\")"},{"options":{"editor-font-scale":"0.5","output":"true","classes":"","editor-quick-suggestions":"false","editor-word-wrap":"true","autorun":"true","fig-cap":"","fig-height":5,"message":"true","out-width":"700px","read-only":"false","fig-width":7,"dpi":72,"label":"unnamed-chunk-23","context":"interactive","comment":"","out-height":"","results":"markup","editor-max-height":"","warning":"true"},"id":23,"code":"fit_glm3 <- glm(Cases ~ offset(log(Pop)) + Age, data = danishlc,\n                family = poisson(link = \"log\"))"},{"options":{"editor-font-scale":"0.5","output":"true","classes":"","editor-quick-suggestions":"false","editor-word-wrap":"true","autorun":"false","fig-cap":"","fig-height":5,"message":"true","out-width":"700px","read-only":"false","fig-width":7,"dpi":72,"label":"unnamed-chunk-24","context":"interactive","comment":"","out-height":"","results":"markup","editor-max-height":"","warning":"true"},"id":24,"code":"broom::augment(fit_glm3, \n   type.predict = \"response\", \n   newdata = danishlc |> \n        distinct(Age) |> \n        mutate(Pop = 1000)) "},{"options":{"editor-font-scale":"0.5","output":"true","classes":"","editor-quick-suggestions":"false","editor-word-wrap":"true","autorun":"true","fig-cap":"","fig-height":5,"message":"true","out-width":"700px","read-only":"false","fig-width":7,"dpi":72,"label":"unnamed-chunk-25","context":"interactive","comment":"","out-height":"","results":"markup","editor-max-height":"","warning":"true"},"id":25,"code":"pock_group <- pock |> \n  summarise(mean = mean(Count), \n            var = var(Count),\n            .by = Dilution) \n\ncoef(lm(log(var) ~ log(mean), \n        data = pock_group))"},{"options":{"editor-font-scale":"0.5","output":"true","classes":"","editor-quick-suggestions":"false","editor-word-wrap":"true","autorun":"true","fig-cap":"","fig-height":5,"message":"true","out-width":"700px","read-only":"false","fig-width":7,"dpi":72,"label":"unnamed-chunk-26","context":"interactive","comment":"","out-height":"","results":"markup","editor-max-height":"","warning":"true"},"id":26,"code":"fit_nb <- MASS::glm.nb(Count ~ log2(Dilution), data = pock)\ncoef(fit_nb)"},{"options":{"editor-font-scale":"0.5","output":"true","classes":"","editor-quick-suggestions":"false","editor-word-wrap":"true","autorun":"true","fig-cap":"","fig-height":5,"message":"true","out-width":"700px","read-only":"false","fig-width":7,"dpi":72,"label":"unnamed-chunk-27","context":"interactive","comment":"","out-height":"","results":"markup","editor-max-height":"","warning":"true"},"id":27,"code":"fit_nb$theta "}];
+  globalThis.qwebrCellDetails = [{"id":1,"options":{"results":"markup","dpi":72,"fig-height":5,"warning":"true","editor-font-scale":"0.5","editor-word-wrap":"true","output":"true","read-only":"false","label":"unnamed-chunk-1","editor-quick-suggestions":"false","fig-width":7,"classes":"","out-width":"700px","autorun":"true","editor-max-height":"","message":"true","context":"setup","comment":"","out-height":"","fig-cap":""},"code":"library(tidyverse)\ndata(danishlc, package = \"GLMsData\")\ndata(nminer, package = \"GLMsData\")\ndata(pock, package = \"GLMsData\")\ngmfood <- read_csv(\"https://anu-bdsi.github.io/workshop-GLM/data/gmfood.csv\")"},{"id":2,"options":{"results":"markup","dpi":72,"fig-height":5,"warning":"true","editor-font-scale":"0.5","editor-word-wrap":"true","output":"true","read-only":"false","label":"unnamed-chunk-2","editor-quick-suggestions":"false","fig-width":7,"classes":"","out-width":"700px","autorun":"false","editor-max-height":"","message":"true","context":"interactive","comment":"","out-height":"","fig-cap":""},"code":"fit_lm_asis <- lm(Minerab ~ Eucs, data = nminer)\nfit_lm_sqrt <- lm(sqrt(Minerab) ~ Eucs, data = nminer)"},{"id":3,"options":{"results":"markup","dpi":72,"fig-height":5,"warning":"true","editor-font-scale":"0.5","editor-word-wrap":"true","output":"true","read-only":"false","label":"unnamed-chunk-3","editor-quick-suggestions":"false","fig-width":7,"classes":"","out-width":"700px","autorun":"true","editor-max-height":"","message":"true","context":"interactive","comment":"","out-height":"","fig-cap":""},"code":"fit_glm <- glm(Minerab ~ Eucs, data = nminer, family = poisson(link = \"log\"))"},{"id":4,"options":{"results":"markup","dpi":72,"fig-height":5,"warning":"true","editor-font-scale":"0.5","editor-word-wrap":"true","output":"true","read-only":"false","label":"unnamed-chunk-4","editor-quick-suggestions":"false","fig-width":7,"classes":"","out-width":"700px","autorun":"false","editor-max-height":"","message":"true","context":"interactive","comment":"","out-height":"","fig-cap":""},"code":"broom::augment(fit_glm, \n type.predict = \"response\",\n newdata = tibble(Eucs = seq(0, 30, by = 10)))"},{"id":5,"options":{"results":"markup","dpi":72,"fig-height":5,"warning":"true","editor-font-scale":"0.5","editor-word-wrap":"true","output":"true","read-only":"false","label":"unnamed-chunk-5","editor-quick-suggestions":"false","fig-width":7,"classes":"","out-width":"700px","autorun":"true","editor-max-height":"","message":"true","context":"interactive","comment":"","out-height":"","fig-cap":""},"code":"observed <- xtabs(Counts ~ Income + Attitude, data = gmfood) \nC <- chisq.test(observed, correct = FALSE)"},{"id":6,"options":{"results":"markup","dpi":72,"fig-height":5,"warning":"true","editor-font-scale":"0.5","editor-word-wrap":"true","output":"true","read-only":"false","label":"unnamed-chunk-6","editor-quick-suggestions":"false","fig-width":7,"classes":"","out-width":"700px","autorun":"true","editor-max-height":"","message":"true","context":"interactive","comment":"","out-height":"","fig-cap":""},"code":"observed"},{"id":7,"options":{"results":"markup","dpi":72,"fig-height":5,"warning":"true","editor-font-scale":"0.5","editor-word-wrap":"true","output":"true","read-only":"false","label":"unnamed-chunk-7","editor-quick-suggestions":"false","fig-width":7,"classes":"","out-width":"700px","autorun":"true","editor-max-height":"","message":"true","context":"interactive","comment":"","out-height":"","fig-cap":""},"code":"C$expected"},{"id":8,"options":{"results":"markup","dpi":72,"fig-height":5,"warning":"true","editor-font-scale":"0.5","editor-word-wrap":"true","output":"true","read-only":"false","label":"unnamed-chunk-8","editor-quick-suggestions":"false","fig-width":7,"classes":"","out-width":"700px","autorun":"true","editor-max-height":"","message":"true","context":"interactive","comment":"","out-height":"","fig-cap":""},"code":"C$statistic"},{"id":9,"options":{"results":"markup","dpi":72,"fig-height":5,"warning":"true","editor-font-scale":"0.5","editor-word-wrap":"true","output":"true","read-only":"false","label":"unnamed-chunk-9","editor-quick-suggestions":"false","fig-width":7,"classes":"","out-width":"700px","autorun":"true","editor-max-height":"","message":"true","context":"interactive","comment":"","out-height":"","fig-cap":""},"code":"C$p.value # = 1 - pchisq(C$statistic, 1)"},{"id":10,"options":{"results":"markup","dpi":72,"fig-height":5,"warning":"true","editor-font-scale":"0.5","editor-word-wrap":"true","output":"true","read-only":"false","label":"unnamed-chunk-10","editor-quick-suggestions":"false","fig-width":7,"classes":"","out-width":"700px","autorun":"true","editor-max-height":"","message":"true","context":"interactive","comment":"","out-height":"","fig-cap":""},"code":"fit_inter <- glm(Counts ~ Income * Attitude, family = poisson(), data = gmfood)\nfit_main <- glm(Counts ~ Income + Attitude, family = poisson(), data = gmfood)"},{"id":11,"options":{"results":"markup","dpi":72,"fig-height":5,"warning":"true","editor-font-scale":"0.5","editor-word-wrap":"true","output":"true","read-only":"false","label":"unnamed-chunk-11","editor-quick-suggestions":"false","fig-width":7,"classes":"","out-width":"700px","autorun":"false","editor-max-height":"","message":"true","context":"interactive","comment":"","out-height":"","fig-cap":""},"code":"C$expected"},{"id":12,"options":{"results":"markup","dpi":72,"fig-height":5,"warning":"true","editor-font-scale":"0.5","editor-word-wrap":"true","output":"true","read-only":"false","label":"unnamed-chunk-12","editor-quick-suggestions":"false","fig-width":7,"classes":"","out-width":"700px","autorun":"false","editor-max-height":"","message":"true","context":"interactive","comment":"","out-height":"","fig-cap":""},"code":"fit_main |> \n  broom::augment(type.predict = \"response\") |> \n  xtabs(.fitted ~ Income + Attitude, data = _)"},{"id":13,"options":{"results":"markup","dpi":72,"fig-height":5,"warning":"true","editor-font-scale":"0.5","editor-word-wrap":"true","output":"true","read-only":"false","label":"unnamed-chunk-13","editor-quick-suggestions":"false","fig-width":7,"classes":"","out-width":"700px","autorun":"false","editor-max-height":"","message":"true","context":"interactive","comment":"","out-height":"","fig-cap":""},"code":"C$p.value"},{"id":14,"options":{"results":"markup","dpi":72,"fig-height":5,"warning":"true","editor-font-scale":"0.5","editor-word-wrap":"true","output":"true","read-only":"false","label":"unnamed-chunk-14","editor-quick-suggestions":"false","fig-width":7,"classes":"","out-width":"700px","autorun":"false","editor-max-height":"","message":"true","context":"interactive","comment":"","out-height":"","fig-cap":""},"code":"anova(fit_inter, test = \"Chisq\")"},{"id":15,"options":{"results":"markup","dpi":72,"fig-height":5,"warning":"true","editor-font-scale":"0.5","editor-word-wrap":"true","output":"true","read-only":"false","label":"unnamed-chunk-15","editor-quick-suggestions":"false","fig-width":7,"classes":"","out-width":"700px","autorun":"true","editor-max-height":"","message":"true","context":"interactive","comment":"","out-height":"","fig-cap":""},"code":"fit1 <- glm(Counts ~ Income + Attitude, family = poisson(), data = gmfood)\nfit2 <- glm(Counts ~ Income:Attitude, family = poisson(), data = gmfood)\nfit3 <- glm(Counts ~ Income, family = poisson(), data = gmfood)\nfit4 <- glm(Counts ~ Attitude, family = poisson(), data = gmfood)"},{"id":16,"options":{"results":"markup","dpi":72,"fig-height":5,"warning":"true","editor-font-scale":"0.5","editor-word-wrap":"true","output":"true","read-only":"false","label":"unnamed-chunk-16","editor-quick-suggestions":"false","fig-width":7,"classes":"","out-width":"700px","autorun":"false","editor-max-height":"","message":"true","context":"interactive","comment":"","out-height":"","fig-cap":""},"code":"fit1 |> \n  broom::augment(type.predict = \"response\", newdata = gmfood) |> \n  pivot_wider(id_cols = Income, names_from = Attitude, values_from = .fitted) |>  \n  janitor::as_tabyl() |> \n  janitor::adorn_totals(c(\"row\", \"col\"))"},{"id":17,"options":{"results":"markup","dpi":72,"fig-height":5,"warning":"true","editor-font-scale":"0.5","editor-word-wrap":"true","output":"true","read-only":"false","label":"unnamed-chunk-17","editor-quick-suggestions":"false","fig-width":7,"classes":"","out-width":"700px","autorun":"true","editor-max-height":"","message":"true","context":"interactive","comment":"","out-height":"","fig-cap":""},"code":"data(wacancer, package = \"GLMsData\")\nxtabs(Counts ~ Gender + Cancer, data = wacancer)"},{"id":18,"options":{"results":"markup","dpi":72,"fig-height":5,"warning":"true","editor-font-scale":"0.5","editor-word-wrap":"true","output":"true","read-only":"false","label":"unnamed-chunk-18","editor-quick-suggestions":"false","fig-width":7,"classes":"","out-width":"700px","autorun":"true","editor-max-height":"","message":"true","context":"interactive","comment":"","out-height":"","fig-cap":""},"code":"coef(glm(Counts ~ Gender * Cancer, family = poisson, data = wacancer))"},{"id":19,"options":{"results":"markup","dpi":72,"fig-height":5,"warning":"true","editor-font-scale":"0.5","editor-word-wrap":"true","output":"true","read-only":"false","label":"unnamed-chunk-19","editor-quick-suggestions":"false","fig-width":7,"classes":"","out-width":"700px","autorun":"true","editor-max-height":"","message":"true","context":"interactive","comment":"","out-height":"","fig-cap":""},"code":"coef(glm(Counts ~ Gender * Cancer, family = poisson,\n         data = filter(wacancer, Counts > 0)))"},{"id":20,"options":{"results":"markup","dpi":72,"fig-height":5,"warning":"false","editor-font-scale":"0.5","editor-word-wrap":"true","output":"true","read-only":"false","label":"unnamed-chunk-20","editor-quick-suggestions":"false","fig-width":7,"classes":"","out-width":"700px","autorun":"true","editor-max-height":"","message":"true","context":"interactive","comment":"","out-height":"","fig-cap":""},"code":"fit_glm1 <- glm(Cases/Pop ~ Age*City, data = danishlc,\n                  family = poisson(link = \"log\"))"},{"id":21,"options":{"results":"markup","dpi":72,"fig-height":5,"warning":"true","editor-font-scale":"0.5","editor-word-wrap":"true","output":"true","read-only":"false","label":"unnamed-chunk-21","editor-quick-suggestions":"false","fig-width":7,"classes":"","out-width":"700px","autorun":"true","editor-max-height":"","message":"true","context":"interactive","comment":"","out-height":"","fig-cap":""},"code":"fit_glm2 <- glm(Cases ~ offset(log(Pop)) + Age*City, data = danishlc,\n                  family = poisson(link = \"log\"))"},{"id":22,"options":{"results":"markup","dpi":72,"fig-height":5,"warning":"true","editor-font-scale":"0.5","editor-word-wrap":"true","output":"true","read-only":"false","label":"unnamed-chunk-22","editor-quick-suggestions":"false","fig-width":7,"classes":"","out-width":"700px","autorun":"true","editor-max-height":"","message":"true","context":"interactive","comment":"","out-height":"","fig-cap":""},"code":"anova(fit_glm2, test = \"Chisq\")"},{"id":23,"options":{"results":"markup","dpi":72,"fig-height":5,"warning":"true","editor-font-scale":"0.5","editor-word-wrap":"true","output":"true","read-only":"false","label":"unnamed-chunk-23","editor-quick-suggestions":"false","fig-width":7,"classes":"","out-width":"700px","autorun":"true","editor-max-height":"","message":"true","context":"interactive","comment":"","out-height":"","fig-cap":""},"code":"fit_glm3 <- glm(Cases ~ offset(log(Pop)) + Age, data = danishlc,\n                family = poisson(link = \"log\"))"},{"id":24,"options":{"results":"markup","dpi":72,"fig-height":5,"warning":"true","editor-font-scale":"0.5","editor-word-wrap":"true","output":"true","read-only":"false","label":"unnamed-chunk-24","editor-quick-suggestions":"false","fig-width":7,"classes":"","out-width":"700px","autorun":"false","editor-max-height":"","message":"true","context":"interactive","comment":"","out-height":"","fig-cap":""},"code":"broom::augment(fit_glm3, \n   type.predict = \"response\", \n   newdata = danishlc |> \n        distinct(Age) |> \n        mutate(Pop = 1000)) "},{"id":25,"options":{"results":"markup","dpi":72,"fig-height":5,"warning":"true","editor-font-scale":"0.5","editor-word-wrap":"true","output":"true","read-only":"false","label":"unnamed-chunk-25","editor-quick-suggestions":"false","fig-width":7,"classes":"","out-width":"700px","autorun":"true","editor-max-height":"","message":"true","context":"interactive","comment":"","out-height":"","fig-cap":""},"code":"pock_group <- pock |> \n  summarise(mean = mean(Count), \n            var = var(Count),\n            .by = Dilution) \n\ncoef(lm(log(var) ~ log(mean), \n        data = pock_group))"},{"id":26,"options":{"results":"markup","dpi":72,"fig-height":5,"warning":"true","editor-font-scale":"0.5","editor-word-wrap":"true","output":"true","read-only":"false","label":"unnamed-chunk-26","editor-quick-suggestions":"false","fig-width":7,"classes":"","out-width":"700px","autorun":"true","editor-max-height":"","message":"true","context":"interactive","comment":"","out-height":"","fig-cap":""},"code":"fit_nb <- MASS::glm.nb(Count ~ log2(Dilution), data = pock)\ncoef(fit_nb)"},{"id":27,"options":{"results":"markup","dpi":72,"fig-height":5,"warning":"true","editor-font-scale":"0.5","editor-word-wrap":"true","output":"true","read-only":"false","label":"unnamed-chunk-27","editor-quick-suggestions":"false","fig-width":7,"classes":"","out-width":"700px","autorun":"true","editor-max-height":"","message":"true","context":"interactive","comment":"","out-height":"","fig-cap":""},"code":"fit_nb$theta "}];
 
   </script>
   <script type="module">
@@ -2413,23 +2413,23 @@ Emi Tanaka
 <div class="column" style="width:50%;">
 <div class="cell">
 <div class="cell-output-display">
-<div id="cxwaiklrkm" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#cxwaiklrkm table {
+<div id="fxjdtawxjd" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#fxjdtawxjd table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#cxwaiklrkm thead, #cxwaiklrkm tbody, #cxwaiklrkm tfoot, #cxwaiklrkm tr, #cxwaiklrkm td, #cxwaiklrkm th {
+#fxjdtawxjd thead, #fxjdtawxjd tbody, #fxjdtawxjd tfoot, #fxjdtawxjd tr, #fxjdtawxjd td, #fxjdtawxjd th {
   border-style: none;
 }
 
-#cxwaiklrkm p {
+#fxjdtawxjd p {
   margin: 0;
   padding: 0;
 }
 
-#cxwaiklrkm .gt_table {
+#fxjdtawxjd .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -2455,12 +2455,12 @@ Emi Tanaka
   border-left-color: #D3D3D3;
 }
 
-#cxwaiklrkm .gt_caption {
+#fxjdtawxjd .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#cxwaiklrkm .gt_title {
+#fxjdtawxjd .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -2472,7 +2472,7 @@ Emi Tanaka
   border-bottom-width: 0;
 }
 
-#cxwaiklrkm .gt_subtitle {
+#fxjdtawxjd .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -2484,7 +2484,7 @@ Emi Tanaka
   border-top-width: 0;
 }
 
-#cxwaiklrkm .gt_heading {
+#fxjdtawxjd .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -2496,13 +2496,13 @@ Emi Tanaka
   border-right-color: #D3D3D3;
 }
 
-#cxwaiklrkm .gt_bottom_border {
+#fxjdtawxjd .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#cxwaiklrkm .gt_col_headings {
+#fxjdtawxjd .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2517,7 +2517,7 @@ Emi Tanaka
   border-right-color: #D3D3D3;
 }
 
-#cxwaiklrkm .gt_col_heading {
+#fxjdtawxjd .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2537,7 +2537,7 @@ Emi Tanaka
   overflow-x: hidden;
 }
 
-#cxwaiklrkm .gt_column_spanner_outer {
+#fxjdtawxjd .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2549,15 +2549,15 @@ Emi Tanaka
   padding-right: 4px;
 }
 
-#cxwaiklrkm .gt_column_spanner_outer:first-child {
+#fxjdtawxjd .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#cxwaiklrkm .gt_column_spanner_outer:last-child {
+#fxjdtawxjd .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#cxwaiklrkm .gt_column_spanner {
+#fxjdtawxjd .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #000000;
@@ -2569,11 +2569,11 @@ Emi Tanaka
   width: 100%;
 }
 
-#cxwaiklrkm .gt_spanner_row {
+#fxjdtawxjd .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#cxwaiklrkm .gt_group_heading {
+#fxjdtawxjd .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2599,7 +2599,7 @@ Emi Tanaka
   text-align: left;
 }
 
-#cxwaiklrkm .gt_empty_group_heading {
+#fxjdtawxjd .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -2614,15 +2614,15 @@ Emi Tanaka
   vertical-align: middle;
 }
 
-#cxwaiklrkm .gt_from_md > :first-child {
+#fxjdtawxjd .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#cxwaiklrkm .gt_from_md > :last-child {
+#fxjdtawxjd .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#cxwaiklrkm .gt_row {
+#fxjdtawxjd .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2641,7 +2641,7 @@ Emi Tanaka
   overflow-x: hidden;
 }
 
-#cxwaiklrkm .gt_stub {
+#fxjdtawxjd .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2654,7 +2654,7 @@ Emi Tanaka
   padding-right: 5px;
 }
 
-#cxwaiklrkm .gt_stub_row_group {
+#fxjdtawxjd .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2668,15 +2668,15 @@ Emi Tanaka
   vertical-align: top;
 }
 
-#cxwaiklrkm .gt_row_group_first td {
+#fxjdtawxjd .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#cxwaiklrkm .gt_row_group_first th {
+#fxjdtawxjd .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#cxwaiklrkm .gt_summary_row {
+#fxjdtawxjd .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2686,16 +2686,16 @@ Emi Tanaka
   padding-right: 5px;
 }
 
-#cxwaiklrkm .gt_first_summary_row {
+#fxjdtawxjd .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#cxwaiklrkm .gt_first_summary_row.thick {
+#fxjdtawxjd .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#cxwaiklrkm .gt_last_summary_row {
+#fxjdtawxjd .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2705,7 +2705,7 @@ Emi Tanaka
   border-bottom-color: #D3D3D3;
 }
 
-#cxwaiklrkm .gt_grand_summary_row {
+#fxjdtawxjd .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2715,7 +2715,7 @@ Emi Tanaka
   padding-right: 5px;
 }
 
-#cxwaiklrkm .gt_first_grand_summary_row {
+#fxjdtawxjd .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2725,7 +2725,7 @@ Emi Tanaka
   border-top-color: #D3D3D3;
 }
 
-#cxwaiklrkm .gt_last_grand_summary_row_top {
+#fxjdtawxjd .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2735,11 +2735,11 @@ Emi Tanaka
   border-bottom-color: #D3D3D3;
 }
 
-#cxwaiklrkm .gt_striped {
+#fxjdtawxjd .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#cxwaiklrkm .gt_table_body {
+#fxjdtawxjd .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #000000;
@@ -2748,7 +2748,7 @@ Emi Tanaka
   border-bottom-color: #D3D3D3;
 }
 
-#cxwaiklrkm .gt_footnotes {
+#fxjdtawxjd .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2762,7 +2762,7 @@ Emi Tanaka
   border-right-color: #D3D3D3;
 }
 
-#cxwaiklrkm .gt_footnote {
+#fxjdtawxjd .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -2771,7 +2771,7 @@ Emi Tanaka
   padding-right: 5px;
 }
 
-#cxwaiklrkm .gt_sourcenotes {
+#fxjdtawxjd .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2785,7 +2785,7 @@ Emi Tanaka
   border-right-color: #D3D3D3;
 }
 
-#cxwaiklrkm .gt_sourcenote {
+#fxjdtawxjd .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -2793,72 +2793,72 @@ Emi Tanaka
   padding-right: 5px;
 }
 
-#cxwaiklrkm .gt_left {
+#fxjdtawxjd .gt_left {
   text-align: left;
 }
 
-#cxwaiklrkm .gt_center {
+#fxjdtawxjd .gt_center {
   text-align: center;
 }
 
-#cxwaiklrkm .gt_right {
+#fxjdtawxjd .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#cxwaiklrkm .gt_font_normal {
+#fxjdtawxjd .gt_font_normal {
   font-weight: normal;
 }
 
-#cxwaiklrkm .gt_font_bold {
+#fxjdtawxjd .gt_font_bold {
   font-weight: bold;
 }
 
-#cxwaiklrkm .gt_font_italic {
+#fxjdtawxjd .gt_font_italic {
   font-style: italic;
 }
 
-#cxwaiklrkm .gt_super {
+#fxjdtawxjd .gt_super {
   font-size: 65%;
 }
 
-#cxwaiklrkm .gt_footnote_marks {
+#fxjdtawxjd .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#cxwaiklrkm .gt_asterisk {
+#fxjdtawxjd .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#cxwaiklrkm .gt_indent_1 {
+#fxjdtawxjd .gt_indent_1 {
   text-indent: 5px;
 }
 
-#cxwaiklrkm .gt_indent_2 {
+#fxjdtawxjd .gt_indent_2 {
   text-indent: 10px;
 }
 
-#cxwaiklrkm .gt_indent_3 {
+#fxjdtawxjd .gt_indent_3 {
   text-indent: 15px;
 }
 
-#cxwaiklrkm .gt_indent_4 {
+#fxjdtawxjd .gt_indent_4 {
   text-indent: 20px;
 }
 
-#cxwaiklrkm .gt_indent_5 {
+#fxjdtawxjd .gt_indent_5 {
   text-indent: 25px;
 }
 
-#cxwaiklrkm .katex-display {
+#fxjdtawxjd .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#cxwaiklrkm div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#fxjdtawxjd div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -2979,23 +2979,23 @@ Emi Tanaka
 <div class="column" style="width:50%;">
 <div class="cell">
 <div class="cell-output-display">
-<div id="vwdaixsvvq" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#vwdaixsvvq table {
+<div id="chrbjtdhfj" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#chrbjtdhfj table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#vwdaixsvvq thead, #vwdaixsvvq tbody, #vwdaixsvvq tfoot, #vwdaixsvvq tr, #vwdaixsvvq td, #vwdaixsvvq th {
+#chrbjtdhfj thead, #chrbjtdhfj tbody, #chrbjtdhfj tfoot, #chrbjtdhfj tr, #chrbjtdhfj td, #chrbjtdhfj th {
   border-style: none;
 }
 
-#vwdaixsvvq p {
+#chrbjtdhfj p {
   margin: 0;
   padding: 0;
 }
 
-#vwdaixsvvq .gt_table {
+#chrbjtdhfj .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -3021,12 +3021,12 @@ Emi Tanaka
   border-left-color: #D3D3D3;
 }
 
-#vwdaixsvvq .gt_caption {
+#chrbjtdhfj .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#vwdaixsvvq .gt_title {
+#chrbjtdhfj .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -3038,7 +3038,7 @@ Emi Tanaka
   border-bottom-width: 0;
 }
 
-#vwdaixsvvq .gt_subtitle {
+#chrbjtdhfj .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -3050,7 +3050,7 @@ Emi Tanaka
   border-top-width: 0;
 }
 
-#vwdaixsvvq .gt_heading {
+#chrbjtdhfj .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -3062,13 +3062,13 @@ Emi Tanaka
   border-right-color: #D3D3D3;
 }
 
-#vwdaixsvvq .gt_bottom_border {
+#chrbjtdhfj .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#vwdaixsvvq .gt_col_headings {
+#chrbjtdhfj .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3083,7 +3083,7 @@ Emi Tanaka
   border-right-color: #D3D3D3;
 }
 
-#vwdaixsvvq .gt_col_heading {
+#chrbjtdhfj .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3103,7 +3103,7 @@ Emi Tanaka
   overflow-x: hidden;
 }
 
-#vwdaixsvvq .gt_column_spanner_outer {
+#chrbjtdhfj .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3115,15 +3115,15 @@ Emi Tanaka
   padding-right: 4px;
 }
 
-#vwdaixsvvq .gt_column_spanner_outer:first-child {
+#chrbjtdhfj .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#vwdaixsvvq .gt_column_spanner_outer:last-child {
+#chrbjtdhfj .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#vwdaixsvvq .gt_column_spanner {
+#chrbjtdhfj .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #000000;
@@ -3135,11 +3135,11 @@ Emi Tanaka
   width: 100%;
 }
 
-#vwdaixsvvq .gt_spanner_row {
+#chrbjtdhfj .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#vwdaixsvvq .gt_group_heading {
+#chrbjtdhfj .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3165,7 +3165,7 @@ Emi Tanaka
   text-align: left;
 }
 
-#vwdaixsvvq .gt_empty_group_heading {
+#chrbjtdhfj .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -3180,15 +3180,15 @@ Emi Tanaka
   vertical-align: middle;
 }
 
-#vwdaixsvvq .gt_from_md > :first-child {
+#chrbjtdhfj .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#vwdaixsvvq .gt_from_md > :last-child {
+#chrbjtdhfj .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#vwdaixsvvq .gt_row {
+#chrbjtdhfj .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3207,7 +3207,7 @@ Emi Tanaka
   overflow-x: hidden;
 }
 
-#vwdaixsvvq .gt_stub {
+#chrbjtdhfj .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3220,7 +3220,7 @@ Emi Tanaka
   padding-right: 5px;
 }
 
-#vwdaixsvvq .gt_stub_row_group {
+#chrbjtdhfj .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3234,15 +3234,15 @@ Emi Tanaka
   vertical-align: top;
 }
 
-#vwdaixsvvq .gt_row_group_first td {
+#chrbjtdhfj .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#vwdaixsvvq .gt_row_group_first th {
+#chrbjtdhfj .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#vwdaixsvvq .gt_summary_row {
+#chrbjtdhfj .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3252,16 +3252,16 @@ Emi Tanaka
   padding-right: 5px;
 }
 
-#vwdaixsvvq .gt_first_summary_row {
+#chrbjtdhfj .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#vwdaixsvvq .gt_first_summary_row.thick {
+#chrbjtdhfj .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#vwdaixsvvq .gt_last_summary_row {
+#chrbjtdhfj .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3271,7 +3271,7 @@ Emi Tanaka
   border-bottom-color: #D3D3D3;
 }
 
-#vwdaixsvvq .gt_grand_summary_row {
+#chrbjtdhfj .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3281,7 +3281,7 @@ Emi Tanaka
   padding-right: 5px;
 }
 
-#vwdaixsvvq .gt_first_grand_summary_row {
+#chrbjtdhfj .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3291,7 +3291,7 @@ Emi Tanaka
   border-top-color: #D3D3D3;
 }
 
-#vwdaixsvvq .gt_last_grand_summary_row_top {
+#chrbjtdhfj .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3301,11 +3301,11 @@ Emi Tanaka
   border-bottom-color: #D3D3D3;
 }
 
-#vwdaixsvvq .gt_striped {
+#chrbjtdhfj .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#vwdaixsvvq .gt_table_body {
+#chrbjtdhfj .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #000000;
@@ -3314,7 +3314,7 @@ Emi Tanaka
   border-bottom-color: #D3D3D3;
 }
 
-#vwdaixsvvq .gt_footnotes {
+#chrbjtdhfj .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3328,7 +3328,7 @@ Emi Tanaka
   border-right-color: #D3D3D3;
 }
 
-#vwdaixsvvq .gt_footnote {
+#chrbjtdhfj .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -3337,7 +3337,7 @@ Emi Tanaka
   padding-right: 5px;
 }
 
-#vwdaixsvvq .gt_sourcenotes {
+#chrbjtdhfj .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3351,7 +3351,7 @@ Emi Tanaka
   border-right-color: #D3D3D3;
 }
 
-#vwdaixsvvq .gt_sourcenote {
+#chrbjtdhfj .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -3359,72 +3359,72 @@ Emi Tanaka
   padding-right: 5px;
 }
 
-#vwdaixsvvq .gt_left {
+#chrbjtdhfj .gt_left {
   text-align: left;
 }
 
-#vwdaixsvvq .gt_center {
+#chrbjtdhfj .gt_center {
   text-align: center;
 }
 
-#vwdaixsvvq .gt_right {
+#chrbjtdhfj .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#vwdaixsvvq .gt_font_normal {
+#chrbjtdhfj .gt_font_normal {
   font-weight: normal;
 }
 
-#vwdaixsvvq .gt_font_bold {
+#chrbjtdhfj .gt_font_bold {
   font-weight: bold;
 }
 
-#vwdaixsvvq .gt_font_italic {
+#chrbjtdhfj .gt_font_italic {
   font-style: italic;
 }
 
-#vwdaixsvvq .gt_super {
+#chrbjtdhfj .gt_super {
   font-size: 65%;
 }
 
-#vwdaixsvvq .gt_footnote_marks {
+#chrbjtdhfj .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#vwdaixsvvq .gt_asterisk {
+#chrbjtdhfj .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#vwdaixsvvq .gt_indent_1 {
+#chrbjtdhfj .gt_indent_1 {
   text-indent: 5px;
 }
 
-#vwdaixsvvq .gt_indent_2 {
+#chrbjtdhfj .gt_indent_2 {
   text-indent: 10px;
 }
 
-#vwdaixsvvq .gt_indent_3 {
+#chrbjtdhfj .gt_indent_3 {
   text-indent: 15px;
 }
 
-#vwdaixsvvq .gt_indent_4 {
+#chrbjtdhfj .gt_indent_4 {
   text-indent: 20px;
 }
 
-#vwdaixsvvq .gt_indent_5 {
+#chrbjtdhfj .gt_indent_5 {
   text-indent: 25px;
 }
 
-#vwdaixsvvq .katex-display {
+#chrbjtdhfj .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#vwdaixsvvq div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#chrbjtdhfj div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>

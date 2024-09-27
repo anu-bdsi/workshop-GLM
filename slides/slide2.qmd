@@ -50,8 +50,9 @@ options(ggplot2.discrete.fill = list(c("#E16A86", "#00AD9A"),
                                        c("#E16A86", "#909800", "#00AD9A", "#9183E6")))
 ```
 
- 
 
+
+## Case study: Abundance of Noisy Miners {background-color="#F5EDDE"}
 
 
 ```{webr-r}
@@ -62,9 +63,6 @@ data(nminer, package = "GLMsData")
 data(pock, package = "GLMsData")
 gmfood <- read_csv("https://anu-bdsi.github.io/workshop-GLM/data/gmfood.csv")
 ```
-
-
-## Case study: Abundance of Noisy Miners {background-color="#F5EDDE"}
 
 ::: {.columns}
 
